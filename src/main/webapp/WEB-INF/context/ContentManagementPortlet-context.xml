@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--  
+Licensed to Jasig under one or more contributor license
+agreements. See the NOTICE file distributed with this work
+for additional information regarding copyright ownership.
+Jasig licenses this file to you under the Apache License,
+Version 2.0 (the "License"); you may not use this file
+except in compliance with the License. You may obtain a
+copy of the License at:
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on
+an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied. See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+http://www.springframework.org/schema/jee
+http://www.springframework.org/schema/jee/spring-jee-2.0.xsd">
+
+	<bean id="systemPlaceholderConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" />
+
+	<bean id="defaultExceptionHandler"
+		class="org.springframework.web.portlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionAttribute" value="exception" />
+		<property name="exceptionMappings">
+			<props>
+				<prop key="javax.portlet.PortletSecurityException">notAuthorizedAuthorRoleError</prop>
+			</props>
+		</property>
+		<property name="defaultErrorView" value="defaultError" />
+	</bean>
+
+
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>languages/messages</value>
+				<value>languages/errors</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="parameterMappingInterceptor"
+		class="org.springframework.web.portlet.handler.ParameterMappingInterceptor" />
+
+	<bean id="portletModeUserRoleAuthorizationInterceptor"
+		class="org.jasig.portlet.cms.controller.PortletModeUserRoleAuthorizationInterceptor">
+
+		<property name="authorizedRolesMap">
+			<map>
+				<entry key="view" value="*" />
+				<entry key="help" value="*" />
+				<entry key="edit" value="author" />
+			</map>
+		</property>
+	</bean>
+
+	<bean id="portletModeParameterHandlerMapping"
+		class="org.springframework.web.portlet.handler.PortletModeParameterHandlerMapping">
+		<property name="order" value="1" />
+		<property name="interceptors">
+			<list>
+				<ref bean="portletModeUserRoleAuthorizationInterceptor" />
+				<ref bean="parameterMappingInterceptor" />
+			</list>
+		</property>
+		<property name="portletModeParameterMap">
+			<map>
+				<entry key="view">
+					<map />
+				</entry>
+				<entry key="edit">
+					<map />
+				</entry>
+				<entry key="help">
+					<map />
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="portletModeHandlerMapping"
+		class="org.springframework.web.portlet.handler.PortletModeHandlerMapping">
+		<property name="order" value="2" />
+		<property name="interceptors">
+			<list>
+				<ref bean="portletModeUserRoleAuthorizationInterceptor" />
+			</list>
+		</property>
+		<property name="portletModeMap">
+			<map>
+				<entry key="view" value-ref="viewPostController" />
+				<entry key="edit" value-ref="editPostController" />
+				<entry key="help" value-ref="helpController" />
+			</map>
+		</property>
+	</bean>
+
+	<bean id="viewPostController" class="org.jasig.portlet.cms.controller.ViewPostController">
+		<property name="repositoryDao" ref="repositoryDao" />
+	</bean>
+
+	<bean id="editPostController" class="org.jasig.portlet.cms.controller.EditPostController" >
+	<property name="repositoryDao" ref="repositoryDao" />
+	</bean>
+	
+	<bean id="helpController"
+		class="org.springframework.web.portlet.mvc.PortletModeNameViewController" />
+</beans>
