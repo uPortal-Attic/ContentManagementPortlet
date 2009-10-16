@@ -15,8 +15,14 @@ KIND, either express or implied. See the License for the
 specific language governing permissions and limitations
 under the License.
 *#
+#set ( $renderRequest = $request.getAttribute("javax.portlet.request") )
+#set ( $renderResponse = $request.getAttribute("javax.portlet.response") )
+
 #if( $post )
-   $!{$post.Content}
+   $!{post.Content}
+   
+	<span class="uportal-channel-emphasis">Posted by $!{post.Author} at $!{post.Date}</span> 
 #end
+
 
 

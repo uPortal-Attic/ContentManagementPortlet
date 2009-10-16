@@ -23,9 +23,10 @@ under the License.
 		<span class="uportal-label">#springMessage("label.caption.message"):</span>
 		<p class="uportal-channel-code">$exception.Message</p>
 	</div>
+	<div class="uportal-channel-error" style="border-bottom-width:0px;border-top-width:0px;">
+#else
+	<div class="uportal-channel-error" style="border-bottom-width:0px;">
 #end
-
-<div class="uportal-channel-error" style="border-bottom-width:0px;border-top-width:0px;">
 	<span class="uportal-label">#springMessage("label.caption.class"):</span>
 	<p class="uportal-channel-code">$exception.Class.Name</p>
 </div>

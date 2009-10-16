@@ -15,47 +15,67 @@ KIND, either express or implied. See the License for the
 specific language governing permissions and limitations
 under the License.
 *#
+			
+#set ( $randomId = $mathTool.random(1, 99999999) )	
+#set ( $renderRequest = $request.getAttribute("javax.portlet.request") )
+#set ( $renderResponse = $request.getAttribute("javax.portlet.response") )
+
+#set ( $portletConstructors = $renderRequest.getPortletMode().getClass().getConstructors() )
+#set ( $returnMode = $portletConstructors.get(0).newInstance("view") )
+#set ( $cancelUrl = $renderResponse.createRenderURL() )
+$cancelUrl.setPortletMode($returnMode)
+
 <script type="text/javascript" src="$springMacroRequestContext.contextPath/javascript/ckeditor/ckeditor.js"></script>
-
-#set( $fckEditorId = $mathTool.random(1, 99999999) )	
-
-<table cellpadding='0' cellspacing='0' width='100%'>
+<table cellpadding='0' cellspacing='0' width="100%">
 	<tr>
-		<td width="100%" align='center'>	
-			<form method='POST'>
+		<td align='center'>	
+			<form method='POST' action='$renderResponse.createActionURL()'>
 				<span class="uportal-label">#springMessage("label.caption.keyword"):</span>
-				<input class="uportal-input-text" size='80' type='text' />
+				<input class="uportal-input-text" type='text' />
 				<input class="uportal-button" type='submit' value='#springMessage("button.caption.search")' />
 			</form>
 		
 			<hr width='100%' />
 			<br />
 
-			<form method='POST'>
-				
-				<textarea tabindex='0' id='fckEditorId$fckEditorId'>
-					#if( $post )
-					   $!{$post.Content}
-					#end
-				</textarea>	
-						 
-				<script type="text/javascript">
-					CKEDITOR.replace('fckEditorId$fckEditorId',
-					{
-					    defaultLanguage: 'en',
-					    language: '$springMacroRequestContext.locale.getLanguage()'
-					});							
-				</script>
-  		</td>
+			<form method='POST' action='$renderResponse.createActionURL()'>
+			#springFormTextarea("post.content" "isFckEditor='true'")
+			</td>
 	</tr>
 
 	<tr>
 		<td width="100%" align="right">
 			<input class="uportal-button" type="submit" value='#springMessage("button.caption.submit")' />
-			<input class="uportal-button" type='button' value='#springMessage("button.caption.cancel")' />
+			<input class="uportal-button" type="button" value='#springMessage("button.caption.cancel")'
+				   onclick="window.location.href='${cancelUrl}';" />
 		</td>
 		</form>
 	</tr>
 
 </table>
 
+<script type="text/javascript">
+	CKEDITOR.replaceAll( function( textarea, config )
+	{
+		var replaceEditor = false;
+		try {	
+			if (textarea.isFckEditor != undefined && textarea.isFckEditor){
+				config.defaultLanguage = 'en';
+				config.language = '$springMacroRequestContext.locale.getLanguage()';
+				replaceEditor = true;
+			}
+		}
+		catch (err) {
+			var errBlock = document.createElement("div");
+			errBlock.className = 'uportal-channel-error';
+			errBlock.innerHTML = '<p class="uportal-channel-code" style="text-align:left;">' + err + '</p>';
+			textarea.parentNode.replaceChild(errBlock, textarea);
+		}
+		return replaceEditor;
+	});
+	
+	CKEDITOR.on('instanceReady', function(ev)
+	{
+		ev.editor.focus();
+	});
+</script>

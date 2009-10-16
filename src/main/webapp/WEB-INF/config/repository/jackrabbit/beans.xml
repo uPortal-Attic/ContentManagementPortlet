@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE jackrabbit-ocm PUBLIC "-//The Apache Software Foundation//DTDJackrabbit OCM 1.5//EN" "http://jackrabbit.apache.org/dtd/jackrabbit-ocm-1.5.dtd">
+<jackrabbit-ocm>
+
+	<class-descriptor className="org.jasig.portlet.cms.model.Post" jcrSuperTypes="nt:base">
+		<field-descriptor fieldName="path" path="true" jcrName="path" />
+		<field-descriptor fieldName="author" jcrName="author"	jcrMandatory="true" jcrType="String" />
+		<field-descriptor fieldName="date" jcrName="date"
+			jcrMandatory="true" jcrType="Date" />
+		<field-descriptor fieldName="content" jcrName="content"
+			jcrMandatory="true" jcrType="String" />
+		<collection-descriptor fieldName="attachments"
+			jcrName="attachments" jcrMandatory="true" autoInsert="true"
+			autoRetrieve="true" autoUpdate="true" collectionClassName="java.util.ArrayList"
+			elementClassName="org.jasig.portlet.cms.model.Attachment" />
+	</class-descriptor>
+
+	<class-descriptor className="org.jasig.portlet.cms.model.Attachment">
+		<field-descriptor fieldName="file" jcrName="file" jcrMandatory="true" jcrType="Binary" />
+	</class-descriptor>
+
+</jackrabbit-ocm>

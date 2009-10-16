@@ -16,3 +16,27 @@ specific language governing permissions and limitations
 under the License.
 *#
 <a name="topOfThePage"></a>
+<ul>
+<li><a href="#typeContentRepository">How do I determine which type of content repository is used by the portlet ?</a></li>
+<li><a href="#locationPortletChannel">How do I determine the location of the content for my portlet channel?</a></li>
+</ul>
+<hr/>
+
+<a name="typeContentRepository"></a>
+<p class="uportal-channel-strong">How do I determine which type of content repository is used by the portlet ?</p>
+<p>The default configuration of the portlet uses an implementation of the Java Content Repository provided by Apache JackRabbit. 
+The portlet defines a repository deployment model in the "context.xml" file and uses the "ContentManagementPortlet-data.xml" to 
+configure the mapping template.</p>
+<a href="#topOfThePage">Back to top</a>
+<br/><br/>
+
+<a name="locationPortletChannel"></a>
+<p class="uportal-channel-strong">How do I determine the location of the content for my portlet channel ?</p>
+<p>By default, the portlet will write to the default location "/root" within the underlying configured content repository. 
+To change this location, go to the Preferences page of the portlet and add a setting for "repository.root". 
+The portlet will use the value assigned to this field to determine the content location in the repository. 
+Please note that if you have multiple channels publishing the portlet, content will be overwritten by each portlet in turn, 
+unless you specify a different value for the setting defined above.</p>
+<a href="#topOfThePage">Back to top</a>
+<br/><br/>
+
