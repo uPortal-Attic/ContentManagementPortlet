@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!--  
-Licensed to Jasig under one or more contributor license
-agreements. See the NOTICE file distributed with this work
-for additional information regarding copyright ownership.
-Jasig licenses this file to you under the Apache License,
-Version 2.0 (the "License"); you may not use this file
-except in compliance with the License. You may obtain a
-copy of the License at:
+	<!--
+		Licensed to Jasig under one or more contributor license agreements.
+		See the NOTICE file distributed with this work for additional
+		information regarding copyright ownership. Jasig licenses this file to
+		you under the Apache License, Version 2.0 (the "License"); you may not
+		use this file except in compliance with the License. You may obtain a
+		copy of the License at: http://www.apache.org/licenses/LICENSE-2.0
 
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on
-an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied. See the License for the
-specific language governing permissions and limitations
-under the License.
--->
+		Unless required by applicable law or agreed to in writing, software
+		distributed under the License is distributed on an "AS IS" BASIS,
+		WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+		implied. See the License for the specific language governing
+		permissions and limitations under the License.
+	-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -36,11 +32,12 @@ under the License.
 		<velocity.tools.version>1.4</velocity.tools.version>
 		<java.version>1.6</java.version>
 		<pluto.version>1.1.4</pluto.version>
-		<jackrabbit.version>1.5.2</jackrabbit.version>
+		<jackrabbit.version>1.6.0</jackrabbit.version>
+		<jackrabbit.ocm.version>1.5.3</jackrabbit.ocm.version>
 		<jcr.version>1.0</jcr.version>
 		<commons.beanutils.version>1.8.0</commons.beanutils.version>
 		<commons.digester.version>1.8</commons.digester.version>
-		
+
 	</properties>
 	<ciManagement>
 		<system>uPortal</system>
@@ -71,11 +68,26 @@ under the License.
 			</plugin>
 
 			<plugin>
+				<groupId>org.apache.geronimo.genesis.plugins</groupId>
+				<artifactId>tools-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>install-legal-files</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>copy-legal-files</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
 					<webXml>${project.build.directory}/pluto-resources/web.xml</webXml>
 				</configuration>
 			</plugin>
+
 
 			<plugin>
 				<groupId>org.apache.pluto</groupId>
@@ -100,7 +112,7 @@ under the License.
 							<tasks>
 								<property environment="env" />
 								<property name="catalina.home"
-									value="${env.$CATALINA_HOME}" />
+									value="H:/Java\uPortal-3.1.1-quick-start/apache-tomcat-6.0.18" />
 								<delete dir="${catalina.home}/webapps/${pom.name}" />
 								<delete file="${catalina.home}/webapps/${pom.name}.war" />
 								<copy file="target/${pom.name}.war" todir="${catalina.home}/webapps"
@@ -140,7 +152,7 @@ under the License.
 			<version>${spring.version}</version>
 			<scope>compile</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.velocity</groupId>
 			<artifactId>velocity</artifactId>
@@ -207,75 +219,86 @@ under the License.
 			<artifactId>spring-webmvc-portlet</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-		
-		<dependency> 
-            <groupId>org.springmodules</groupId> 
-            <artifactId>spring-modules-jcr</artifactId> 
-            <version>${spring.jcr.version}</version> 
-             <scope>compile</scope>
-            <exclusions> 
-                <exclusion> 
-                    <groupId>org.springframework</groupId> 
-                    <artifactId>spring</artifactId> 
-                </exclusion> 
-                <exclusion> 
-                    <groupId>jsr170</groupId> 
-                    <artifactId>jsr170</artifactId> 
-                </exclusion> 
-                <exclusion> 
-                    <groupId>javax.servlet</groupId> 
-                    <artifactId>servlet-api</artifactId> 
-                </exclusion> 
-                <exclusion> 
-                    <groupId>org.apache.jackrabbit</groupId> 
-                    <artifactId>jackrabbit-jca</artifactId> 
-                </exclusion> 
-                <exclusion> 
-                    <groupId>org.apache.jackrabbit</groupId> 
-                    <artifactId>jackrabbit-jcr-rmi</artifactId> 
-                </exclusion> 
-                <exclusion> 
-                    <groupId>jeceira</groupId> 
-                    <artifactId>jeceira</artifactId> 
-                </exclusion> 
-                <exclusion> 
-                    <groupId>aparzev</groupId> 
-                    <artifactId>doka</artifactId> 
-                </exclusion> 
-                <exclusion> 
-                    <groupId>aparzev</groupId> 
-                    <artifactId>commons</artifactId> 
-                </exclusion> 
-                <exclusion> 
-                    <groupId>jug</groupId> 
-                    <artifactId>jug-asl</artifactId> 
-                </exclusion> 
-                <exclusion> 
-                    <groupId>geronimo-spec</groupId> 
-                    <artifactId>geronimo-spec-jta</artifactId> 
-                </exclusion> 
-                <exclusion> 
-                    <groupId>geronimo-spec</groupId> 
-                    <artifactId> 
+
+		<dependency>
+			<groupId>org.springmodules</groupId>
+			<artifactId>spring-modules-jcr</artifactId>
+			<version>${spring.jcr.version}</version>
+			<scope>compile</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>jsr170</groupId>
+					<artifactId>jsr170</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.jackrabbit</groupId>
+					<artifactId>jackrabbit-jca</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.jackrabbit</groupId>
+					<artifactId>jackrabbit-jcr-rmi</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>jeceira</groupId>
+					<artifactId>jeceira</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>aparzev</groupId>
+					<artifactId>doka</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>aparzev</groupId>
+					<artifactId>commons</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>jug</groupId>
+					<artifactId>jug-asl</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>geronimo-spec</groupId>
+					<artifactId>geronimo-spec-jta</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>geronimo-spec</groupId>
+					<artifactId> 
                         geronimo-spec-j2ee-connector 
-                    </artifactId> 
-                </exclusion> 
-            </exclusions> 
-        </dependency>
-        
+                    </artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
 			<version>${spring.version}</version>
 			<scope>compile</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>javax.transaction</groupId>
 			<artifactId>jta</artifactId>
 			<version>1.1</version>
 			<scope>compile</scope>
-		</dependency> 
-		
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.jackrabbit</groupId>
+			<artifactId>jackrabbit-ocm</artifactId>
+			<version>${jackrabbit.ocm.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springmodules.jcr</groupId>
+			<artifactId>jcr-jackrabbit-ocm</artifactId>
+			<version>0.9-SNAPSHOT</version>
+		</dependency>
+
 	</dependencies>
 </project>
