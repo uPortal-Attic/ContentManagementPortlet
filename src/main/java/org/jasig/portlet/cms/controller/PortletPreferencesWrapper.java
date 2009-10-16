@@ -26,7 +26,7 @@ public final class PortletPreferencesWrapper {
 	private PortletPreferences _prefences = null;
 	private PortletRequest _portletRequest = null;
 
-	private static final String DEFAULT_REPOSITORY_ROOT_NAME = "root";
+	private static final String DEFAULT_REPOSITORY_ROOT_NAME = "/root";
 
 	public PortletPreferencesWrapper(final PortletRequest request) {
 		_portletRequest = request;

@@ -18,57 +18,62 @@ under the License.
  **/
 package org.jasig.portlet.cms.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Post {
+public class Post implements Serializable {
 
-	private String _authorName = null;
-	private Date _postedDateTime = null;
+	private static final long serialVersionUID = 6392459877566744761L;
+	private String _author = null;
+	private Date _date = null;
 	private String _content = null;
-
 	private List<Attachment> _attachments = null;
-
-	private String _location = null;
+	private String _path = null;
 
 	public Post() {
-		_attachments = new ArrayList<Attachment>();
+		setAttachments(new ArrayList<Attachment>());
+		setDate(new Date());
 	}
 
 	public List<Attachment> getAttachments() {
 		return _attachments;
 	}
 
-	public String getAuthorName() {
-		return _authorName;
+	public String getAuthor() {
+		return _author;
 	}
 
 	public final String getContent() {
 		return _content;
 	}
 
-	public String getLocation() {
-		return _location;
+	public Date getDate() {
+		return _date;
 	}
 
-	public Date getPostedDateTime() {
-		return _postedDateTime;
+	public String getPath() {
+		return _path;
 	}
 
-	public void setAuthorName(final String name) {
-		_authorName = name;
+	public void setAttachments(final List<Attachment> attachments) {
+		_attachments = attachments;
+	}
+
+	public void setAuthor(final String name) {
+		_author = name;
 	}
 
 	public void setContent(final String content) {
 		_content = content;
 	}
 
-	public void setLocation(final String loc) {
-		_location = loc;
+	public void setDate(final Date dateTime) {
+		_date = dateTime;
 	}
 
-	public void setPostedDateTime(final Date dateTime) {
-		_postedDateTime = dateTime;
+	public void setPath(final String loc) {
+		_path = loc;
 	}
 }

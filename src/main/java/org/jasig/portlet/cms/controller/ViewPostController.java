@@ -31,7 +31,6 @@ import org.springframework.web.portlet.ModelAndView;
 import org.springframework.web.portlet.mvc.AbstractController;
 
 public class ViewPostController extends AbstractController {
-
 	private RepositoryDao _repositoryDao = null;
 
 	public void setRepositoryDao(final RepositoryDao repositoryDao) {
@@ -46,11 +45,15 @@ public class ViewPostController extends AbstractController {
 	protected ModelAndView handleRenderRequestInternal(final RenderRequest request,
 	        final RenderResponse response) throws Exception {
 
+		System.out.println("handleRenderRequestInternal() in view");
+
 		final Map<String, Object> map = new HashMap<String, Object>();
 		final PortletPreferencesWrapper pref = new PortletPreferencesWrapper(request);
 		final Post post = geRepositoryDao().getPost(pref.getPortletRepositoryRoot());
+
 		map.put("post", post);
 		final ModelAndView view = new ModelAndView("viewPost", map);
 		return view;
+
 	}
 }

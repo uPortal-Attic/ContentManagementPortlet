@@ -19,26 +19,18 @@ under the License.
 
 package org.jasig.portlet.cms.model;
 
-import java.io.File;
+import java.io.InputStream;
+import java.io.Serializable;
 
-public class Attachment {
-	private File _file = null;
+public class Attachment implements Serializable {
+	private static final long serialVersionUID = -8548415771165043860L;
+	private InputStream _file = null;
 
-	/**
-	 * Initialize the attachment object with the file
-	 * 
-	 * @param file
-	 *            the attached file
-	 */
-	public Attachment(final File file) {
-		setFile(file);
-	}
-
-	public final File getFile() {
+	public final InputStream getFile() {
 		return _file;
 	}
 
-	private void setFile(final File file) {
+	public void setFile(final InputStream file) {
 		_file = file;
 	}
 

@@ -19,18 +19,18 @@ under the License.
 
 package org.jasig.portlet.cms.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
+import javax.portlet.PortletMode;
+import javax.portlet.PortletRequest;
 
 import org.jasig.portlet.cms.model.Post;
 import org.jasig.portlet.cms.model.RepositoryDao;
-import org.springframework.web.portlet.ModelAndView;
-import org.springframework.web.portlet.mvc.AbstractController;
+import org.springframework.validation.BindException;
+import org.springframework.web.portlet.mvc.SimpleFormController;
+import org.springframework.web.portlet.util.PortletUtils;
 
-public class EditPostController extends AbstractController {
+public class EditPostController extends SimpleFormController {
 
 	private RepositoryDao _repositoryDao = null;
 
@@ -43,16 +43,26 @@ public class EditPostController extends AbstractController {
 	}
 
 	@Override
-	protected ModelAndView handleRenderRequestInternal(final RenderRequest request,
-	        final RenderResponse response) throws Exception {
+	protected Object formBackingObject(final PortletRequest request) throws Exception {
 
-		final Map<String, Object> map = new HashMap<String, Object>();
 		final PortletPreferencesWrapper pref = new PortletPreferencesWrapper(request);
-		final Post post = geRepositoryDao().getPost(pref.getPortletRepositoryRoot());
-		map.put("post", post);
-		final ModelAndView view = new ModelAndView("editPost", map);
-		return view;
+		Post post = geRepositoryDao().getPost(pref.getPortletRepositoryRoot());
 
+		if (post == null) {
+			post = new Post();
+			post.setAuthor(pref.getPortletUserName());
+			post.setPath(pref.getPortletRepositoryRoot());
+		}
+		return post;
+	}
+
+	@Override
+	protected void onSubmitAction(final ActionRequest request, final ActionResponse response,
+	        final Object command, final BindException errors) throws Exception {
+		final Post post = (Post) command;
+		geRepositoryDao().setPost(post);
+		PortletUtils.clearAllRenderParameters(response);
+		response.setPortletMode(PortletMode.VIEW);
 	}
 
 }

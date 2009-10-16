@@ -23,7 +23,7 @@ import java.util.List;
 public interface RepositoryDao {
 	abstract Post getPost(final String nodeName);
 
-	abstract List<Post> search(final RepositorySearchOptions options);
+	abstract List<Post> search(final RepositorySearchOptions options) throws Exception;
 
 	abstract void setPost(final Post post);
 }
