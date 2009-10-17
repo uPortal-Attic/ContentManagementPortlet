@@ -41,6 +41,7 @@ public class PostValidator implements Validator {
 		return Post.class.isAssignableFrom(arg0);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void validate(final Object arg0, final Errors errors) {
 
