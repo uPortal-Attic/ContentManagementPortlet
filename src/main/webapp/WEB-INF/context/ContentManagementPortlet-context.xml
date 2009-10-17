@@ -104,6 +104,7 @@
 		<property name="repositoryDao" ref="repositoryDao" />
 	</bean>
 
+	<bean id="postValidator" class="org.jasig.portlet.cms.controller.PostValidator"/>
 	<bean id="editPostController" class="org.jasig.portlet.cms.controller.EditPostController">
 		<property name="repositoryDao" ref="repositoryDao" />
 		<property name="formView" value="editPost" />
@@ -112,6 +113,7 @@
 		<property name="bindOnNewForm" value="true" />
 		<property name="sessionForm" value="true" />
 		<property name="commandClass" value="org.jasig.portlet.cms.model.Post" />
+		<property name="validator"  ref="postValidator" />
 	</bean>
 
 	<bean id="helpController"
