@@ -22,6 +22,8 @@ under the License.
    $!{post.Content}
    
 	<span class="uportal-channel-emphasis">Posted by $!{post.Author} at $!{post.Date}</span> 
+#else
+	<span class="uportal-channel-emphasis">#springMessage("invalid.post.content.empty")</span> 
 #end
 
 

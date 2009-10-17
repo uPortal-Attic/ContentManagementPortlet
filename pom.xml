@@ -37,6 +37,7 @@
 		<jcr.version>1.0</jcr.version>
 		<commons.beanutils.version>1.8.0</commons.beanutils.version>
 		<commons.digester.version>1.8</commons.digester.version>
+		<log4j.version>1.2.14</log4j.version>
 
 	</properties>
 	<ciManagement>
@@ -112,7 +113,7 @@
 							<tasks>
 								<property environment="env" />
 								<property name="catalina.home"
-									value="H:/Java\uPortal-3.1.1-quick-start/apache-tomcat-6.0.18" />
+									value="${env.CATALINA_HOME}" />
 								<delete dir="${catalina.home}/webapps/${pom.name}" />
 								<delete file="${catalina.home}/webapps/${pom.name}.war" />
 								<copy file="target/${pom.name}.war" todir="${catalina.home}/webapps"
@@ -298,6 +299,23 @@
 			<groupId>org.springmodules.jcr</groupId>
 			<artifactId>jcr-jackrabbit-ocm</artifactId>
 			<version>0.9-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>antisamy-bin</groupId>
+			<artifactId>org.owasp.validator</artifactId>
+			<version>1.3</version>
 		</dependency>
 
 	</dependencies>
