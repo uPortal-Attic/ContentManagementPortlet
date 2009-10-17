@@ -25,6 +25,8 @@ import java.util.Map;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.cms.model.Post;
 import org.jasig.portlet.cms.model.RepositoryDao;
 import org.springframework.web.portlet.ModelAndView;
@@ -32,6 +34,7 @@ import org.springframework.web.portlet.mvc.AbstractController;
 
 public class ViewPostController extends AbstractController {
 	private RepositoryDao _repositoryDao = null;
+	private final Log _logger = LogFactory.getLog(getClass());
 
 	public void setRepositoryDao(final RepositoryDao repositoryDao) {
 		_repositoryDao = repositoryDao;
@@ -45,10 +48,10 @@ public class ViewPostController extends AbstractController {
 	protected ModelAndView handleRenderRequestInternal(final RenderRequest request,
 	        final RenderResponse response) throws Exception {
 
-		System.out.println("handleRenderRequestInternal() in view");
-
 		final Map<String, Object> map = new HashMap<String, Object>();
 		final PortletPreferencesWrapper pref = new PortletPreferencesWrapper(request);
+
+		_logger.debug("Retrieving repository post object");
 		final Post post = geRepositoryDao().getPost(pref.getPortletRepositoryRoot());
 
 		map.put("post", post);

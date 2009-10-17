@@ -24,6 +24,8 @@ import javax.portlet.ActionResponse;
 import javax.portlet.PortletMode;
 import javax.portlet.PortletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.cms.model.Post;
 import org.jasig.portlet.cms.model.RepositoryDao;
 import org.springframework.validation.BindException;
@@ -31,7 +33,7 @@ import org.springframework.web.portlet.mvc.SimpleFormController;
 import org.springframework.web.portlet.util.PortletUtils;
 
 public class EditPostController extends SimpleFormController {
-
+	private final Log _logger = LogFactory.getLog(getClass());
 	private RepositoryDao _repositoryDao = null;
 
 	public void setRepositoryDao(final RepositoryDao repositoryDao) {
@@ -59,6 +61,8 @@ public class EditPostController extends SimpleFormController {
 	@Override
 	protected void onSubmitAction(final ActionRequest request, final ActionResponse response,
 	        final Object command, final BindException errors) throws Exception {
+
+		_logger.debug("Submitted post object");
 		final Post post = (Post) command;
 		geRepositoryDao().setPost(post);
 		PortletUtils.clearAllRenderParameters(response);
