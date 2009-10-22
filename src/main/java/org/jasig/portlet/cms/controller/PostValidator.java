@@ -18,22 +18,30 @@ under the License.
  **/
 package org.jasig.portlet.cms.controller;
 
-import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.cms.model.Post;
-import org.owasp.validator.html.AntiSamy;
-import org.owasp.validator.html.CleanResults;
-import org.owasp.validator.html.Policy;
+import org.jasig.portlet.cms.model.security.AntiVirusService;
+import org.jasig.portlet.cms.model.security.XssValidatorService;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 public class PostValidator implements Validator {
+	private AntiVirusService _antiVirusService = null;
+	private XssValidatorService _xssValidatorService = null;
 
 	private final Log _logger = LogFactory.getLog(getClass());
+
+	public void setAntiVirusService(final AntiVirusService svc) {
+		_antiVirusService = svc;
+	}
+
+	public void setXssValidatorService(final XssValidatorService svc) {
+		_xssValidatorService = svc;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -41,9 +49,9 @@ public class PostValidator implements Validator {
 		return Post.class.isAssignableFrom(arg0);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void validate(final Object arg0, final Errors errors) {
+		final Post post = (Post) arg0;
 
 		_logger.debug("Validaing post path " + errors.getFieldValue("path"));
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "path", "invalid.post.path.empty");
@@ -54,34 +62,38 @@ public class PostValidator implements Validator {
 		_logger.debug("Validaing post content " + errors.getFieldValue("content"));
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "content", "invalid.post.content.empty");
 
-		try {
-			_logger.debug("Loading xss policy file");
-			final InputStream policyFile = getClass().getResourceAsStream("/properties/antiSamyPolicy.xml");
-			final Policy policy = Policy.getInstance(policyFile);
-			final AntiSamy as = new AntiSamy();
+		if (post.getContent().trim().isEmpty())
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "content", "invalid.post.content.empty");
 
-			_logger.debug("Validaing post content for xss");
-			final Post post = (Post) arg0;
-			final CleanResults cr = as.scan(post.getContent(), policy);
-
-			if (cr.getNumberOfErrors() > 0) {
-				_logger.debug("Rejecting post content for xss");
-
-				new StringBuilder(cr.getNumberOfErrors());
-				final ArrayList<String> errorList = cr.getErrorMessages();
-				for (final String err : errorList)
-					errors.rejectValue("content", "invalid.post.content.xss", new String[] { err }, null);
-			}
-
-		} catch (final Exception e) {
-			_logger.error(e.getMessage(), e);
-			errors.rejectValue("content", "invalid.post.content.xss");
-		}
+		validatePostContent(post, errors);
+		validatePostAttachments(post, errors);
 
 		if (errors.getErrorCount() == 0)
 			_logger.debug("Validated post successfully without errors");
 		else
-			_logger.debug("Rejected post object with " + errors.getErrorCount() + " errors");
+			_logger.debug("Rejected post with " + errors.getErrorCount() + " errors");
+	}
 
+	private AntiVirusService getAntiVirusService() {
+		return _antiVirusService;
+	}
+
+	private XssValidatorService getXssValidatorService() {
+		return _xssValidatorService;
+	}
+
+	private void validatePostAttachments(final Post post, final Errors errors) {
+		if (post.getAttachments().size() > 0)
+			getAntiVirusService();
+
+	}
+
+	@SuppressWarnings("unchecked")
+	private void validatePostContent(final Post post, final Errors errors) {
+		final List<String> errorList = (List<String>) getXssValidatorService().scan(post.getContent());
+
+		if (errorList != null && errorList.size() > 0)
+			for (final String err : errorList)
+				errors.rejectValue("content", "invalid.post.content.xss", new String[] { err }, null);
 	}
 }

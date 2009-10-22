@@ -74,7 +74,10 @@
 					<map />
 				</entry>
 				<entry key="edit">
-					<map />
+					<map>
+						<entry key="searchRepository" value-ref="searchController"/>
+						<entry key="selectPostFromSearch" value-ref="selectPostFromSearchController"/>
+					</map>
 				</entry>
 				<entry key="help">
 					<map />
@@ -104,7 +107,16 @@
 		<property name="repositoryDao" ref="repositoryDao" />
 	</bean>
 
-	<bean id="postValidator" class="org.jasig.portlet.cms.controller.PostValidator"/>
+	<bean id="postValidator" class="org.jasig.portlet.cms.controller.PostValidator">
+		<property name="xssValidatorService">
+			<bean class="org.jasig.portlet.cms.model.security.AntiSamyXssValidator"/>
+		</property>
+		
+		<property name="antiVirusService">
+			<bean class="org.jasig.portlet.cms.model.security.ClamAVAntiVirus"/>
+		</property>
+	</bean>
+	
 	<bean id="editPostController" class="org.jasig.portlet.cms.controller.EditPostController">
 		<property name="repositoryDao" ref="repositoryDao" />
 		<property name="formView" value="editPost" />
@@ -116,6 +128,17 @@
 		<property name="validator"  ref="postValidator" />
 	</bean>
 
+	<bean id="searchController" class="org.jasig.portlet.cms.controller.SearchController">
+		<property name="repositoryDao" ref="repositoryDao" />
+		<property name="commandName" value="search" />
+		<property name="commandClass" value="org.jasig.portlet.cms.model.RepositorySearchOptions" />
+	</bean>
+	
+	<bean id="selectPostFromSearchController" class="org.jasig.portlet.cms.controller.SelectPostFromSearchController">
+		<property name="commandName" value="post" />
+		<property name="commandClass" value="org.jasig.portlet.cms.model.Post" />
+	</bean>
+	
 	<bean id="helpController"
 		class="org.springframework.web.portlet.mvc.PortletModeNameViewController" />
 </beans>

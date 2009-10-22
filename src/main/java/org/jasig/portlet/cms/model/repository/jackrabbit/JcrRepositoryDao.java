@@ -16,26 +16,29 @@ KIND, either express or implied. See the License for the
 specific language governing permissions and limitations
 under the License.
  **/
-package org.jasig.portlet.cms.model.repository.jcr.jackrabbit;
+package org.jasig.portlet.cms.model.repository.jackrabbit;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.cms.model.Post;
-import org.jasig.portlet.cms.model.RepositoryDao;
 import org.jasig.portlet.cms.model.RepositorySearchOptions;
+import org.jasig.portlet.cms.model.repository.RepositoryDao;
 import org.springmodules.jcr.jackrabbit.ocm.JcrMappingTemplate;
 
 public class JcrRepositoryDao implements RepositoryDao {
-
 	private JcrMappingTemplate _template;
+	private final Log _logger = LogFactory.getLog(getClass());
 
 	@Override
 	public Post getPost(final String nodeName) {
@@ -49,21 +52,30 @@ public class JcrRepositoryDao implements RepositoryDao {
 	public List<Post> search(final RepositorySearchOptions options) throws Exception {
 		List<Post> list = null;
 
-		final String queryString = "SELECT * FROM nt:base WHERE contains (content, '{0}')";
-		final QueryManager manager = getTemplate().getSessionFactory().getSession().getWorkspace()
-		        .getQueryManager();
-		final Query query = manager.createQuery(MessageFormat.format(queryString, options.getKeywords()),
-		        Query.SQL);
-		final QueryResult results = query.execute();
-		final NodeIterator iterator = results.getNodes();
+		if (options.getKeyword() != null && !options.getKeyword().trim().isEmpty()) {
+			String keyword = StringEscapeUtils.escapeHtml(options.getKeyword());
+			keyword = StringEscapeUtils.escapeSql(keyword);
 
-		if (iterator.hasNext()) {
-			list = new ArrayList<Post>();
-			while (iterator.hasNext()) {
-				final Node node = (Node) iterator.next();
-				final Post post = getPost(node.getPath());
-				if (post != null)
-					list.add(post);
+			final StringBuilder builder = new StringBuilder("select * from nt:base where ");
+			builder.append("content like '%").append(keyword).append("%' ");
+
+			final String queryString = builder.toString();
+			_logger.debug("Executing search query " + queryString);
+
+			final Session session = getTemplate().getSessionFactory().getSession();
+			final QueryManager manager = session.getWorkspace().getQueryManager();
+			final Query query = manager.createQuery(queryString, Query.SQL);
+			final QueryResult results = query.execute();
+			final NodeIterator iterator = results.getNodes();
+
+			if (iterator.hasNext()) {
+				list = new ArrayList<Post>();
+				while (iterator.hasNext()) {
+					final Node node = (Node) iterator.next();
+					final Post post = getPost(node.getPath());
+					if (post != null)
+						list.add(post);
+				}
 			}
 		}
 

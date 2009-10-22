@@ -16,21 +16,27 @@ KIND, either express or implied. See the License for the
 specific language governing permissions and limitations
 under the License.
  **/
-package org.jasig.portlet.cms.model;
+package org.jasig.portlet.cms.model.security;
 
-import java.io.Serializable;
+import java.io.File;
 
-public class RepositorySearchOptions implements Serializable {
+public class AntiVirusException extends Exception {
 
-	private static final long serialVersionUID = 8963746618924583880L;
-	private String _keyword;
+	private File _file = null;
 
-	public String getKeyword() {
-		return _keyword;
+	private static final long serialVersionUID = -8806855712329310788L;
+
+	public AntiVirusException(final File file, final String s) {
+		super(s);
+		setFile(file);
 	}
 
-	public void setKeyword(final String keyword) {
-		_keyword = keyword;
+	public File getFile() {
+		return _file;
+	}
+
+	private void setFile(final File f) {
+		_file = f;
 	}
 
 }

@@ -16,14 +16,13 @@ KIND, either express or implied. See the License for the
 specific language governing permissions and limitations
 under the License.
  **/
-package org.jasig.portlet.cms.model;
+package org.jasig.portlet.cms.view;
 
-import java.util.List;
+public final class PortletView {
+	public static final String VIEW_POST = "viewPost";
+	public static final String EDIT_POST = "editPost";
+	public static final String VIEW_SEARCH_RESULTS = "viewSearchResults";
 
-public interface RepositoryDao {
-	abstract Post getPost(final String nodeName);
-
-	abstract List<Post> search(final RepositorySearchOptions options) throws Exception;
-
-	abstract void setPost(final Post post);
+	private PortletView() {
+	}
 }

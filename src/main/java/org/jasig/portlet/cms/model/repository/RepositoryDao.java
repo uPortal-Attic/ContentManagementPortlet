@@ -16,21 +16,17 @@ KIND, either express or implied. See the License for the
 specific language governing permissions and limitations
 under the License.
  **/
-package org.jasig.portlet.cms.model;
+package org.jasig.portlet.cms.model.repository;
 
-import java.io.Serializable;
+import java.util.List;
 
-public class RepositorySearchOptions implements Serializable {
+import org.jasig.portlet.cms.model.Post;
+import org.jasig.portlet.cms.model.RepositorySearchOptions;
 
-	private static final long serialVersionUID = 8963746618924583880L;
-	private String _keyword;
+public interface RepositoryDao {
+	abstract Post getPost(final String nodeName);
 
-	public String getKeyword() {
-		return _keyword;
-	}
+	abstract List<Post> search(final RepositorySearchOptions options) throws Exception;
 
-	public void setKeyword(final String keyword) {
-		_keyword = keyword;
-	}
-
+	abstract void setPost(final Post post);
 }

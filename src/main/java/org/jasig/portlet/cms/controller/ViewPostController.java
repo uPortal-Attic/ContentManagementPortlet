@@ -28,7 +28,8 @@ import javax.portlet.RenderResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.cms.model.Post;
-import org.jasig.portlet.cms.model.RepositoryDao;
+import org.jasig.portlet.cms.model.repository.RepositoryDao;
+import org.jasig.portlet.cms.view.PortletView;
 import org.springframework.web.portlet.ModelAndView;
 import org.springframework.web.portlet.mvc.AbstractController;
 
@@ -51,11 +52,13 @@ public class ViewPostController extends AbstractController {
 		final Map<String, Object> map = new HashMap<String, Object>();
 		final PortletPreferencesWrapper pref = new PortletPreferencesWrapper(request);
 
-		_logger.debug("Retrieving repository post object");
+		_logger.debug("Retrieving repository post");
 		final Post post = geRepositoryDao().getPost(pref.getPortletRepositoryRoot());
 
 		map.put("post", post);
-		final ModelAndView view = new ModelAndView("viewPost", map);
+
+		_logger.debug("Returning repository post");
+		final ModelAndView view = new ModelAndView(PortletView.VIEW_POST, map);
 		return view;
 
 	}

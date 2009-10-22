@@ -16,21 +16,10 @@ KIND, either express or implied. See the License for the
 specific language governing permissions and limitations
 under the License.
  **/
-package org.jasig.portlet.cms.model;
+package org.jasig.portlet.cms.model.security;
 
-import java.io.Serializable;
+import java.util.List;
 
-public class RepositorySearchOptions implements Serializable {
-
-	private static final long serialVersionUID = 8963746618924583880L;
-	private String _keyword;
-
-	public String getKeyword() {
-		return _keyword;
-	}
-
-	public void setKeyword(final String keyword) {
-		_keyword = keyword;
-	}
-
+public interface XssValidatorService {
+	public abstract List<?> scan(String html);
 }

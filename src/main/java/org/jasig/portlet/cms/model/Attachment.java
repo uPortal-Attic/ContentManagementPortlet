@@ -25,13 +25,21 @@ import java.io.Serializable;
 public class Attachment implements Serializable {
 	private static final long serialVersionUID = -8548415771165043860L;
 	private InputStream _file = null;
+	private String _name = null;
 
 	public final InputStream getFile() {
 		return _file;
+	}
+
+	public String getName() {
+		return _name;
 	}
 
 	public void setFile(final InputStream file) {
 		_file = file;
 	}
 
+	public void setName(final String name) {
+		_name = name;
+	}
 }

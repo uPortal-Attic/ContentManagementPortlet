@@ -84,7 +84,7 @@
 	
 	<bean id="repositoryDao" parent="txProxyTemplate">
 		<property name="target">
-			<bean class="org.jasig.portlet.cms.model.repository.jcr.jackrabbit.JcrRepositoryDao">
+			<bean class="org.jasig.portlet.cms.model.repository.jackrabbit.JcrRepositoryDao">
 				<property name="template" ref="jcrTemplate" />
 			</bean>
 		</property>

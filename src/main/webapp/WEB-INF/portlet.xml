@@ -48,6 +48,7 @@
 			<preference>
 				<name>repository.root</name>
 				<value>/root</value>
+				<read-only>false</read-only>
 			</preference>
 		</portlet-preferences>
 		

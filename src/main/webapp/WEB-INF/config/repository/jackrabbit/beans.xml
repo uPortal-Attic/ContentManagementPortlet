@@ -17,6 +17,7 @@
 
 	<class-descriptor className="org.jasig.portlet.cms.model.Attachment">
 		<field-descriptor fieldName="file" jcrName="file" jcrMandatory="true" jcrType="Binary" />
+		<field-descriptor fieldName="name" jcrName="name" jcrMandatory="true" jcrType="String" />
 	</class-descriptor>
 
 </jackrabbit-ocm>

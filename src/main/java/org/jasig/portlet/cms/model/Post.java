@@ -74,6 +74,9 @@ public class Post implements Serializable {
 	}
 
 	public void setPath(final String loc) {
-		_path = loc;
+		if (!loc.startsWith("/"))
+			_path = "/" + loc;
+		else
+			_path = loc;
 	}
 }
