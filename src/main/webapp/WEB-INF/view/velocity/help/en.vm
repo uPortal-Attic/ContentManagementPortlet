@@ -32,7 +32,7 @@ configure the mapping template.</p>
 
 <a name="locationPortletChannel"></a>
 <p class="uportal-channel-strong">How do I determine the location of the content for my portlet channel ?</p>
-<p>By default, the portlet will write to the default location "/root" within the underlying configured content repository. 
+<p>By default, the portlet will write to the default location "root" within the underlying configured content repository. 
 To change this location, go to the Preferences page of the portlet and add a setting for "repository.root". 
 The portlet will use the value assigned to this field to determine the content location in the repository. 
 Please note that if you have multiple channels publishing the portlet, content will be overwritten by each portlet in turn, 
