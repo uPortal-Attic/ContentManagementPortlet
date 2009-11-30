@@ -54,10 +54,12 @@
 
 	<bean id="txProxyTemplate" abstract="true"
 		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		
 		<property name="proxyTargetClass">
 			<value>true</value>
 		</property>
 
+		
 		<property name="transactionManager" ref="jcrTransactionManager" />
 		<property name="transactionAttributes">
 			<props>
@@ -67,25 +69,19 @@
 		</property>
 	</bean>
 
-	<util:list id="beansToPersist">
-		<value>${webapp.root}/WEB-INF/config/repository/jackrabbit/beans.xml</value>
-	</util:list>
-
-	<bean id="jcrMapper"
-		class="org.apache.jackrabbit.ocm.mapper.impl.digester.DigesterMapperImpl">
-		<constructor-arg index="0" ref="beansToPersist" />
-	</bean>
-
-	<bean id="jcrTemplate" class="org.springmodules.jcr.jackrabbit.ocm.JcrMappingTemplate">
-		<property name="sessionFactory" ref="jcrSessionFactory" />
-		<property name="mapper" ref="jcrMapper" />
-		<property name="allowCreate" value="true" />
-	</bean>
-	
+	<bean id="jcrom" class="org.jcrom.Jcrom">
+	    <constructor-arg type="java.util.Set">
+	      <set>
+	        <value type="java.lang.Class">org.jasig.portlet.cms.model.Post</value>
+	      </set>
+	    </constructor-arg>
+	  </bean>
+  
 	<bean id="repositoryDao" parent="txProxyTemplate">
 		<property name="target">
-			<bean class="org.jasig.portlet.cms.model.repository.jackrabbit.JcrRepositoryDao">
-				<property name="template" ref="jcrTemplate" />
+			<bean class="org.jasig.portlet.cms.model.repository.JcrRepositoryDao">
+				<property name="jcrom" ref="jcrom" />
+				<property name="sessionFactory" ref="jcrSessionFactory" />
 			</bean>
 		</property>
 	</bean>

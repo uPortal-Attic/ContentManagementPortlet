@@ -19,9 +19,9 @@ under the License.
 package org.jasig.portlet.cms.view;
 
 public final class PortletView {
-	public static final String VIEW_POST = "viewPost";
-	public static final String EDIT_POST = "editPost";
-	public static final String VIEW_SEARCH_RESULTS = "viewSearchResults";
+	public static final String VIEWPOST = "viewPost";
+	public static final String EDITPOST = "editPost";
+	public static final String VIEWSEARCHRESULTS = "viewSearchResults";
 
 	private PortletView() {
 	}

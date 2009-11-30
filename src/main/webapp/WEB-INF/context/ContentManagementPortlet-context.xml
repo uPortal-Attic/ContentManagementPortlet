@@ -34,6 +34,10 @@
 		<property name="defaultErrorView" value="defaultError" />
 	</bean>
 
+	<bean id="portletMultipartResolver"
+		class="org.springframework.web.portlet.multipart.CommonsPortletMultipartResolver">
+		<property name="maxUploadSize" value="5000000" />
+	</bean>
 
 	<bean id="messageSource"
 		class="org.springframework.context.support.ResourceBundleMessageSource">
@@ -75,8 +79,8 @@
 				</entry>
 				<entry key="edit">
 					<map>
-						<entry key="searchRepository" value-ref="searchController"/>
-						<entry key="selectPostFromSearch" value-ref="selectPostFromSearchController"/>
+						<entry key="searchRepository" value-ref="searchController" />
+						<entry key="selectPostFromSearch" value-ref="selectPostFromSearchController" />
 					</map>
 				</entry>
 				<entry key="help">
@@ -109,14 +113,14 @@
 
 	<bean id="postValidator" class="org.jasig.portlet.cms.controller.PostValidator">
 		<property name="xssValidatorService">
-			<bean class="org.jasig.portlet.cms.model.security.AntiSamyXssValidator"/>
+			<bean class="org.jasig.portlet.cms.model.security.AntiSamyXssValidator"  />
 		</property>
-		
+
 		<property name="antiVirusService">
-			<bean class="org.jasig.portlet.cms.model.security.ClamAVAntiVirus"/>
+			<bean class="org.jasig.portlet.cms.model.security.ClamAVAntiVirus" />
 		</property>
 	</bean>
-	
+
 	<bean id="editPostController" class="org.jasig.portlet.cms.controller.EditPostController">
 		<property name="repositoryDao" ref="repositoryDao" />
 		<property name="formView" value="editPost" />
@@ -125,20 +129,22 @@
 		<property name="bindOnNewForm" value="true" />
 		<property name="sessionForm" value="true" />
 		<property name="commandClass" value="org.jasig.portlet.cms.model.Post" />
-		<property name="validator"  ref="postValidator" />
+		<property name="validator" ref="postValidator" />
 	</bean>
 
 	<bean id="searchController" class="org.jasig.portlet.cms.controller.SearchController">
 		<property name="repositoryDao" ref="repositoryDao" />
 		<property name="commandName" value="search" />
-		<property name="commandClass" value="org.jasig.portlet.cms.model.RepositorySearchOptions" />
+		<property name="commandClass"
+			value="org.jasig.portlet.cms.model.RepositorySearchOptions" />
 	</bean>
-	
-	<bean id="selectPostFromSearchController" class="org.jasig.portlet.cms.controller.SelectPostFromSearchController">
+
+	<bean id="selectPostFromSearchController"
+		class="org.jasig.portlet.cms.controller.SelectPostFromSearchController">
 		<property name="commandName" value="post" />
 		<property name="commandClass" value="org.jasig.portlet.cms.model.Post" />
 	</bean>
-	
+
 	<bean id="helpController"
 		class="org.springframework.web.portlet.mvc.PortletModeNameViewController" />
 </beans>
