@@ -33,12 +33,12 @@
 		<java.version>1.6</java.version>
 		<pluto.version>1.1.4</pluto.version>
 		<jackrabbit.version>1.6.0</jackrabbit.version>
-		<jackrabbit.ocm.version>1.5.3</jackrabbit.ocm.version>
+
 		<jcr.version>1.0</jcr.version>
 		<commons.beanutils.version>1.8.0</commons.beanutils.version>
 		<commons.digester.version>1.8</commons.digester.version>
 		<log4j.version>1.2.14</log4j.version>
-
+		<jcrom.version>1.3.2</jcrom.version>
 	</properties>
 	<ciManagement>
 		<system>uPortal</system>
@@ -81,7 +81,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
@@ -291,15 +291,11 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.jackrabbit</groupId>
-			<artifactId>jackrabbit-ocm</artifactId>
-			<version>${jackrabbit.ocm.version}</version>
+			<groupId>org.jcrom</groupId>
+			<artifactId>jcrom</artifactId>
+			<version>${jcrom.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.springmodules.jcr</groupId>
-			<artifactId>jcr-jackrabbit-ocm</artifactId>
-			<version>0.9-SNAPSHOT</version>
-		</dependency>
+
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
@@ -339,6 +335,18 @@
 			<groupId>batik</groupId>
 			<artifactId>batik-util</artifactId>
 			<version>1.6-1</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.2.1</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.4</version>
 			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
