@@ -18,15 +18,12 @@ under the License.
  **/
 package org.jasig.portlet.cms.model.repository;
 
-import java.util.Collection;
+import javax.jcr.RepositoryException;
 
-import org.jasig.portlet.cms.model.Post;
-import org.jasig.portlet.cms.model.RepositorySearchOptions;
+public class JcrRepositoryException extends RepositoryException {
+	private static final long serialVersionUID = 1L;
 
-public interface RepositoryDao {
-	abstract Post getPost(final String nodeName) throws JcrRepositoryException;
-
-	abstract Collection<Post> search(final RepositorySearchOptions options) throws JcrRepositoryException;
-
-	abstract void setPost(final Post post) throws JcrRepositoryException;
+	public JcrRepositoryException(final Exception e) {
+		super(e);
+	}
 }

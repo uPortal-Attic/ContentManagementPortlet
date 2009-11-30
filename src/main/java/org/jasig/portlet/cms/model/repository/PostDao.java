@@ -18,15 +18,32 @@ under the License.
  **/
 package org.jasig.portlet.cms.model.repository;
 
-import java.util.Collection;
+import java.util.List;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
+import org.apache.commons.lang.StringEscapeUtils;
 import org.jasig.portlet.cms.model.Post;
 import org.jasig.portlet.cms.model.RepositorySearchOptions;
+import org.jcrom.Jcrom;
+import org.jcrom.dao.AbstractJcrDAO;
 
-public interface RepositoryDao {
-	abstract Post getPost(final String nodeName) throws JcrRepositoryException;
+public class PostDao extends AbstractJcrDAO<Post> {
 
-	abstract Collection<Post> search(final RepositorySearchOptions options) throws JcrRepositoryException;
+	public PostDao(final Session session, final Jcrom jcrom) {
+		super(Post.class, session, jcrom);
+	}
 
-	abstract void setPost(final Post post) throws JcrRepositoryException;
+	public List<Post> findAll(final RepositorySearchOptions options) throws RepositoryException {
+		final String keyword = StringEscapeUtils.escapeHtml(options.getKeyword());
+
+		final Node rootNode = getSession().getRootNode();
+		final List<Post> list = findByXPath("/" + rootNode.getPath()
+		        + "element(*,mix:versionable)[jcr:like(@content, '%" + keyword + "%')]", "*", -1);
+		return list;
+
+	}
+
 }
