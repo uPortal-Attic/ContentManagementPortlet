@@ -19,27 +19,11 @@ under the License.
 
 package org.jasig.portlet.cms.model;
 
-import java.io.InputStream;
 import java.io.Serializable;
 
-public class Attachment implements Serializable {
-	private static final long serialVersionUID = -8548415771165043860L;
-	private InputStream _file = null;
-	private String _name = null;
+import org.jcrom.JcrFile;
 
-	public final InputStream getFile() {
-		return _file;
-	}
+public class Attachment extends JcrFile implements Serializable {
+	private static final long serialVersionUID = -5375211073253544716L;
 
-	public String getName() {
-		return _name;
-	}
-
-	public void setFile(final InputStream file) {
-		_file = file;
-	}
-
-	public void setName(final String name) {
-		_name = name;
-	}
 }

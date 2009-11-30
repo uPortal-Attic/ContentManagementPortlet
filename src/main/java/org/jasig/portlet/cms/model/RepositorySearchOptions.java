@@ -23,14 +23,14 @@ import java.io.Serializable;
 public class RepositorySearchOptions implements Serializable {
 
 	private static final long serialVersionUID = 8963746618924583880L;
-	private String _keyword;
+	private String keyword;
 
 	public String getKeyword() {
-		return _keyword;
+		return keyword;
 	}
 
 	public void setKeyword(final String keyword) {
-		_keyword = keyword;
+		this.keyword = keyword;
 	}
 
 }

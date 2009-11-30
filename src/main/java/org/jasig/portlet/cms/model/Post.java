@@ -23,14 +23,29 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.jcrom.annotations.JcrFileNode;
+import org.jcrom.annotations.JcrName;
+import org.jcrom.annotations.JcrNode;
+import org.jcrom.annotations.JcrPath;
+import org.jcrom.annotations.JcrProperty;
+
+@JcrNode(mixinTypes = { "mix:versionable" })
 public class Post implements Serializable {
 
 	private static final long serialVersionUID = 6392459877566744761L;
-	private String _author = null;
-	private Date _date = null;
-	private String _content = null;
-	private List<Attachment> _attachments = null;
-	private String _path = null;
+
+	@JcrProperty
+	private String author = null;
+	@JcrProperty
+	private Date date = null;
+	@JcrProperty
+	private String content = null;
+	@JcrFileNode
+	private List<Attachment> attachments = null;
+	@JcrName
+	private String name;
+	@JcrPath
+	private String path = null;
 
 	public Post() {
 		setAttachments(new ArrayList<Attachment>());
@@ -38,45 +53,47 @@ public class Post implements Serializable {
 	}
 
 	public List<Attachment> getAttachments() {
-		return _attachments;
+		return attachments;
 	}
 
 	public String getAuthor() {
-		return _author;
+		return author;
 	}
 
 	public final String getContent() {
-		return _content;
+		return content;
 	}
 
 	public Date getDate() {
-		return _date;
+		return date;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public String getPath() {
-		return _path;
+		return path;
 	}
 
 	public void setAttachments(final List<Attachment> attachments) {
-		_attachments = attachments;
+		this.attachments = attachments;
 	}
 
 	public void setAuthor(final String name) {
-		_author = name;
+		author = name;
 	}
 
 	public void setContent(final String content) {
-		_content = content;
+		this.content = content;
 	}
 
 	public void setDate(final Date dateTime) {
-		_date = dateTime;
+		date = dateTime;
 	}
 
 	public void setPath(final String loc) {
-		if (!loc.startsWith("/"))
-			_path = "/" + loc;
-		else
-			_path = loc;
+		path = loc;
+		name = loc;
 	}
 }
