@@ -37,7 +37,7 @@ import org.springframework.web.portlet.mvc.AbstractCommandController;
 import org.springframework.web.portlet.util.PortletUtils;
 
 public class SelectPostFromSearchController extends AbstractCommandController {
-	private final Log _logger = LogFactory.getLog(getClass());
+	private final Log logger = LogFactory.getLog(getClass());
 
 	@Override
 	protected void handleAction(final ActionRequest arg0, final ActionResponse actionresponse,
@@ -52,20 +52,20 @@ public class SelectPostFromSearchController extends AbstractCommandController {
 		final Post post = (Post) arg2;
 		final PortletPreferencesWrapper pref = new PortletPreferencesWrapper(arg0);
 
-		_logger.debug("Selecting post from search");
+		logger.debug("Selecting post from search");
 
 		post.setAuthor(pref.getPortletUserName());
 		post.setDate(new Date());
 
-		_logger.debug("Post is at " + post.getPath());
-		_logger.debug("Post content is " + post.getContent());
-		_logger.debug("Post author is " + post.getAuthor());
-		_logger.debug("Post date is " + post.getDate());
+		logger.debug("Post is at " + post.getPath());
+		logger.debug("Post content is " + post.getContent());
+		logger.debug("Post author is " + post.getAuthor());
+		logger.debug("Post date is " + post.getDate());
 
 		final Map<String, Object> map = new HashMap<String, Object>();
 		map.put("post", post);
 
-		return new ModelAndView(PortletView.EDIT_POST, map);
+		return new ModelAndView(PortletView.EDITPOST, map);
 	}
 
 }

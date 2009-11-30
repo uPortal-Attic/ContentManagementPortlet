@@ -18,8 +18,8 @@ under the License.
  **/
 package org.jasig.portlet.cms.controller;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.portlet.ActionRequest;
@@ -39,15 +39,15 @@ import org.springframework.web.portlet.mvc.AbstractCommandController;
 import org.springframework.web.portlet.util.PortletUtils;
 
 public class SearchController extends AbstractCommandController {
-	private final Log _logger = LogFactory.getLog(getClass());
-	private RepositoryDao _repositoryDao = null;
+	private final Log logger = LogFactory.getLog(getClass());
+	private RepositoryDao repositoryDao = null;
 
 	public void setRepositoryDao(final RepositoryDao repositoryDao) {
-		_repositoryDao = repositoryDao;
+		this.repositoryDao = repositoryDao;
 	}
 
 	private RepositoryDao geRepositoryDao() {
-		return _repositoryDao;
+		return repositoryDao;
 	}
 
 	@Override
@@ -63,20 +63,20 @@ public class SearchController extends AbstractCommandController {
 
 		final RepositorySearchOptions options = (RepositorySearchOptions) obj;
 
-		_logger.debug("Executing search");
-		final List<Post> results = geRepositoryDao().search(options);
+		logger.debug("Executing search");
+		final Collection<Post> results = geRepositoryDao().search(options);
 
 		final Map<String, Object> model = new HashMap<String, Object>();
 
 		if (results != null && results.size() > 0) {
-			_logger.debug("Number of search results found: " + results.size());
+			logger.debug("Number of search results found: " + results.size());
 			model.put("searchResults", results);
 			model.put("portletPreferences", new PortletPreferencesWrapper(renderrequest));
 		} else
-			_logger.debug("No results are found");
+			logger.debug("No results are found");
 
-		_logger.debug("Returning search results");
-		final ModelAndView modelAndView = new ModelAndView(PortletView.VIEW_SEARCH_RESULTS, model);
+		logger.debug("Returning search results");
+		final ModelAndView modelAndView = new ModelAndView(PortletView.VIEWSEARCHRESULTS, model);
 
 		return modelAndView;
 	}

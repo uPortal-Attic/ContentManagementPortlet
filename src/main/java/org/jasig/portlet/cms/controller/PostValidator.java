@@ -30,17 +30,17 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 public class PostValidator implements Validator {
-	private AntiVirusService _antiVirusService = null;
-	private XssValidatorService _xssValidatorService = null;
+	private AntiVirusService antiVirusService = null;
+	private XssValidatorService xssValidatorService = null;
 
-	private final Log _logger = LogFactory.getLog(getClass());
+	private final Log logger = LogFactory.getLog(getClass());
 
 	public void setAntiVirusService(final AntiVirusService svc) {
-		_antiVirusService = svc;
+		antiVirusService = svc;
 	}
 
 	public void setXssValidatorService(final XssValidatorService svc) {
-		_xssValidatorService = svc;
+		xssValidatorService = svc;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -53,13 +53,7 @@ public class PostValidator implements Validator {
 	public void validate(final Object arg0, final Errors errors) {
 		final Post post = (Post) arg0;
 
-		_logger.debug("Validaing post path " + errors.getFieldValue("path"));
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "path", "invalid.post.path.empty");
-
-		_logger.debug("Validaing post author " + errors.getFieldValue("author"));
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "author", "invalid.post.author.empty");
-
-		_logger.debug("Validaing post content " + errors.getFieldValue("content"));
+		logger.debug("Validaing post content " + errors.getFieldValue("content"));
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "content", "invalid.post.content.empty");
 
 		if (post.getContent().trim().isEmpty())
@@ -69,17 +63,17 @@ public class PostValidator implements Validator {
 		validatePostAttachments(post, errors);
 
 		if (errors.getErrorCount() == 0)
-			_logger.debug("Validated post successfully without errors");
+			logger.debug("Validated post successfully without errors");
 		else
-			_logger.debug("Rejected post with " + errors.getErrorCount() + " errors");
+			logger.debug("Rejected post with " + errors.getErrorCount() + " errors");
 	}
 
 	private AntiVirusService getAntiVirusService() {
-		return _antiVirusService;
+		return antiVirusService;
 	}
 
 	private XssValidatorService getXssValidatorService() {
-		return _xssValidatorService;
+		return xssValidatorService;
 	}
 
 	private void validatePostAttachments(final Post post, final Errors errors) {

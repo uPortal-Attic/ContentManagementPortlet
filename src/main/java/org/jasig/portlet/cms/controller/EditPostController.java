@@ -19,6 +19,9 @@ under the License.
 
 package org.jasig.portlet.cms.controller;
 
+import java.util.Calendar;
+import java.util.Map;
+
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletMode;
@@ -26,42 +29,69 @@ import javax.portlet.PortletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jasig.portlet.cms.model.Attachment;
 import org.jasig.portlet.cms.model.Post;
 import org.jasig.portlet.cms.model.repository.RepositoryDao;
+import org.jcrom.JcrDataProvider;
+import org.jcrom.JcrDataProviderImpl;
 import org.springframework.validation.BindException;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.portlet.multipart.MultipartActionRequest;
 import org.springframework.web.portlet.mvc.SimpleFormController;
 import org.springframework.web.portlet.util.PortletUtils;
 
 public class EditPostController extends SimpleFormController {
-	private final Log _logger = LogFactory.getLog(getClass());
-	private RepositoryDao _repositoryDao = null;
+	private final Log logger = LogFactory.getLog(getClass());
+	private RepositoryDao repositoryDao = null;
 
 	public void setRepositoryDao(final RepositoryDao repositoryDao) {
-		_repositoryDao = repositoryDao;
+		this.repositoryDao = repositoryDao;
 	}
 
 	private RepositoryDao geRepositoryDao() {
-		return _repositoryDao;
+		return repositoryDao;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void processPostAttachments(final Post post, final ActionRequest request) throws Exception {
+		final MultipartActionRequest multipartRequest = (MultipartActionRequest) request;
+		final Map<String, MultipartFile> filesMap = multipartRequest.getFileMap();
+
+		post.getAttachments().clear();
+		for (final String fileName : filesMap.keySet()) {
+			final MultipartFile file = filesMap.get(fileName);
+
+			if (!file.isEmpty()) {
+				final Attachment attachment = new Attachment();
+				attachment.setDataProvider(new JcrDataProviderImpl(JcrDataProvider.TYPE.STREAM, file
+				        .getInputStream()));
+				attachment.setName(file.getOriginalFilename());
+				attachment.setMimeType(file.getContentType());
+				attachment.setLastModified(Calendar.getInstance());
+				post.getAttachments().add(attachment);
+			}
+		}
+
 	}
 
 	@Override
 	protected Object formBackingObject(final PortletRequest request) throws Exception {
 
-		_logger.debug("Preparing post for edit");
+		logger.debug("Preparing post for edit");
 		final PortletPreferencesWrapper pref = new PortletPreferencesWrapper(request);
 		Post post = geRepositoryDao().getPost(pref.getPortletRepositoryRoot());
 
 		if (post == null) {
-			_logger.debug("No post exists in repository. Configuring blank post");
+			logger.debug("No post exists in repository. Configuring blank post");
 			post = new Post();
 			post.setAuthor(pref.getPortletUserName());
 			post.setPath(pref.getPortletRepositoryRoot());
 		}
 
-		_logger.debug("Post is at " + post.getPath());
-		_logger.debug("Post content is " + post.getContent());
-		_logger.debug("Post author is " + post.getAuthor());
-		_logger.debug("Post date is " + post.getDate());
+		logger.debug("Post is at " + post.getPath());
+		logger.debug("Post content is " + post.getContent());
+		logger.debug("Post author is " + post.getAuthor());
+		logger.debug("Post date is " + post.getDate());
 
 		return post;
 	}
@@ -69,21 +99,24 @@ public class EditPostController extends SimpleFormController {
 	@Override
 	protected void onSubmitAction(final ActionRequest request, final ActionResponse response,
 	        final Object command, final BindException errors) throws Exception {
-		_logger.debug("Received post object");
+		logger.debug("Received post object");
 		final Post post = (Post) command;
 
-		_logger.debug("Post is at " + post.getPath());
-		_logger.debug("Post content is " + post.getContent());
-		_logger.debug("Post author is " + post.getAuthor());
-		_logger.debug("Post date is " + post.getDate());
+		processPostAttachments(post, request);
 
-		_logger.debug("Submitting post object");
+		logger.debug("Post is at " + post.getPath());
+		logger.debug("Post content is " + post.getContent());
+		logger.debug("Post author is " + post.getAuthor());
+		logger.debug("Post date is " + post.getDate());
+
+		logger.debug("Submitting post object");
 		geRepositoryDao().setPost(post);
 
-		_logger.debug("Clearing render parameters");
+		logger.debug("Clearing render parameters");
 		PortletUtils.clearAllRenderParameters(response);
 
-		_logger.debug("Switing to view mode");
+		logger.debug("Switing to view mode");
 		response.setPortletMode(PortletMode.VIEW);
+
 	}
 }

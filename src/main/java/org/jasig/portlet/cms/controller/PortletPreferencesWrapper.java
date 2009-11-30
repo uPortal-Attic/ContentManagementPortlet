@@ -23,25 +23,25 @@ import javax.portlet.PortletPreferences;
 import javax.portlet.PortletRequest;
 
 public final class PortletPreferencesWrapper {
-	private PortletPreferences _prefences = null;
-	private PortletRequest _portletRequest = null;
+	private PortletPreferences prefences = null;
+	private PortletRequest portletRequest = null;
 
-	private static final String DEFAULT_REPOSITORY_ROOT_NAME = "/root";
+	private static final String DEFAULTREPOSITORYROOTNAME = "root";
 
 	public PortletPreferencesWrapper(final PortletRequest request) {
-		_portletRequest = request;
-		_prefences = _portletRequest.getPreferences();
+		portletRequest = request;
+		prefences = portletRequest.getPreferences();
 	}
 
 	public String getPortletRepositoryRoot() {
-		String result = _prefences.getValue("repository.root",
-		        PortletPreferencesWrapper.DEFAULT_REPOSITORY_ROOT_NAME);
+		String result = prefences.getValue("repository.root",
+		        PortletPreferencesWrapper.DEFAULTREPOSITORYROOTNAME);
 		if (result == null || result.trim().length() <= 0)
-			result = PortletPreferencesWrapper.DEFAULT_REPOSITORY_ROOT_NAME;
+			result = PortletPreferencesWrapper.DEFAULTREPOSITORYROOTNAME;
 		return result;
 	}
 
 	public String getPortletUserName() {
-		return _portletRequest.getUserPrincipal().getName();
+		return portletRequest.getUserPrincipal().getName();
 	}
 }

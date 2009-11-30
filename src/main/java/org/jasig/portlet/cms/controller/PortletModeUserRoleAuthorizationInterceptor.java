@@ -33,7 +33,7 @@ import org.springframework.web.portlet.handler.HandlerInterceptorAdapter;
 
 public class PortletModeUserRoleAuthorizationInterceptor extends HandlerInterceptorAdapter {
 
-	private Map<String, String> _authorizedRolesMap = null;
+	private Map<String, String> authorizedRolesMap = null;
 
 	public PortletModeUserRoleAuthorizationInterceptor() {
 	}
@@ -43,8 +43,8 @@ public class PortletModeUserRoleAuthorizationInterceptor extends HandlerIntercep
 	        final Object handler) throws PortletException, IOException {
 
 		boolean allowed = false;
-		if (_authorizedRolesMap != null) {
-			final Iterator<Map.Entry<String, String>> it = _authorizedRolesMap.entrySet().iterator();
+		if (authorizedRolesMap != null) {
+			final Iterator<Map.Entry<String, String>> it = authorizedRolesMap.entrySet().iterator();
 			while (!allowed && it.hasNext()) {
 				final Map.Entry<String, String> entry = it.next();
 				final PortletMode mode = new PortletMode(entry.getKey());
@@ -65,6 +65,6 @@ public class PortletModeUserRoleAuthorizationInterceptor extends HandlerIntercep
 	}
 
 	public final void setAuthorizedRolesMap(final Map<String, String> authorizedRolesMap) {
-		_authorizedRolesMap = authorizedRolesMap;
+		this.authorizedRolesMap = authorizedRolesMap;
 	}
 }

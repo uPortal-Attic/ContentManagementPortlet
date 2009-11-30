@@ -34,15 +34,15 @@ import org.springframework.web.portlet.ModelAndView;
 import org.springframework.web.portlet.mvc.AbstractController;
 
 public class ViewPostController extends AbstractController {
-	private RepositoryDao _repositoryDao = null;
-	private final Log _logger = LogFactory.getLog(getClass());
+	private RepositoryDao repositoryDao = null;
+	private final Log logger = LogFactory.getLog(getClass());
 
 	public void setRepositoryDao(final RepositoryDao repositoryDao) {
-		_repositoryDao = repositoryDao;
+		this.repositoryDao = repositoryDao;
 	}
 
 	private RepositoryDao geRepositoryDao() {
-		return _repositoryDao;
+		return repositoryDao;
 	}
 
 	@Override
@@ -52,13 +52,13 @@ public class ViewPostController extends AbstractController {
 		final Map<String, Object> map = new HashMap<String, Object>();
 		final PortletPreferencesWrapper pref = new PortletPreferencesWrapper(request);
 
-		_logger.debug("Retrieving repository post");
+		logger.debug("Retrieving repository post");
 		final Post post = geRepositoryDao().getPost(pref.getPortletRepositoryRoot());
 
 		map.put("post", post);
 
-		_logger.debug("Returning repository post");
-		final ModelAndView view = new ModelAndView(PortletView.VIEW_POST, map);
+		logger.debug("Returning repository post");
+		final ModelAndView view = new ModelAndView(PortletView.VIEWPOST, map);
 		return view;
 
 	}
