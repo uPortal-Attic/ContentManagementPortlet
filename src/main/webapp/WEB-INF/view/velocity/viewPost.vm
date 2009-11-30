@@ -19,8 +19,17 @@ under the License.
 #set ( $renderResponse = $request.getAttribute("javax.portlet.response") )
 
 #if( $post )
-   $!{post.Content}
+   	$!{post.Content}
    
+    #if ( $post.Attachments.size() > 0 )
+    	<p class="uportal-channel-strong">#springMessage("label.caption.attachments"):</p>  
+	   	#foreach ($attachment in $post.Attachments)
+			<p><img align="middle" hspace="3" src='$springMacroRequestContext.contextPath/images/package.gif'>
+			<a href='javascript:void(0);'>$attachment.Name</a>
+			</p>
+		#end
+	#end
+	
 	<span class="uportal-channel-emphasis">Posted by $!{post.Author} at $!{post.Date}</span> 
 #else
 	<span class="uportal-channel-emphasis">#springMessage("invalid.post.content.empty")</span> 

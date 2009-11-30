@@ -29,9 +29,8 @@ $cancelUrl.setPortletMode($returnMode)
 #set ( $searchUrl = $renderResponse.createRenderURL() )
 $searchUrl.setParameter("action", "searchRepository")
 
-
 <script type="text/javascript" src="$springMacroRequestContext.contextPath/javascript/ckeditor/ckeditor.js"></script>
-<table cellpadding='0' cellspacing='0' width="100%"  rowspacing=''>
+<table cellpadding='0' cellspacing='0' width="100%">
 	<tr>
 		<td align='center'>	
 			<form method='POST' action='$searchUrl'>
@@ -40,12 +39,35 @@ $searchUrl.setParameter("action", "searchRepository")
 				<input class="uportal-button" type='submit' value='#springMessage("button.caption.search")' />
 			</form>
 			<br/>
-			<form method='POST' action='$renderResponse.createActionURL()'>
+			<form method='POST' action='$renderResponse.createActionURL()' enctype="multipart/form-data">
 				#springBind( "post.content" )
 				#set ( $content = $escapeTool.html(${status.value}) )
-				<textarea id="fckEditorId$editorId" name="${status.expression}" isFckEditor="true">$!content</textarea>			
+				<textarea id="fckEditorId$editorId" name="${status.expression}" isFckEditor="true">$!content</textarea>
+				 
+				<p align="left"> 
+					<span>#springMessage("label.caption.attachment"): </span>
+					<input type="file" style="position:relative;-moz-opacity:0;filter:alpha(opacity: 0);-khtml-opacity:0;z-index:1;" 
+						   name="inputFile" onmouseout="form.elements.namedItem('fakeInputFile').value=form.elements.namedItem('inputFile').value;" />
+					<input type="text" style="position:relative;left:-238px;z-index:0;" name="fakeInputFile" class="uportal-input-text"/>
+					<input class="uportal-button" style="position:relative;left:-240px;z-index:0;" type="button" value="Browse" />
+				</p>
 		</td>
 	</tr>
+	
+	#if ( $post.Attachments.size() > 0 )
+		 
+		<tr>
+			<td><span class="uportal-channel-strong">#springMessage("label.caption.attachments"):</span> </td>
+		</tr>  
+	   	#foreach ($attachment in $post.Attachments)
+			<tr>
+				<td>
+					<img align="middle" hspace="3" src='$springMacroRequestContext.contextPath/images/package.gif'>
+					<a href='javascript:void(0);'>$attachment.Name</a>
+				</td>
+			</tr>
+		#end
+	#end
 	
 	#if ($status.getErrorCodes().size() > 0)
 		<tr>
@@ -59,9 +81,9 @@ $searchUrl.setParameter("action", "searchRepository")
 	
 	<tr>
 		<td width="100%" align="right">
-			<input class="uportal-button" type="submit" value='#springMessage("button.caption.submit")' />
+			<input class="uportal-button" type="submit" value='#springMessage("button.caption.submit")'  />
 			<input class="uportal-button" type="button" value='#springMessage("button.caption.cancel")'
-				   onclick="window.location.href='${cancelUrl}';" />
+				   onclick="window.location.href='${cancelUrl}';"  />
 		</td>
 		</form>
 	</tr>
