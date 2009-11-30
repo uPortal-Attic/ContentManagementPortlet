@@ -22,7 +22,7 @@ import java.io.File;
 
 public class AntiVirusException extends Exception {
 
-	private File _file = null;
+	private File file = null;
 
 	private static final long serialVersionUID = -8806855712329310788L;
 
@@ -32,11 +32,11 @@ public class AntiVirusException extends Exception {
 	}
 
 	public File getFile() {
-		return _file;
+		return file;
 	}
 
 	private void setFile(final File f) {
-		_file = f;
+		file = f;
 	}
 
 }

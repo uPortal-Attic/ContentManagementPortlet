@@ -31,42 +31,49 @@ import org.owasp.validator.html.CleanResults;
 import org.owasp.validator.html.Policy;
 
 public class AntiSamyXssValidator implements XssValidatorService {
-	private final Log _logger = LogFactory.getLog(getClass());
+	private final Log logger = LogFactory.getLog(getClass());
+	private AntiSamy antiSamy = null;
+
+	public AntiSamyXssValidator() {
+		InputStream policyFile = null;
+		try {
+			logger.debug("Loading xss policy file");
+			policyFile = getClass().getResourceAsStream("/properties/antiSamyPolicy.xml");
+			final Policy policy = Policy.getInstance(policyFile);
+			antiSamy = new AntiSamy(policy);
+		} catch (final Exception e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			try {
+				if (policyFile != null)
+					policyFile.close();
+			} catch (final IOException e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<?> scan(String html) {
 		ArrayList<String> errorList = new ArrayList<String>();
 
-		InputStream policyFile = null;
 		try {
 
-			_logger.debug("Loading xss policy file");
-			policyFile = getClass().getResourceAsStream("/properties/antiSamyPolicy.xml");
-			final Policy policy = Policy.getInstance(policyFile);
-			final AntiSamy as = new AntiSamy(policy);
-
-			_logger.debug("Unescaping html content");
+			logger.debug("Unescaping html content");
 			html = StringEscapeUtils.unescapeHtml(html);
 
-			_logger.debug("Validaing content for xss");
-			final CleanResults cr = as.scan(html, policy);
+			logger.debug("Validaing content for xss");
+			final CleanResults cr = antiSamy.scan(html);
 
 			if (cr.getNumberOfErrors() > 0) {
-				_logger.debug("Rejecting content for xss");
+				logger.debug("Rejecting content for xss");
 				errorList = cr.getErrorMessages();
 			}
 
 		} catch (final Exception e) {
-			_logger.error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 			errorList.add(e.getMessage());
-		} finally {
-			if (policyFile != null)
-				try {
-					policyFile.close();
-				} catch (final IOException e) {
-					_logger.error(e.getMessage(), e);
-				}
 		}
 		return errorList;
 

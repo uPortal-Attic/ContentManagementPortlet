@@ -31,22 +31,27 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public final class ClamAVAntiVirus implements AntiVirusService {
-	private final Log _logger = LogFactory.getLog(getClass());
-	private String _ip;
-	private int _port;
+	private final Log logger = LogFactory.getLog(getClass());
+	private String ip;
+	private int port;
+
+	public ClamAVAntiVirus() {
+		setIp("127.0.0.1");
+		setPort(3310);
+	}
 
 	@Override
 	public void scan(final File file) throws AntiVirusException {
 		final String filePath = file.getAbsolutePath();
 		if (!file.exists())
-			throw new AntiVirusException(file, "");
+			throw new AntiVirusException(file, "antivirus.scan.file.not.found");
 
 		if (file.length() <= 0)
-			throw new AntiVirusException(file, "");
+			throw new AntiVirusException(file, "antivirus.scan.file.empty");
 
 		final Socket socket = connect();
 		if (socket == null)
-			throw new AntiVirusException(file, "");
+			throw new AntiVirusException(file, "antivirus.scan.engine.offline");
 
 		try {
 			final String results = sendSocket(socket, "SCAN " + filePath);
@@ -57,7 +62,7 @@ public final class ClamAVAntiVirus implements AntiVirusService {
 				throw new AntiVirusException(file, virus);
 			}
 		} catch (final Exception e) {
-			_logger.error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 			throw new AntiVirusException(file, "");
 		} finally {
 			closeSocket(socket);
@@ -65,11 +70,11 @@ public final class ClamAVAntiVirus implements AntiVirusService {
 	}
 
 	public void setIp(final String ip) {
-		_ip = ip;
+		this.ip = ip;
 	}
 
 	public void setPort(final int port) {
-		_port = port;
+		this.port = port;
 	}
 
 	private void closeSocket(final Socket socket) {
@@ -84,10 +89,10 @@ public final class ClamAVAntiVirus implements AntiVirusService {
 	private Socket connect() {
 		Socket socket = null;
 		try {
-			socket = new Socket(_ip, _port);
+			socket = new Socket(ip, port);
 		} catch (final Exception e) {
 			socket = null;
-			_logger.error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 		return socket;
 	}
@@ -114,7 +119,7 @@ public final class ClamAVAntiVirus implements AntiVirusService {
 				if (reader != null)
 					reader.close();
 			} catch (final IOException e) {
-				_logger.error(e.getMessage(), e);
+				logger.error(e.getMessage(), e);
 			}
 
 			if (writer != null)
