@@ -19,9 +19,6 @@ under the License.
 
 package org.jasig.portlet.cms.controller;
 
-import java.util.Calendar;
-import java.util.Map;
-
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletMode;
@@ -29,14 +26,9 @@ import javax.portlet.PortletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jasig.portlet.cms.model.Attachment;
 import org.jasig.portlet.cms.model.Post;
 import org.jasig.portlet.cms.model.repository.RepositoryDao;
-import org.jcrom.JcrDataProvider;
-import org.jcrom.JcrDataProviderImpl;
 import org.springframework.validation.BindException;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.portlet.multipart.MultipartActionRequest;
 import org.springframework.web.portlet.mvc.SimpleFormController;
 import org.springframework.web.portlet.util.PortletUtils;
 
@@ -50,28 +42,6 @@ public class EditPostController extends SimpleFormController {
 
 	private RepositoryDao geRepositoryDao() {
 		return repositoryDao;
-	}
-
-	@SuppressWarnings("unchecked")
-	private void processPostAttachments(final Post post, final ActionRequest request) throws Exception {
-		final MultipartActionRequest multipartRequest = (MultipartActionRequest) request;
-		final Map<String, MultipartFile> filesMap = multipartRequest.getFileMap();
-
-		post.getAttachments().clear();
-		for (final String fileName : filesMap.keySet()) {
-			final MultipartFile file = filesMap.get(fileName);
-
-			if (!file.isEmpty()) {
-				final Attachment attachment = new Attachment();
-				attachment.setDataProvider(new JcrDataProviderImpl(JcrDataProvider.TYPE.STREAM, file
-				        .getInputStream()));
-				attachment.setName(file.getOriginalFilename());
-				attachment.setMimeType(file.getContentType());
-				attachment.setLastModified(Calendar.getInstance());
-				post.getAttachments().add(attachment);
-			}
-		}
-
 	}
 
 	@Override
@@ -98,11 +68,9 @@ public class EditPostController extends SimpleFormController {
 
 	@Override
 	protected void onSubmitAction(final ActionRequest request, final ActionResponse response,
-	        final Object command, final BindException errors) throws Exception {
+			final Object command, final BindException errors) throws Exception {
 		logger.debug("Received post object");
 		final Post post = (Post) command;
-
-		processPostAttachments(post, request);
 
 		logger.debug("Post is at " + post.getPath());
 		logger.debug("Post content is " + post.getContent());

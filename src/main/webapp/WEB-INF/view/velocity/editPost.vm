@@ -43,14 +43,6 @@ $searchUrl.setParameter("action", "searchRepository")
 				#springBind( "post.content" )
 				#set ( $content = $escapeTool.html(${status.value}) )
 				<textarea id="fckEditorId$editorId" name="${status.expression}" isFckEditor="true">$!content</textarea>
-				 
-				<p align="left"> 
-					<span>#springMessage("label.caption.attachment"): </span>
-					<input type="file" style="position:relative;-moz-opacity:0;filter:alpha(opacity: 0);-khtml-opacity:0;z-index:1;" 
-						   name="inputFile" onmouseout="form.elements.namedItem('fakeInputFile').value=form.elements.namedItem('inputFile').value;" />
-					<input type="text" style="position:relative;left:-238px;z-index:0;" name="fakeInputFile" class="uportal-input-text"/>
-					<input class="uportal-button" style="position:relative;left:-240px;z-index:0;" type="button" value="Browse" />
-				</p>
 		</td>
 	</tr>
 	
