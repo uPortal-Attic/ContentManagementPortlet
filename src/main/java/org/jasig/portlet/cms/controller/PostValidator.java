@@ -20,6 +20,8 @@ package org.jasig.portlet.cms.controller;
 
 import java.util.List;
 
+import javax.portlet.PortletRequest;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.cms.model.Post;
@@ -28,6 +30,9 @@ import org.jasig.portlet.cms.model.security.XssValidatorService;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.portlet.context.PortletRequestAttributes;
 
 public class PostValidator implements Validator {
 	private AntiVirusService antiVirusService = null;
@@ -43,9 +48,8 @@ public class PostValidator implements Validator {
 		xssValidatorService = svc;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public boolean supports(final Class arg0) {
+	public boolean supports(@SuppressWarnings("rawtypes") final Class arg0) {
 		return Post.class.isAssignableFrom(arg0);
 	}
 
@@ -59,7 +63,13 @@ public class PostValidator implements Validator {
 		if (post.getContent().trim().isEmpty())
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "content", "invalid.post.content.empty");
 
-		validatePostContent(post, errors);
+		final RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
+		final PortletRequest request = ((PortletRequestAttributes) requestAttributes).getRequest();
+		final PortletPreferencesWrapper pref = new PortletPreferencesWrapper(request);
+
+		if (pref.isXssValidationEnabled())
+			validatePostContent(post, errors);
+
 		validatePostAttachments(post, errors);
 
 		if (errors.getErrorCount() == 0)

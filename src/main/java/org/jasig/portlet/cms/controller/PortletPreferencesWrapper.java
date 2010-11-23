@@ -35,7 +35,7 @@ public final class PortletPreferencesWrapper {
 
 	public String getPortletRepositoryRoot() {
 		String result = prefences.getValue("repository.root",
-		        PortletPreferencesWrapper.DEFAULTREPOSITORYROOTNAME);
+				PortletPreferencesWrapper.DEFAULTREPOSITORYROOTNAME);
 		if (result == null || result.trim().length() <= 0)
 			result = PortletPreferencesWrapper.DEFAULTREPOSITORYROOTNAME;
 		return result;
@@ -43,5 +43,13 @@ public final class PortletPreferencesWrapper {
 
 	public String getPortletUserName() {
 		return portletRequest.getUserPrincipal().getName();
+	}
+
+	public boolean isXssValidationEnabled() {
+		final String value = prefences.getValue("xss.validation.enabled", Boolean.TRUE.toString());
+		if (value == null || value.trim().length() <= 0)
+			return true;
+
+		return Boolean.valueOf(value);
 	}
 }

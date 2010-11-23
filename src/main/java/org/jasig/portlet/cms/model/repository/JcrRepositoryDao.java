@@ -28,12 +28,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.cms.model.Post;
 import org.jasig.portlet.cms.model.RepositorySearchOptions;
-import org.jcrom.Jcrom;
-import org.springmodules.jcr.JcrCallback;
-import org.springmodules.jcr.support.JcrDaoSupport;
+import org.springframework.extensions.jcr.JcrCallback;
+import org.springframework.extensions.jcr.support.JcrDaoSupport;
 
 public class JcrRepositoryDao extends JcrDaoSupport implements RepositoryDao {
-	private Jcrom jcrom = null;
+	private JcrPostDao postDao = null;
 
 	@SuppressWarnings("unused")
 	private final Log logger = LogFactory.getLog(getClass());
@@ -44,16 +43,12 @@ public class JcrRepositoryDao extends JcrDaoSupport implements RepositoryDao {
 			@Override
 			public Object doInJcr(final Session session) throws IOException, RepositoryException {
 				Post post = null;
-				try {
-					final PostDao dao = getPostDao(session);
 
-					if (dao.exists(nodeName)) {
-						post = dao.get(nodeName);
-						post.setPath(nodeName);
-					}
+				final JcrPostDao dao = getPostDao();
 
-				} catch (final RepositoryException e) {
-					throw new JcrRepositoryException(e);
+				if (dao.exists(nodeName)) {
+					post = dao.get(nodeName);
+					post.setPath(nodeName);
 				}
 				return post;
 			}
@@ -73,7 +68,7 @@ public class JcrRepositoryDao extends JcrDaoSupport implements RepositoryDao {
 			public Object doInJcr(final Session session) throws IOException, RepositoryException {
 				Collection<Post> list = null;
 				try {
-					final PostDao dao = getPostDao(session);
+					final JcrPostDao dao = getPostDao();
 					list = dao.findAll(options);
 				} catch (final RepositoryException e) {
 					throw new JcrRepositoryException(e);
@@ -88,17 +83,13 @@ public class JcrRepositoryDao extends JcrDaoSupport implements RepositoryDao {
 
 	}
 
-	public void setJcrom(final Jcrom jcrom) {
-		this.jcrom = jcrom;
-	}
-
 	@Override
 	public void setPost(final Post post) throws JcrRepositoryException {
 		getTemplate().execute(new JcrCallback() {
 			@Override
 			public Object doInJcr(final Session session) throws IOException, RepositoryException {
 				try {
-					final PostDao dao = getPostDao(session);
+					final JcrPostDao dao = getPostDao();
 
 					if (dao.exists(post.getPath()))
 						dao.update(post);
@@ -113,12 +104,12 @@ public class JcrRepositoryDao extends JcrDaoSupport implements RepositoryDao {
 		});
 	}
 
-	private Jcrom getJcrom() {
-		return jcrom;
+	public void setPostDao(final JcrPostDao postDao) {
+		this.postDao = postDao;
 	}
 
-	private PostDao getPostDao(final Session session) throws RepositoryException {
-		return new PostDao(session, getJcrom());
+	private JcrPostDao getPostDao() {
+		return postDao;
 	}
 
 }

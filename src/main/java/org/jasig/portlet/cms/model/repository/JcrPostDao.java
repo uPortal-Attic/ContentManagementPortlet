@@ -29,11 +29,31 @@ import org.jasig.portlet.cms.model.Post;
 import org.jasig.portlet.cms.model.RepositorySearchOptions;
 import org.jcrom.Jcrom;
 import org.jcrom.dao.AbstractJcrDAO;
+import org.springframework.extensions.jcr.SessionFactory;
 
-public class PostDao extends AbstractJcrDAO<Post> {
+public class JcrPostDao extends AbstractJcrDAO<Post> {
 
-	public PostDao(final Session session, final Jcrom jcrom) {
+	public JcrPostDao(final Session session, final Jcrom jcrom) {
 		super(Post.class, session, jcrom);
+	}
+
+	public JcrPostDao(final SessionFactory factory, final Jcrom jcrom) throws RepositoryException {
+		super(Post.class, factory.getSession(), jcrom);
+	}
+
+	@Override
+	public Post create(final Post entity) {
+		return super.create(entity);
+	}
+
+	@Override
+	public Post create(final String arg0, final Post arg1) {
+		return super.create(arg0, arg1);
+	}
+
+	@Override
+	public boolean exists(final String arg0) {
+		return super.exists(arg0);
 	}
 
 	public List<Post> findAll(final RepositorySearchOptions options) throws RepositoryException {
@@ -41,9 +61,25 @@ public class PostDao extends AbstractJcrDAO<Post> {
 
 		final Node rootNode = getSession().getRootNode();
 		final List<Post> list = findByXPath("/" + rootNode.getPath()
-		        + "element(*,mix:versionable)[jcr:like(@content, '%" + keyword + "%')]", "*", -1);
+				+ "element(*,mix:versionable)[jcr:like(@content, '%" + keyword + "%')]", "*", -1);
 		return list;
 
 	}
+
+	@Override
+	public Post get(final String path) {
+		return super.get(path);
+	}
+
+	@Override
+	public String update(final Post entity) {
+		return super.update(entity);
+	}
+
+	@Override
+	public String update(final Post arg0, final String arg1, final int arg2) {
+		return super.update(arg0, arg1, arg2);
+	}
+
 
 }
