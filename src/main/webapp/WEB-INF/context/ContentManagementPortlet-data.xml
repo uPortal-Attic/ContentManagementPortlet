@@ -26,7 +26,7 @@
 		cache="true" resource-ref="true" jndi-name="jcr/repository"
 		proxy-interface="javax.jcr.Repository" />
 
-	<bean id="jcrSessionFactory" class="org.springmodules.jcr.JcrSessionFactory">
+	<bean id="jcrSessionFactory" class="org.springframework.extensions.jcr.JcrSessionFactory">
 		<property name="repository" ref="repository" />
 		<property name="credentials">
 			<bean class="javax.jcr.SimpleCredentials">
@@ -43,11 +43,11 @@
 	</bean>
 
 	<bean id="jcrTransactionManager"
-		class="org.springmodules.jcr.jackrabbit.LocalTransactionManager">
+		class="org.springframework.extensions.jcr.jackrabbit.LocalTransactionManager">
 		<property name="sessionFactory" ref="jcrSessionFactory" />
 	</bean>
 
-	<bean id="transactionRepository" class="org.springmodules.jcr.TransactionAwareRepository">
+	<bean id="transactionRepository" class="org.springframework.extensions.jcr.TransactionAwareRepository">
 		<property name="allowNonTxRepository" value="true" />
 		<property name="targetFactory" ref="jcrSessionFactory" />
 	</bean>
@@ -63,7 +63,9 @@
 		<property name="transactionManager" ref="jcrTransactionManager" />
 		<property name="transactionAttributes">
 			<props>
+				<prop key="set*">PROPAGATION_REQUIRED</prop>
 				<prop key="save*">PROPAGATION_REQUIRED</prop>
+				<prop key="update*">PROPAGATION_REQUIRED</prop>
 				<prop key="*">PROPAGATION_REQUIRED, readOnly</prop>
 			</props>
 		</property>
@@ -77,11 +79,16 @@
 	    </constructor-arg>
 	  </bean>
   
+  <bean id= "postDao" class="org.jasig.portlet.cms.model.repository.JcrPostDao" >
+		<constructor-arg ref="jcrSessionFactory"></constructor-arg>
+		<constructor-arg ref="jcrom"></constructor-arg>
+	</bean>
+			
 	<bean id="repositoryDao" parent="txProxyTemplate">
 		<property name="target">
 			<bean class="org.jasig.portlet.cms.model.repository.JcrRepositoryDao">
-				<property name="jcrom" ref="jcrom" />
 				<property name="sessionFactory" ref="jcrSessionFactory" />
+				<property name="postDao" ref="postDao"></property>
 			</bean>
 		</property>
 	</bean>

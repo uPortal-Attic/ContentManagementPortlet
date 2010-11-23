@@ -33,7 +33,7 @@ http://www.springframework.org/schema/jee/spring-jee-2.0.xsd">
 					org.apache.velocity.runtime.resource.loader.FileResourceLoader
 				</prop>
 				<prop key="file.resource.loader.path">
-					${webapp.root}/WEB-INF/view/velocity
+					${contentmanagementportletapp.root}/WEB-INF/view/velocity
 				</prop>
 				<prop key="file.resource.loader.cache">true</prop>
 				<prop key="file.resource.loader.modificationCheckInterval">5</prop>

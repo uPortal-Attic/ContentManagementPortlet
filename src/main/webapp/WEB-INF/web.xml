@@ -31,6 +31,11 @@ under the License.
 		</listener-class>
 	</listener>
 
+	<context-param>
+		<param-name>webAppRootKey</param-name>
+		<param-value>contentmanagementportletapp.root</param-value>
+	</context-param>
+	
 	<listener>
 		<listener-class>
 			org.springframework.web.context.ContextLoaderListener

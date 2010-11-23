@@ -18,7 +18,10 @@ under the License.
 <a name="topOfThePage"></a>
 <ul>
 <li><a href="#typeContentRepository">How do I determine which type of content repository is used by the portlet ?</a></li>
-<li><a href="#locationPortletChannel">How do I determine the location of the content for my portlet channel?</a></li>
+<li><a href="#locationPortletChannel">How do I determine the location of the content for my portlet channel ?</a></li>
+<li><a href="#allowContentAuthors">How do I allow content authors to publish content ?</a></li>
+<li><a href="#internationalization">How do I configure the portlet for multiple languages ?</a></li>
+<li><a href="#contentValidation">How do I configure the portlet to allow content validation before submission ?</a></li>
 </ul>
 <hr/>
 
@@ -32,7 +35,7 @@ configure the mapping template.</p>
 
 <a name="locationPortletChannel"></a>
 <p class="uportal-channel-strong">How do I determine the location of the content for my portlet channel ?</p>
-<p>By default, the portlet will write to the default location "root" within the underlying configured content repository. 
+<p>By default, the portlet will write to "root" within the underlying configured content repository. 
 To change this location, go to the Preferences page of the portlet and add a setting for "repository.root". 
 The portlet will use the value assigned to this field to determine the content location in the repository. 
 Please note that if you have multiple channels publishing the portlet, content will be overwritten by each portlet in turn, 
@@ -40,3 +43,41 @@ unless you specify a different value for the setting defined above.</p>
 <a href="#topOfThePage">Back to top</a>
 <br/><br/>
 
+<a name="#allowContentAuthors"></a>
+<p class="uportal-channel-strong">How do I allow content authors to publish content ?</p>
+<p>By default, the portlet defines the "author" role for users who are part of the "local.2" group. This setting is defined inside the "portlet.xml" file.</p>
+<a href="#topOfThePage">Back to top</a>
+<br/><br/>
+
+<a name="#internationalization"></a>
+<p class="uportal-channel-strong">How do I configure the portlet for multiple languges ?</p>
+<p>Content Management Portlet uses localized resource files for internationalization of the portlet. These files are defined inside the "languages" folder. Once the language of the portal is switched, 
+the portlet will automatically load the correct language file for text and error messages.
+
+<ul type="square">
+<li><b>messages_COUNTRYCODE.properties:</b> defines localized text, such as button captions, for the specific country code configured by the portal.</li>
+<li><b>errors_COUNTRYCODE.properties":</b> defines localized text for error messages, for the specific country code configured by the portal.</li>
+</ul>
+
+If a language file is not available for the specific country code set by the portal, the portlet will choose English as the default language. 
+
+Please note that:
+
+<ul type="square">
+<li>There's no additional configuration for the localization of the editor. The editor will automatically detect the language code and change accordingly.</li>
+<li>Portlet Help mode will load a file inside the "help" directory based on the portal language. The name of the help file is consistent with the language country code.</li>
+</ul>	
+</p>
+<a href="#topOfThePage">Back to top</a>
+<br/><br/
+
+<a name="#contentValidation"></a>
+<p class="uportal-channel-strong">How do I configure the portlet to allow content validation before submission ?</p>
+<p>By default, the portlet scans the submitted content for cross-site security issues  using the OWASP AntiSamy package. Issues are reported back to the user and submission is cancelled if any are found. To change this behavior,
+go to the Preferences page of the portlet and add/modify the setting for "xss.validation.enabled". The portlet will use the value assigned to this field to determine whether or not content should be scanned. 
+
+If you wish to alter the rules that define cross-site scripting vulnerabilities for the portlet, please adjust the rules defined in the "antiSammyPolicy.xml" file. 
+</p>
+<a href="#topOfThePage">Back to top</a>
+<br/><br/>
+<br/><br/>
