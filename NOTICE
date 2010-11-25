@@ -1,10 +1,10 @@
-Licensed to Jasig under one or more contributor license
-agreements. See the NOTICE file distributed with this work
-for additional information regarding copyright ownership.
-Jasig licenses this file to you under the Apache License,
-Version 2.0 (the "License"); you may not use this file
-except in compliance with the License. You may obtain a
-copy of the License at:
+Copyright 2010, JA-SIG, Inc.
+This project includes software developed by Jasig.
+http://www.jasig.org/
+
+Licensed under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at:
 
 http://www.apache.org/licenses/LICENSE-2.0
 
@@ -14,3 +14,75 @@ an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 KIND, either express or implied. See the License for the
 specific language governing permissions and limitations
 under the License.
+
+This project includes:
+  AOP alliance under Public Domain
+  Apache Jackrabbit API under The Apache Software License, Version 2.0
+  Apache POI under The Apache Software License, Version 2.0
+  Apache Velocity under The Apache Software License, Version 2.0
+  asm under Apache License, Version 2.0
+  Batik CSS under Apache License, Version 2.0
+  Batik Ext under Apache License, Version 2.0
+  Batik GUI Utilities under Apache License, Version 2.0
+  Batik Utilities under Apache License, Version 2.0
+  Castor under Apache License, Version 2.0
+  cglib under Apache License, Version 2.0
+  CLI under Apache License, Version 2.0
+  Codec under Apache License, Version 2.0
+  Commons BeanUtils under Apache License, Version 2.0
+  Commons FileUpload under The Apache Software License, Version 2.0
+  Commons IO under The Apache Software License, Version 2.0
+  Commons Lang under The Apache Software License, Version 2.0
+  Commons Logging under The Apache Software License, Version 2.0
+  Content Repository for Java Technology API under Day Specification License or Day Specification License addendum
+  ContentManagementPortlet under Apache License Version 2.0
+  Derby Engine under Apache License, Version 2.0
+  Digester under Apache License, Version 2.0
+  Dough Lea's util.concurrent package under Public domain, Sun Microsoystems
+  Ehcache Core under The Apache Software License, Version 2.0
+  Ehcache Spring Annotations under Apache 2
+  FontBox - Java Font Library under BSD
+  HttpClient under Apache License
+  Jackrabbit Core under The Apache Software License, Version 2.0
+  Jackrabbit JCR Commons under The Apache Software License, Version 2.0
+  Jackrabbit SPI under The Apache Software License, Version 2.0
+  Jackrabbit SPI Commons under The Apache Software License, Version 2.0
+  Jackrabbit Text Extractors under The Apache Software License, Version 2.0
+  Java Transaction API under Commons Development and Distribution License, Version 1.0
+  jcrom under The Apache Software License, Version 2.0
+  JempBox - Java XMP Library under BSD
+  Log4j under The Apache Software License, Version 2.0
+  Logging under The Apache Software License, Version 2.0
+  Lucene Core under Apache 2
+  Neko HTML under The Apache Software License, Version 2.0
+  PDFBox - Java PDF Library under BSD
+  Pluto Descriptor Service API under The Apache Software License, Version 2.0
+  Pluto Descriptor Service Implementation under The Apache Software License, Version 2.0
+  Pluto Utilities under The Apache Software License, Version 2.0
+  Simple API for CSS under The W3C Software License
+  SLF4J API Module under MIT License
+  SLF4J LOG4J-12 Binding under MIT License
+  Spring Extension JCR under Apache License, Version 2.0
+  Spring Framework: AOP under Apache License, Version 2.0
+  Spring Framework: Beans under Apache License, Version 2.0
+  Spring Framework: Context under Apache License, Version 2.0
+  Spring Framework: Context Support under Apache License, Version 2.0
+  Spring Framework: Core under Apache License, Version 2.0
+  Spring Framework: Transaction under Apache License, Version 2.0
+  Spring Framework: Web under Apache License, Version 2.0
+  Spring Framework: Web MVC under Apache License, Version 2.0
+  Spring Framework: Web MVC Portlet under Apache License, Version 2.0
+  spring-modules-cache under Apache License, Version 2.0
+  Unnamed - antisamy-bin:org.owasp.validator:jar:1.3 under BSD license
+  Unnamed - cglib:cglib-full:jar:2.0.2 under Apache License, Version 1.1
+  Unnamed - commons-collections:commons-collections:jar:3.1 under Apache License, Version 2.0
+  Unnamed - javax.servlet:servlet-api:jar:2.4 under Commons Development and Distribution License, Version 1.0
+  Unnamed - oro:oro:jar:2.0.8 under Apache License, Version 2.0
+  Unnamed - portlet-api:portlet-api:jar:1.0 under Commons Development and Distribution License, Version 1.0
+  Unnamed - xerces:xercesImpl:jar:2.6.2 under Apache License, Version 2.0
+  Unnamed - xerces:xmlParserAPIs:jar:2.6.2 under Apache License, Version 2.0
+  Unnamed - xml-apis:xml-apis:jar:1.3.03 under The Apache Software License, Version 2.0
+  Unnamed - xml-apis:xmlParserAPIs:jar:2.0.2 under Apache License, Version 2.0
+  Unnamed - xstream:xstream:jar:1.1.2 under BSD license
+  velocity-tools:velocity-tools under Apache License, Version 2.0
+

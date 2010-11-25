@@ -11,6 +11,13 @@
 	and limitations under the License. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>org.jasig.parent</groupId>
+		<artifactId>jasig-parent</artifactId>
+		<version>29</version>
+	</parent>
+
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>content-management-portlet</groupId>
 	<artifactId>ContentManagementPortlet</artifactId>
@@ -59,7 +66,7 @@
 			<timezone>Arizona</timezone>
 		</developer>
 	</developers>
-	
+
 	<scm>
 		<url>https://source.jasig.org/portlets/ContentManagementPortlet</url>
 		<tag>HEAD</tag>
@@ -69,8 +76,34 @@
 	<build>
 		<defaultGoal>install</defaultGoal>
 		<finalName>${project.name}</finalName>
-
+ 
 		<plugins>
+		
+			<plugin>
+				<groupId>org.jasig.maven</groupId>
+				<artifactId>maven-notice-plugin</artifactId>
+				<version>1.0.2</version>
+				
+				<configuration>
+					<noticeTemplate>https://source.jasig.org/licenses/NOTICE.template</noticeTemplate>
+
+					<licenseLookup>
+						<param>https://source.jasig.org/licenses/license-mappings.xml</param> 
+					</licenseLookup>
+				</configuration>
+
+				<executions>
+					<execution>
+						<id>check-notice-file</id>
+						<phase>validate</phase>
+						<goals>
+							<!-- <goal>check</goal>  -->
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
@@ -185,8 +218,7 @@
 						<configuration>
 							<tasks>
 								<property environment="env" />
-								<property name="catalina.home"
-									value="${env.CATALINA_HOME}" />
+								<property name="catalina.home" value="${env.CATALINA_HOME}" />
 								<delete dir="${catalina.home}/webapps/${project.name}" />
 								<delete file="${catalina.home}/webapps/${project.name}.war" />
 								<copy file="target/${project.name}.war" todir="${catalina.home}/webapps"
@@ -597,7 +629,7 @@
 
 	<issueManagement>
 		<system>JIRA</system>
-		<url>https://issues.jasig.org/browse/INC-15/</url>
+		<url>https://issues.jasig.org/browse/INC-15</url>
 	</issueManagement>
 
 	<mailingLists>
