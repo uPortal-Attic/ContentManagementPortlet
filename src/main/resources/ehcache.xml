@@ -1,11 +1,8 @@
-<ehcache updateCheck="false">
-	<diskStore path="java.io.tmpdir" />
-
-	<defaultCache maxElementsInMemory="500" eternal="true"
-		overflowToDisk="false" memoryStoreEvictionPolicy="LFU" />
-
-	<cache name="postCache" maxElementsInMemory="300" eternal="false"
-		timeToIdleSeconds="500" timeToLiveSeconds="500" overflowToDisk="false"
-		memoryStoreEvictionPolicy="LFU" />
-
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache updateCheck="false" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd">
+	<diskStore path="java.io.tmpdir/ContentManagementPortlet" />
+    <defaultCache eternal="true" maxElementsInMemory="100" overflowToDisk="false" />
+    <cache name="postCache" maxElementsInMemory="10" eternal="true" overflowToDisk="false" />
 </ehcache>
+
+

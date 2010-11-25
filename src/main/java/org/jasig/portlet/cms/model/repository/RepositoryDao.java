@@ -24,9 +24,9 @@ import org.jasig.portlet.cms.model.Post;
 import org.jasig.portlet.cms.model.RepositorySearchOptions;
 
 public interface RepositoryDao {
-	abstract Post getPost(final String nodeName) throws JcrRepositoryException;
+	public Post getPost(final String nodeName) throws JcrRepositoryException;
 
-	abstract Collection<Post> search(final RepositorySearchOptions options) throws JcrRepositoryException;
+	public Collection<Post> search(final RepositorySearchOptions options) throws JcrRepositoryException;
 
-	abstract void setPost(final Post post) throws JcrRepositoryException;
+	public void setPost(final Post post) throws JcrRepositoryException;
 }

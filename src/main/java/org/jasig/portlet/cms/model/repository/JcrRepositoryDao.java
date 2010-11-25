@@ -31,6 +31,10 @@ import org.jasig.portlet.cms.model.RepositorySearchOptions;
 import org.springframework.extensions.jcr.JcrCallback;
 import org.springframework.extensions.jcr.support.JcrDaoSupport;
 
+import com.googlecode.ehcache.annotations.Cacheable;
+import com.googlecode.ehcache.annotations.TriggersRemove;
+import com.googlecode.ehcache.annotations.When;
+
 public class JcrRepositoryDao extends JcrDaoSupport implements RepositoryDao {
 	private JcrPostDao postDao = null;
 
@@ -38,6 +42,7 @@ public class JcrRepositoryDao extends JcrDaoSupport implements RepositoryDao {
 	private final Log logger = LogFactory.getLog(getClass());
 
 	@Override
+	@Cacheable(cacheName = "postCache")
 	public Post getPost(final String nodeName) throws JcrRepositoryException {
 		final Object post = getTemplate().execute(new JcrCallback() {
 			@Override
@@ -62,6 +67,7 @@ public class JcrRepositoryDao extends JcrDaoSupport implements RepositoryDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
+	@Cacheable(cacheName = "postCache")
 	public Collection<Post> search(final RepositorySearchOptions options) throws JcrRepositoryException {
 		final Object list = getTemplate().execute(new JcrCallback() {
 			@Override
@@ -84,6 +90,7 @@ public class JcrRepositoryDao extends JcrDaoSupport implements RepositoryDao {
 	}
 
 	@Override
+	@TriggersRemove(cacheName = "postCache", when = When.AFTER_METHOD_INVOCATION, removeAll = true)
 	public void setPost(final Post post) throws JcrRepositoryException {
 		getTemplate().execute(new JcrCallback() {
 			@Override

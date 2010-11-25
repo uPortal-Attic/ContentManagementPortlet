@@ -55,8 +55,17 @@
 	<bean id="txProxyTemplate" abstract="true"
 		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 		
+		<!-- 
+			We do not want to force the use of CGLIB proxies.
+			We only want to proxy only those methods implemented, and not every method defined for the target object.
+			So, we only proxy methods provided by the RpositoryDao interface that are implemented. Other methods that are
+			part of the implementation class have a number of final methods that can be advised/overriden. Also,
+			using CGLIB proxies conflicts with the use of ehcache as it also needs the proxy.
+			
+			Setting the value to false creates dynamic JDK proxies.
+		 -->
 		<property name="proxyTargetClass">
-			<value>true</value>
+			<value>false</value>
 		</property>
 
 		

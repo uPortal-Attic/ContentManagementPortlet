@@ -16,10 +16,14 @@
 	<artifactId>ContentManagementPortlet</artifactId>
 	<packaging>war</packaging>
 	<name>${project.artifactId}</name>
-	<version>0.0.1</version>
+	<version>0.0.2</version>
 	<description>Content Management Portlet (JSR 168)</description>
-	<url>http://www.ja-sig.org/wiki/display/INCU/Content+Management+Portlet
-	</url>
+	<url>https://wiki.jasig.org/display/PLT/Content+Management+Portlet</url>
+	<organization>
+		<name>uPortal Jasig Community</name>
+		<url>http://www.jasig.org/uportal</url>
+	</organization>
+
 	<properties>
 		<servlet-api.version>2.4</servlet-api.version>
 		<portlet-api.version>1.0</portlet-api.version>
@@ -28,6 +32,7 @@
 		<velocity.version>1.6.2</velocity.version>
 		<velocity.tools.version>1.4</velocity.tools.version>
 		<java.version>1.6</java.version>
+		<maven.version>2.2.1</maven.version>
 		<pluto.version>1.1.4</pluto.version>
 		<jackrabbit.version>1.6.0</jackrabbit.version>
 		<jcr.version>1.0</jcr.version>
@@ -37,11 +42,15 @@
 		<jcrom.version>1.3.2</jcrom.version>
 		<spring.modules.cache.version>0.8a</spring.modules.cache.version>
 		<ehcache.version>2.2.0</ehcache.version>
+
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+
 	<ciManagement>
 		<system>uPortal</system>
 		<url>http://www.jasig.org/uportal</url>
 	</ciManagement>
+
 	<developers>
 		<developer>
 			<id>mmoayyed</id>
@@ -50,17 +59,49 @@
 			<timezone>Arizona</timezone>
 		</developer>
 	</developers>
+	
 	<scm>
 		<url>https://source.jasig.org/portlets/ContentManagementPortlet</url>
+		<tag>HEAD</tag>
+		<connection>scm:svn:https://source.jasig.org/portlets/ContentManagementPortlet</connection>
 	</scm>
 
 	<build>
 		<defaultGoal>install</defaultGoal>
 		<finalName>${project.name}</finalName>
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>1.0</version>
+				<executions>
+					<execution>
+						<id>enforce-java</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireJavaVersion>
+									<version>${java.version}</version>
+									<message>Missing required Java version: ${java.version}</message>
+								</requireJavaVersion>
+
+								<requireMavenVersion>
+									<version>${maven.version}</version>
+									<message>Missing required Maven version: ${maven.version}</message>
+								</requireMavenVersion>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
@@ -70,19 +111,52 @@
 			<plugin>
 				<groupId>org.apache.geronimo.genesis.plugins</groupId>
 				<artifactId>tools-maven-plugin</artifactId>
+				<version>1.2</version>
 				<executions>
+
 					<execution>
 						<id>install-legal-files</id>
 						<phase>generate-resources</phase>
 						<goals>
 							<goal>copy-legal-files</goal>
 						</goals>
+
+						<configuration>
+							<fileset>
+								<basedir>${project.basedir}</basedir>
+								<includes>
+									<include>NOTICE</include>
+									<include>LICENSE</include>
+								</includes>
+							</fileset>
+							<outputDirectory>
+								${project.basedir}/target/${project.name}/META-INF
+							</outputDirectory>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>verify-legal-files</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>verify-legal-files</goal>
+						</goals>
+						<configuration>
+							<requiredFiles>
+								<requiredFile>LICENSE</requiredFile>
+								<requiredFile>NOTICE</requiredFile>
+							</requiredFiles>
+
+						</configuration>
+
 					</execution>
 				</executions>
 			</plugin>
 
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1.1</version>
 				<configuration>
 					<webXml>${project.build.directory}/pluto-resources/web.xml</webXml>
 				</configuration>
@@ -135,7 +209,7 @@
 			<url>https://src.springframework.org/svn/se-jcr/repo/</url>
 		</repository>
 	</repositories>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
@@ -143,6 +217,39 @@
 			<version>${ehcache.version}</version>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.googlecode.ehcache-spring-annotations</groupId>
+			<artifactId>ehcache-spring-annotations</artifactId>
+			<version>1.1.2</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-asm</artifactId>
+				</exclusion>
+
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-asm</artifactId>
+				</exclusion>
+
+				<exclusion>
+					<groupId>commons-codec</groupId>
+					<artifactId>commons-codec</artifactId>
+				</exclusion>
+
+			</exclusions>
+		</dependency>
+
 
 		<dependency>
 			<groupId>org.springmodules</groupId>
@@ -294,6 +401,7 @@
 			<groupId>velocity-tools</groupId>
 			<artifactId>velocity-tools</artifactId>
 			<version>${velocity.tools.version}</version>
+			<type>jar</type>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -323,13 +431,13 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.5.9-RC0</version>
+			<version>1.6.1</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.5.9-RC0</version>
+			<version>1.6.1</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -348,7 +456,7 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>se-jcr</artifactId>
 			<version>0.9</version>
-			<!-- Yuck, have to exclude all this manually. But see http://jira.springframework.org/browse/SEJCR-4 -->
+			<!-- see http://jira.springframework.org/browse/SEJCR-4 -->
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework</groupId>
@@ -394,6 +502,7 @@
 					<groupId>geronimo-spec</groupId>
 					<artifactId>geronimo-spec-jta</artifactId>
 				</exclusion>
+
 			</exclusions>
 		</dependency>
 
@@ -473,9 +582,7 @@
 			<exclusions>
 				<exclusion>
 					<groupId>commons-lang</groupId>
-					<artifactId>
-						commons-lang
-                    </artifactId>
+					<artifactId>commons-lang</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -487,4 +594,25 @@
 		</dependency>
 
 	</dependencies>
+
+	<issueManagement>
+		<system>JIRA</system>
+		<url>https://issues.jasig.org/browse/INC-15/</url>
+	</issueManagement>
+
+	<mailingLists>
+		<mailingList>
+			<name>Portlet Developer List</name>
+			<subscribe>https://lists.wisc.edu/read/all_forums/subscribe?name=portlet-dev</subscribe>
+			<unsubscribe>leave-portlet-dev@lists.wisc.edu</unsubscribe>
+			<archive>https://lists.wisc.edu/read/?forum=portlet-dev</archive>
+		</mailingList>
+
+		<mailingList>
+			<name>Portlet User List</name>
+			<subscribe>https://lists.wisc.edu/read/all_forums/subscribe?name=portlet-user</subscribe>
+			<unsubscribe>leave-portlet-user@lists.wisc.edu</unsubscribe>
+			<archive>https://lists.wisc.edu/read/?forum=portlet-user</archive>
+		</mailingList>
+	</mailingLists>
 </project>
