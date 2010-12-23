@@ -37,7 +37,9 @@ public class AntiSamyXssValidator implements XssValidatorService {
 	public AntiSamyXssValidator() {
 		InputStream policyFile = null;
 		try {
-			logger.debug("Loading xss policy file");
+			if (logger.isDebugEnabled())
+				logger.debug("Loading xss policy file");
+
 			policyFile = getClass().getResourceAsStream("/properties/antiSamyPolicy.xml");
 			final Policy policy = Policy.getInstance(policyFile);
 			antiSamy = new AntiSamy(policy);
@@ -60,14 +62,18 @@ public class AntiSamyXssValidator implements XssValidatorService {
 
 		try {
 
-			logger.debug("Unescaping html content");
+			if (logger.isDebugEnabled())
+				logger.debug("Unescaping html content");
 			html = StringEscapeUtils.unescapeHtml(html);
 
-			logger.debug("Validaing content for xss");
+			if (logger.isDebugEnabled())
+				logger.debug("Validaing content for xss");
 			final CleanResults cr = antiSamy.scan(html);
 
 			if (cr.getNumberOfErrors() > 0) {
-				logger.debug("Rejecting content for xss");
+
+				if (logger.isDebugEnabled())
+					logger.debug("Rejecting content for xss");
 				errorList = cr.getErrorMessages();
 			}
 

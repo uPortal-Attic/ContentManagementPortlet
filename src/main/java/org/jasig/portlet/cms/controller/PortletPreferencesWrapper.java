@@ -33,6 +33,13 @@ public final class PortletPreferencesWrapper {
 		prefences = portletRequest.getPreferences();
 	}
 
+	public long getMaximumPostAttachments() {
+		final String value = prefences.getValue("post.attachments.max", "2");
+		if (value == null || value.trim().length() <= 0)
+			return 2;
+		return Long.valueOf(value);
+	}
+
 	public String getPortletRepositoryRoot() {
 		String result = prefences.getValue("repository.root",
 				PortletPreferencesWrapper.DEFAULTREPOSITORYROOTNAME);

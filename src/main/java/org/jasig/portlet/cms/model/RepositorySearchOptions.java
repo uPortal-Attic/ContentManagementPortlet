@@ -20,6 +20,8 @@ package org.jasig.portlet.cms.model;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 public class RepositorySearchOptions implements Serializable {
 
 	private static final long serialVersionUID = 8963746618924583880L;
@@ -31,6 +33,14 @@ public class RepositorySearchOptions implements Serializable {
 
 	public void setKeyword(final String keyword) {
 		this.keyword = keyword;
+	}
+
+	@Override
+	public String toString() {
+		final ToStringBuilder bldr = new ToStringBuilder(this);
+		bldr.append("keyword", getKeyword());
+
+		return bldr.toString();
 	}
 
 }

@@ -15,25 +15,28 @@ KIND, either express or implied. See the License for the
 specific language governing permissions and limitations
 under the License.
 *#
-#set ( $renderRequest = $request.getAttribute("javax.portlet.request") )
-#set ( $renderResponse = $request.getAttribute("javax.portlet.response") )
+
+#parse( "include.vm" )
+
+#set ( $viewAttachmentUrl = $renderResponse.createActionURL() )
+$viewAttachmentUrl.setParameter("action", "viewPostAttachment")
 
 #if( $post )
    	$!{post.Content}
    
     #if ( $post.Attachments.size() > 0 )
-    	<p class="uportal-channel-strong">#springMessage("label.caption.attachments"):</p>  
+    	<p>#springMessage("label.caption.attachments"):</p>  
 	   	#foreach ($attachment in $post.Attachments)
-			<p><img align="middle" hspace="3" src='$springMacroRequestContext.contextPath/images/package.gif'>
-			<a href='javascript:void(0);'>$attachment.Name</a>
+			<p><img align="middle" hspace="3" src='$springMacroRequestContext.contextPath/images/package.png'>
+				$viewAttachmentUrl.setParameter("attachmentPath", "$attachment.Path")
+				$viewAttachmentUrl.setParameter("postPath", "$post.Path")
+				<a href='$viewAttachmentUrl'>$attachment.FileName</a>
 			</p>
 		#end
 	#end
 	
-	<span class="uportal-channel-emphasis">Posted by $!{post.Author} at $!{post.Date}</span> 
+	#set( $args = ["$!{post.Author}","$!{post.Date}"] )
+	<span class="uportal-channel-emphasis">#springArgMessage( "label.caption.postedby" $args )</span> 
 #else
 	<span class="uportal-channel-emphasis">#springMessage("invalid.post.content.empty")</span> 
 #end
-
-
-

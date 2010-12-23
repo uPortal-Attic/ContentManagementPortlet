@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-	<!--
-		Licensed to Jasig under one or more contributor license agreements.
-		See the NOTICE file distributed with this work for additional
-		information regarding copyright ownership. Jasig licenses this file to
-		you under the Apache License, Version 2.0 (the "License"); you may not
-		use this file except in compliance with the License. You may obtain a
-		copy of the License at: http://www.apache.org/licenses/LICENSE-2.0
-
-		Unless required by applicable law or agreed to in writing, software
-		distributed under the License is distributed on an "AS IS" BASIS,
-		WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-		implied. See the License for the specific language governing
-		permissions and limitations under the License.
-	-->
+<!-- Licensed to Jasig under one or more contributor license agreements. 
+	See the NOTICE file distributed with this work for additional information 
+	regarding copyright ownership. Jasig licenses this file to you under the 
+	Apache License, Version 2.0 (the "License"); you may not use this file except 
+	in compliance with the License. You may obtain a copy of the License at: 
+	http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable 
+	law or agreed to in writing, software distributed under the License is distributed 
+	on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either 
+	express or implied. See the License for the specific language governing permissions 
+	and limitations under the License. -->
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
@@ -29,6 +25,8 @@
 		<property name="exceptionMappings">
 			<props>
 				<prop key="javax.portlet.PortletSecurityException">notAuthorizedAuthorRoleError</prop>
+				<prop
+					key="org.springframework.web.multipart.MaxUploadSizeExceededException">sizeLimitExceededError</prop>
 			</props>
 		</property>
 		<property name="defaultErrorView" value="defaultError" />
@@ -36,7 +34,7 @@
 
 	<bean id="portletMultipartResolver"
 		class="org.springframework.web.portlet.multipart.CommonsPortletMultipartResolver">
-		<property name="maxUploadSize" value="5000000" />
+		<property name="maxUploadSize" value="5242880" />
 	</bean>
 
 	<bean id="messageSource"
@@ -49,8 +47,6 @@
 		</property>
 	</bean>
 
-	<bean id="parameterMappingInterceptor"
-		class="org.springframework.web.portlet.handler.ParameterMappingInterceptor" />
 	<bean id="portletModeUserRoleAuthorizationInterceptor"
 		class="org.jasig.portlet.cms.controller.PortletModeUserRoleAuthorizationInterceptor">
 
@@ -65,22 +61,24 @@
 
 	<bean id="portletModeParameterHandlerMapping"
 		class="org.springframework.web.portlet.handler.PortletModeParameterHandlerMapping">
-		<property name="order" value="1" />
+		<property name="order" value="100" />
 		<property name="interceptors">
 			<list>
 				<ref bean="portletModeUserRoleAuthorizationInterceptor" />
-				<ref bean="parameterMappingInterceptor" />
 			</list>
 		</property>
 		<property name="portletModeParameterMap">
 			<map>
 				<entry key="view">
-					<map />
+					<map>
+						<entry key="viewPostAttachment" value-ref="viewPostAttachmentController" />
+					</map>
 				</entry>
 				<entry key="edit">
 					<map>
 						<entry key="searchRepository" value-ref="searchController" />
 						<entry key="selectPostFromSearch" value-ref="selectPostFromSearchController" />
+						<entry key="removePostAttachment" value-ref="removePostAttachmentController" />
 					</map>
 				</entry>
 				<entry key="help">
@@ -92,7 +90,7 @@
 
 	<bean id="portletModeHandlerMapping"
 		class="org.springframework.web.portlet.handler.PortletModeHandlerMapping">
-		<property name="order" value="2" />
+		<property name="order" value="200" />
 		<property name="interceptors">
 			<list>
 				<ref bean="portletModeUserRoleAuthorizationInterceptor" />
@@ -107,13 +105,14 @@
 		</property>
 	</bean>
 
+	
 	<bean id="viewPostController" class="org.jasig.portlet.cms.controller.ViewPostController">
 		<property name="repositoryDao" ref="repositoryDao" />
 	</bean>
 
 	<bean id="postValidator" class="org.jasig.portlet.cms.controller.PostValidator">
 		<property name="xssValidatorService">
-			<bean class="org.jasig.portlet.cms.model.security.AntiSamyXssValidator"  />
+			<bean class="org.jasig.portlet.cms.model.security.AntiSamyXssValidator" />
 		</property>
 
 		<property name="antiVirusService">
@@ -137,14 +136,29 @@
 		<property name="commandName" value="search" />
 		<property name="commandClass"
 			value="org.jasig.portlet.cms.model.RepositorySearchOptions" />
+		
 	</bean>
 
 	<bean id="selectPostFromSearchController"
 		class="org.jasig.portlet.cms.controller.SelectPostFromSearchController">
 		<property name="commandName" value="post" />
 		<property name="commandClass" value="org.jasig.portlet.cms.model.Post" />
+		<property name="repositoryDao" ref="repositoryDao" />
+
 	</bean>
 
 	<bean id="helpController"
 		class="org.springframework.web.portlet.mvc.PortletModeNameViewController" />
+
+	<bean name="removePostAttachmentController"
+		class="org.jasig.portlet.cms.controller.RemovePostAttachmentAjaxController">
+
+		<property name="repositoryDao" ref="repositoryDao" />
+	</bean>
+	
+	<bean name="viewPostAttachmentController"
+		class="org.jasig.portlet.cms.controller.ViewPostAttachmentController">
+
+		<property name="repositoryDao" ref="repositoryDao" />
+	</bean>
 </beans>

@@ -15,10 +15,11 @@ KIND, either express or implied. See the License for the
 specific language governing permissions and limitations
 under the License.
 *#
-#set ( $renderRequest = $request.getAttribute("javax.portlet.request") )
-#set ( $renderResponse = $request.getAttribute("javax.portlet.response") )
+#parse( "include.vm" )
 
-#set ( $portletConstructors = $renderRequest.getPortletMode().getClass().getConstructors() )
+#set ( $paginationId = $mathTool.random(1,999999999) + "$portletNamespace" )
+#set ( $busyDialogId = $mathTool.random(1,999999999) + "$portletNamespace" )
+
 #set ( $returnMode = $portletConstructors.get(0).newInstance("edit") )
 #set ( $cancelUrl = $renderResponse.createRenderURL() )
 $cancelUrl.setPortletMode($returnMode)
@@ -27,39 +28,91 @@ $cancelUrl.setPortletMode($returnMode)
 $selectPostUrl.setParameter("action", "selectPostFromSearch")
 
 #if ($searchResults)
-	<table width="100%">
-		<tbody>
-			<tr>
-				<td class="uportal-channel-title">
-					<span>#springMessage("label.caption.search.results.found"): $searchResults.size()</span>
-				</td>
-			</tr>
-		#foreach( $post in $searchResults )		
-			#set( $rowIndex = $velocityCount % 2 )
-			#if ($rowIndex > 0)
-				<tr class="uportal-channel-table-row-odd">
-			#else
-				<tr class="uportal-channel-table-row-even">
+	<div style="width:95%">
+		<div id="pagination$paginationId"></div>
+
+		#set( $rowIndex = 0 )
+		#foreach( $post in $searchResults )
+			#set( $rowIndex = $rowIndex + 1 )
+			#set( $pageId = "page" + $rowIndex )
+			#set( $pageStyle = "" )
+			#set( $pageCurrent = "_current" )
+			
+			#if ($rowIndex > 1)
+				#set( $pageStyle = "display:none" )
+				#set( $pageCurrent = "" )
 			#end
-				<td>
-	    			$post.Content
-	    			<span class="uportal-channel-emphasis">Posted by $!{post.Author} at $!{post.Date}</span> 
-	    		</td>
-	    		
-				<td align="right">
-					<form method="POST" action="$selectPostUrl">
-						<input type="hidden" name="path" value="$escapeTool.html($post.Path)" /> 
-						<input type="hidden" name="content" value="$escapeTool.html($post.Content)" /> 						
-						<input class="uportal-button" type="submit" value='#springMessage("button.caption.select")' />
-					</form>
-				</td>
-	    	</tr>
-	  	#end
-		</tbody>
-	</table>
+			
+			<div id="$pageId" class="$pageCurrent" style="$pageStyle">
+				<table width="100%">
+					<tr>
+						<td width="95%">
+							<span>$post.Content</span>
+							#set( $args = ["$!{post.Author}","$!{post.Date}"] )
+							<span class="uportal-channel-emphasis">#springArgMessage( "label.caption.postedby" $args )</span> 
+						</td>
+						<td align="right">
+							<form method="POST" action="$selectPostUrl">
+								<input type="hidden" name="path" value="$escapeTool.html($post.Path)" /> 
+								<input type="hidden" name="content" value="$escapeTool.html($post.Content)" /> 						
+								<input class="uportal-button" type="submit" value='#springMessage("button.caption.select")' />
+							</form>
+						</td>
+				</table>
+			</div>
+		#end
+	</div>	
+	
+	<div id="busyDialogId$busyDialogId" title='#springMessage("label.caption.search.results.found")'> 
+		<img valign="bottom" src='$springMacroRequestContext.contextPath/images/hourglass.png'>
+		<span>#springMessage("label.caption.search.results.loading")</span>
+	</div>
+	
 #else
 	<div class="uportal-channel-warning">#springMessage("repository.search.results.empty")</div>
 #end
 
 <br/>
 <input class="uportal-button" type='button' value='#springMessage("button.caption.cancel")'	onclick="window.location.href='${cancelUrl}';"/> 
+
+<script type="text/javascript">
+
+	#if ($searchResults)
+		$("#busyDialogId$busyDialogId").dialog({
+			minHeight: 80,
+			modal: true,
+			position: 'center',
+			minWidth: 450,
+			autoOpen: true,
+			disabled: true,
+			draggable: false,
+			closeOnEscape: false,
+			open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+		}); 
+			
+		$(document).ready(function(){	
+			$("#pagination$paginationId").paginate({
+				count 		: $searchResults.size(),
+				start 		: 1,
+				
+				#if ($searchResults.size() <= 7)
+					display     : $searchResults.size(),
+				#else
+					display     : 7,
+				#end
+				
+				border					: true,			 
+				text_color  			: 'white',
+				background_color    	: 'white',	
+				background_hover_color	: '#A0CFEC', 
+				images					: false,
+				mouse					: 'press',
+				onChange     			: function(page) {
+											$("._current").removeClass("_current").hide();
+											$("#page" + page).addClass("_current").show();											
+										}
+			});
+			$("#busyDialogId$busyDialogId").dialog('close');
+		});
+	#end
+</script>

@@ -26,16 +26,22 @@
 
 		<init-param>
 			<name>contextConfigLocation</name>
-			<value>/WEB-INF/context/ContentManagementPortlet-*.xml</value>
+			<value>/WEB-INF/context/ContentManagementPortlet-context.xml, 
+			       /WEB-INF/context/ContentManagementPortlet-data.xml, 
+			       /WEB-INF/context/ContentManagementPortlet-view.xml,
+			       /WEB-INF/context/ContentManagementPortlet-cache.xml
+			</value>
 		</init-param>
 
 		<expiration-cache>0</expiration-cache>
 
 		<supports>
-			<mime-type>text/html</mime-type>
+			
+			<mime-type>*/*</mime-type>
 			<portlet-mode>VIEW</portlet-mode>
 			<portlet-mode>EDIT</portlet-mode>
 			<portlet-mode>HELP</portlet-mode>
+			
 		</supports>
 
 		<portlet-info>
@@ -50,6 +56,19 @@
 				<value>root</value>
 				<read-only>false</read-only>
 			</preference>
+			
+			<preference>
+				<name>xss.validation.enabled</name>
+				<value>true</value>
+				<read-only>false</read-only>
+			</preference>
+			
+			<preference>
+				<name>post.attachments.max</name>
+				<value>2</value>
+				<read-only>false</read-only>
+			</preference>
+						
 		</portlet-preferences>
 		
 		<security-role-ref>

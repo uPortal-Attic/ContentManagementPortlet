@@ -15,13 +15,18 @@ KIND, either express or implied. See the License for the
 specific language governing permissions and limitations
 under the License.
 *#
-	
-#set ( $editorId = $mathTool.random(1,999999999) )
-	
-#set ( $renderRequest = $request.getAttribute("javax.portlet.request") )
-#set ( $renderResponse = $request.getAttribute("javax.portlet.response") )
+		
+#parse( "include.vm" )
 
-#set ( $portletConstructors = $renderRequest.getPortletMode().getClass().getConstructors() )
+#set ( $editorId = $mathTool.random(1,999999999) + "$portletNamespace" )
+#set ( $browseFileId = $mathTool.random(1,999999999) + "$portletNamespace" )
+#set ( $errorContainerId = $mathTool.random(1,999999999) + "$portletNamespace" )
+#set ( $editPostFormId = $mathTool.random(1,999999999) + "$portletNamespace" )
+#set ( $editAttachmentsButtonId = $mathTool.random(1,999999999) + "$portletNamespace" )
+#set ( $attachmentsFormId = $mathTool.random(1,999999999) + "$portletNamespace" )
+#set ( $attachmentsDialogId = $mathTool.random(1,999999999) + "$portletNamespace" )
+#set ( $busyDialogId = $mathTool.random(1,999999999) + "$portletNamespace" )
+
 #set ( $returnMode = $portletConstructors.get(0).newInstance("view") )
 #set ( $cancelUrl = $renderResponse.createRenderURL() )
 $cancelUrl.setPortletMode($returnMode)
@@ -29,7 +34,9 @@ $cancelUrl.setPortletMode($returnMode)
 #set ( $searchUrl = $renderResponse.createRenderURL() )
 $searchUrl.setParameter("action", "searchRepository")
 
-<script type="text/javascript" src="$springMacroRequestContext.contextPath/javascript/ckeditor/ckeditor.js"></script>
+#set ( $deleteUrl = $renderResponse.createActionURL() )
+$deleteUrl.setParameter("action", "removePostAttachment")
+
 
 <table cellpadding='0' cellspacing='0' width="100%">
 	<tr>
@@ -39,30 +46,32 @@ $searchUrl.setParameter("action", "searchRepository")
 				<input class="uportal-input-text" type='text' name="keyword" />
 				<input class="uportal-button" type='submit' value='#springMessage("button.caption.search")' />
 			</form>
-			<br/>
-			<form method='POST' action='$renderResponse.createActionURL()' enctype="multipart/form-data">
-				#springBind( "post.content" )
-				#set ( $content = $escapeTool.html(${status.value}) )
-				<textarea id="fckEditorId$editorId" name="${status.expression}" isFckEditor="true">$!content</textarea>
 		</td>
 	</tr>
-	
-	#if ( $post.Attachments.size() > 0 )
-		 
+</table>
+
+<form method='POST' id="editPostFormId$editPostFormId" action='$renderResponse.createActionURL()' enctype="multipart/form-data">
+<table cellpadding='0' cellspacing='0' width="100%">
+	<tr>
+		<td align='center'>	
+			#springBind( "post.content" )
+			#set ( $content = $escapeTool.html(${status.value}) )
+			<textarea id="fckEditorId$editorId" name="${status.expression}" isEditor="false">$!content</textarea>
+		</td>
+	</tr>
+		
+	#if ($post.Attachments.size() > 0)
 		<tr>
-			<td><span class="uportal-channel-strong">#springMessage("label.caption.attachments"):</span> </td>
+			<td>
+				<span id="$editAttachmentsButtonId">
+					<input class="uportal-button" type="button" value='#springMessage("button.caption.edit.attachments")' 
+							onClick="showEditAttachmentsDialog_$portletNamespace()" />
+				</span>
+			</td>
 		</tr>  
-	   	#foreach ($attachment in $post.Attachments)
-			<tr>
-				<td>
-					<img align="middle" hspace="3" src='$springMacroRequestContext.contextPath/images/package.gif'>
-					<a href='javascript:void(0);'>$attachment.Name</a>
-				</td>
-			</tr>
-		#end
 	#end
 	
-	#if ($status.getErrorCodes().size() > 0)
+	#if ($status.errorCodes.size() > 0)
 		<tr>
 			<td>
 				#foreach($error in $status.errorMessages) 
@@ -73,43 +82,154 @@ $searchUrl.setParameter("action", "searchRepository")
 	#end
 	
 	<tr>
+		<td>
+			#springMessage("label.caption.attachments"):
+			<div id="browseFileId$browseFileId"></div>
+		</td>
+	</tr>
+	<tr>
 		<td width="100%" align="right">
-			<input class="uportal-button" type="submit" value='#springMessage("button.caption.submit")'  />
-			<input class="uportal-button" type="button" value='#springMessage("button.caption.cancel")'
+			<input class="uportal-button" type="submit" name="post" value='#springMessage("button.caption.submit")'  />
+			<input class="uportal-button" type="button" name="cancel" value='#springMessage("button.caption.cancel")'
 				   onclick="window.location.href='${cancelUrl}';"  />
 		</td>
-		</form>
+		
 	</tr>
-
+	<tr>
+		<td>
+			<div class="uportal-channel-error" style="display:none" id="errorBlockContainer$errorContainerId">
+				<p class="uportal-channel-code" style="text-align:left;" id="errorBlock$errorContainerId"></p>
+			</div>
+		</td>
+	</tr>
 </table>
+</form>
+
+<div id="attachmentsDialogId$attachmentsDialogId" title='#springMessage("label.caption.attachments")'>
+	<table width="100%">
+		<tbody>
+			#foreach ($attachment in $post.Attachments)
+				#set ( $id = $mathTool.random(1,999999999) + "$portletNamespace" )
+				<tr>
+					<form id="attachmentsFormId$id" enctype="multipart/form-data">
+						<td width="80%">
+							<img align="middle" hspace="3" src='$springMacroRequestContext.contextPath/images/package.png'>
+							<a href='javascript:void(0);'>$attachment.FileName</a>
+							<input type="hidden" value="$attachment.Path" name="attachmentPath" />
+							<input type="hidden" value="$post.Path" name="postPath" />
+							 
+						</td>
+						
+						<td>
+							<input class="uportal-button" type="submit" value='#springMessage("button.caption.remove")'  />
+						</td>
+					</form>
+				</tr>
+			#end
+		</tbody>
+	</table>
+</div>
+
+<div id="busyDialogId$busyDialogId" title='#springMessage("label.caption.loading")'> 
+	<img valign="bottom" src='$springMacroRequestContext.contextPath/images/hourglass.png'>
+	<span>#springMessage("label.caption.view.loading")</span>
+</div>
 
 <script type="text/javascript">
-	try {
-		CKEDITOR.replaceAll( function( textarea, config ){
-			var replaceEditor = false;
-			try {	
-				if (textarea.isFckEditor != undefined && textarea.isFckEditor){					
-					config.defaultLanguage = 'en';
-					config.language = '$springMacroRequestContext.locale.getLanguage()';
-					config.ignoreEmptyParagraph = true; 
-					
-					textarea.isFckEditor = false;
-					replaceEditor = true;
-				}
-			}
-			catch (err) {
-				var errBlock = document.createElement("div");
-				errBlock.className = 'uportal-channel-error';
-				errBlock.innerHTML = '<p class="uportal-channel-code" style="text-align:left;">' + err + '</p>';
-				textarea.parentNode.replaceChild(errBlock, textarea);
-			}
-			return replaceEditor;
-		});
+			
+	$('#errorBlockContainer$errorContainerId').hide();
+	
+	$("#busyDialogId$busyDialogId").dialog({
+		minHeight: 80,
+		modal: true,
+		position: 'center',
+		minWidth: 450,
+		autoOpen: false,
+		disabled: true,
+		draggable: false,
+		closeOnEscape: false,
+		open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+	}); 
 		
-		CKEDITOR.on('instanceReady', function(ev){
-			ev.editor.focus();
+	function showEditAttachmentsDialog_$portletNamespace() {
+		$("#attachmentsDialogId$attachmentsDialogId").dialog('open');
+	}
+	
+	function hideEditAttachmentsDialog_$portletNamespace() {
+		$("#attachmentsDialogId$attachmentsDialogId").dialog('close');
+	}
+	
+	function showError_$portletNamespace(err) {
+		$('#errorBlockContainer$errorContainerId').show();
+		$('#errorBlock$errorContainerId').text(err);
+	}
+	
+	function postAttachmentDeleted_$portletNamespace(data, statusText, xhr, $form) {
+		if (data.response.removeSuccessful) {
+			$form.parent().remove();
+			var attachmentForms = $('form[id*="attachmentsFormId"]');
+			if (attachmentForms.length == 0) {
+				hideEditAttachmentsDialog_$portletNamespace();
+				$('#$editAttachmentsButtonId').remove();
+			} 
+			
+		} else {
+			alert('#springMessage("attachment.not.removed")');	
+		}
+	}
+			
+	try {
+		
+		$(document).ready(function(){
+			$("#busyDialogId$busyDialogId").dialog('open');
+			
+			var config = {
+				defaultLanguage: 'en', 
+				language: '$springMacroRequestContext.locale.getLanguage()',
+				ignoreEmptyParagraph: true
+			};
+			CKEDITOR.replace('fckEditorId$editorId', config);
+				
+			CKEDITOR.on('instanceReady', function(ev){
+				ev.editor.focus();
+				$("#busyDialogId$busyDialogId").dialog('close');				 
+			}); 
+				
+			//create attachments 
+			for (i = 0; i < $portletPreferencesWrapper.maximumPostAttachments; i++) {
+				var element = '<input name="attachment' + i + '" type="file" size="50" class="uportal-input-text" /><br/>';
+							  
+				$('#browseFileId$browseFileId').after(element);
+	    	}	 
+			
+	    	$("#attachmentsDialogId$attachmentsDialogId").dialog({
+				minHeight: 140,
+				modal: true,
+				position: 'center',
+				minWidth: 500,
+				autoOpen: false,
+				show: 'slide',
+				hide: 'explode'
+			});
+			 
+			 
+			
+			var instance = contentManagementPortlet.CMP({
+				formUrl: '$deleteUrl', 
+				successFunction: postAttachmentDeleted_$portletNamespace
+			});
+			
+			var attachmentForms = $('form[id*="attachmentsFormId"]');
+			for (i = 0; i < attachmentForms.length; i++) {
+				var id = attachmentForms[i].id;
+				instance.addFormHandler('#' + id);
+			}
+			
 		});
 	} catch (err) {
-		throw err;
-	}
+		showError_$portletNamespace(err);
+	} 
+	
+	
+				
 </script>

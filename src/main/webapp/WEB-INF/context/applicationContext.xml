@@ -21,4 +21,13 @@ under the License.
          xsi:schemaLocation="http://www.springframework.org/schema/beans
 http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
+    <bean id="ajaxResponseController" class="org.jasig.web.servlet.mvc.AjaxResponseController" />    
+
+	<bean id="downloadPostAttachmentController" class="org.jasig.portlet.cms.controller.DownloadPostAttachmentController" />
+	
+     <bean class="org.springframework.web.servlet.view.XmlViewResolver" >
+		<property name="order" value="0"/>
+		<property name="location" value="/WEB-INF/context/views.xml" />
+	</bean>
+                
 </beans>

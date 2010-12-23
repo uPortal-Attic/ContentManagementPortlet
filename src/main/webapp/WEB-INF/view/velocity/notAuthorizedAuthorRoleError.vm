@@ -15,10 +15,8 @@ KIND, either express or implied. See the License for the
 specific language governing permissions and limitations
 under the License.
 *#
-#set ( $renderRequest = $request.getAttribute("javax.portlet.request") )
-#set ( $renderResponse = $request.getAttribute("javax.portlet.response") )
+#parse( "include.vm" )
 
-#set ( $portletConstructors = $renderRequest.getPortletMode().getClass().getConstructors() )
 #set ( $returnMode = $portletConstructors.get(0).newInstance("view") )
 #set ( $cancelUrl = $renderResponse.createRenderURL() )
 $cancelUrl.setPortletMode($returnMode)

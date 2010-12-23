@@ -18,6 +18,7 @@ under the License.
  **/
 package org.jasig.portlet.cms.model.repository;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -25,6 +26,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jasig.portlet.cms.model.Post;
 import org.jasig.portlet.cms.model.RepositorySearchOptions;
 import org.jcrom.Jcrom;
@@ -58,10 +60,13 @@ public class JcrPostDao extends AbstractJcrDAO<Post> {
 
 	public List<Post> findAll(final RepositorySearchOptions options) throws RepositoryException {
 		final String keyword = StringEscapeUtils.escapeHtml(options.getKeyword());
+		List<Post> list = Collections.EMPTY_LIST;
 
-		final Node rootNode = getSession().getRootNode();
-		final List<Post> list = findByXPath("/" + rootNode.getPath()
-				+ "element(*,mix:versionable)[jcr:like(@content, '%" + keyword + "%')]", "*", -1);
+		if (!StringUtils.isBlank(keyword)) {
+			final Node rootNode = getSession().getRootNode();
+			list = findByXPath("/" + rootNode.getPath()
+					+ "element(*,mix:versionable)[jcr:like(@content, '%" + keyword + "%')]", "*", -1);
+		}
 		return list;
 
 	}

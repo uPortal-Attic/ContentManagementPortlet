@@ -84,6 +84,7 @@
 	    <constructor-arg type="java.util.Set">
 	      <set>
 	        <value type="java.lang.Class">org.jasig.portlet.cms.model.Post</value>
+	        <value type="java.lang.Class">org.jasig.portlet.cms.model.Attachment</value>
 	      </set>
 	    </constructor-arg>
 	  </bean>

@@ -1,0 +1,3 @@
+#macro( springArgMessage $code $args )
+    $springMacroRequestContext.getMessage($code, $args)
+#end

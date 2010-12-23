@@ -57,10 +57,11 @@ public class PostValidator implements Validator {
 	public void validate(final Object arg0, final Errors errors) {
 		final Post post = (Post) arg0;
 
-		logger.debug("Validaing post content " + errors.getFieldValue("content"));
+		if (logger.isDebugEnabled())
+			logger.debug("Validaing post content " + errors.getFieldValue("content"));
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "content", "invalid.post.content.empty");
 
-		if (post.getContent().trim().isEmpty())
+		if (post.getContent().trim().isEmpty() && !errors.hasErrors())
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "content", "invalid.post.content.empty");
 
 		final RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
@@ -72,10 +73,11 @@ public class PostValidator implements Validator {
 
 		validatePostAttachments(post, errors);
 
-		if (errors.getErrorCount() == 0)
-			logger.debug("Validated post successfully without errors");
-		else
-			logger.debug("Rejected post with " + errors.getErrorCount() + " errors");
+		if (logger.isDebugEnabled())
+			if (errors.getErrorCount() == 0)
+				logger.debug("Validated post successfully without errors");
+			else
+				logger.debug("Rejected post with " + errors.getErrorCount() + " errors");
 	}
 
 	private AntiVirusService getAntiVirusService() {

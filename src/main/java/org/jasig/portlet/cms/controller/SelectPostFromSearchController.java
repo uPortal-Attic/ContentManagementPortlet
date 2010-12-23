@@ -30,6 +30,7 @@ import javax.portlet.RenderResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.cms.model.Post;
+import org.jasig.portlet.cms.model.repository.RepositoryDao;
 import org.jasig.portlet.cms.view.PortletView;
 import org.springframework.validation.BindException;
 import org.springframework.web.portlet.ModelAndView;
@@ -39,30 +40,41 @@ import org.springframework.web.portlet.util.PortletUtils;
 public class SelectPostFromSearchController extends AbstractCommandController {
 	private final Log logger = LogFactory.getLog(getClass());
 
+	private RepositoryDao repositoryDao = null;
+
+	public void setRepositoryDao(final RepositoryDao repositoryDao) {
+		this.repositoryDao = repositoryDao;
+	}
+
+	private RepositoryDao getRepositoryDao() {
+		return repositoryDao;
+	}
+
 	@Override
 	protected void handleAction(final ActionRequest arg0, final ActionResponse actionresponse,
-	        final Object arg2, final BindException arg3) throws Exception {
+			final Object arg2, final BindException arg3) throws Exception {
 		PortletUtils.clearAllRenderParameters(actionresponse);
 	}
 
 	@Override
 	protected ModelAndView handleRender(final RenderRequest arg0, final RenderResponse arg1,
-	        final Object arg2, final BindException arg3) throws Exception {
+			final Object arg2, final BindException arg3) throws Exception {
 
-		final Post post = (Post) arg2;
+		Post post = (Post) arg2;
 		final PortletPreferencesWrapper pref = new PortletPreferencesWrapper(arg0);
 
-		logger.debug("Selecting post from search");
+		if (logger.isDebugEnabled())
+			logger.debug("Selecting post from search");
 
+		post = getRepositoryDao().getPost(post.getPath());
 		post.setAuthor(pref.getPortletUserName());
 		post.setDate(new Date());
 
-		logger.debug("Post is at " + post.getPath());
-		logger.debug("Post content is " + post.getContent());
-		logger.debug("Post author is " + post.getAuthor());
-		logger.debug("Post date is " + post.getDate());
+		if (logger.isDebugEnabled())
+			logger.debug("Post: " + post);
 
 		final Map<String, Object> map = new HashMap<String, Object>();
+		map.put("portletPreferencesWrapper", pref);
 		map.put("post", post);
 
 		return new ModelAndView(PortletView.EDITPOST, map);

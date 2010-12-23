@@ -23,7 +23,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.jcrom.annotations.JcrFileNode;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.jcrom.annotations.JcrChildNode;
 import org.jcrom.annotations.JcrName;
 import org.jcrom.annotations.JcrNode;
 import org.jcrom.annotations.JcrPath;
@@ -40,8 +41,10 @@ public class Post implements Serializable {
 	private Date date = null;
 	@JcrProperty
 	private String content = null;
-	@JcrFileNode
+
+	@JcrChildNode
 	private List<Attachment> attachments = null;
+
 	@JcrName
 	private String name;
 	@JcrPath
@@ -95,5 +98,20 @@ public class Post implements Serializable {
 	public void setPath(final String loc) {
 		path = loc;
 		name = loc;
+	}
+
+	@Override
+	public String toString() {
+		final ToStringBuilder bldr = new ToStringBuilder(this);
+		bldr.append("author", getAuthor());
+		bldr.append("date", getDate());
+		bldr.append("name", getName());
+		bldr.append("path", getPath());
+		bldr.append("content", getContent());
+
+		for (final Attachment attachment : getAttachments())
+			bldr.append("attachment", attachment.toString());
+
+		return bldr.toString();
 	}
 }

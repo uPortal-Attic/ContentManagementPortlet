@@ -47,17 +47,22 @@ public class ViewPostController extends AbstractController {
 
 	@Override
 	protected ModelAndView handleRenderRequestInternal(final RenderRequest request,
-	        final RenderResponse response) throws Exception {
+			final RenderResponse response) throws Exception {
 
-		final Map<String, Object> map = new HashMap<String, Object>();
+
 		final PortletPreferencesWrapper pref = new PortletPreferencesWrapper(request);
 
-		logger.debug("Retrieving repository post");
+		if (logger.isDebugEnabled())
+			logger.debug("Retrieving repository post");
+
 		final Post post = geRepositoryDao().getPost(pref.getPortletRepositoryRoot());
 
+		final Map<String, Object> map = new HashMap<String, Object>();
 		map.put("post", post);
 
-		logger.debug("Returning repository post");
+		if (logger.isDebugEnabled())
+			logger.debug("Returning repository post " + post);
+
 		final ModelAndView view = new ModelAndView(PortletView.VIEWPOST, map);
 		return view;
 

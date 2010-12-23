@@ -20,6 +20,7 @@ package org.jasig.portlet.cms.model.repository;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -37,8 +38,6 @@ import com.googlecode.ehcache.annotations.When;
 
 public class JcrRepositoryDao extends JcrDaoSupport implements RepositoryDao {
 	private JcrPostDao postDao = null;
-
-	@SuppressWarnings("unused")
 	private final Log logger = LogFactory.getLog(getClass());
 
 	@Override
@@ -72,11 +71,14 @@ public class JcrRepositoryDao extends JcrDaoSupport implements RepositoryDao {
 		final Object list = getTemplate().execute(new JcrCallback() {
 			@Override
 			public Object doInJcr(final Session session) throws IOException, RepositoryException {
-				Collection<Post> list = null;
+				List<Post> list = null;
 				try {
 					final JcrPostDao dao = getPostDao();
 					list = dao.findAll(options);
+
 				} catch (final RepositoryException e) {
+					if (logger.isErrorEnabled())
+						logger.error(list, e);
 					throw new JcrRepositoryException(e);
 				}
 				return list;
@@ -104,6 +106,8 @@ public class JcrRepositoryDao extends JcrDaoSupport implements RepositoryDao {
 						dao.create(getSession().getRootNode().getPath(), post);
 
 				} catch (final RepositoryException e) {
+					if (logger.isErrorEnabled())
+						logger.error(post, e);
 					throw new JcrRepositoryException(e);
 				}
 				return null;

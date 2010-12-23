@@ -52,30 +52,35 @@ public class SearchController extends AbstractCommandController {
 
 	@Override
 	protected void handleAction(final ActionRequest actionrequest, final ActionResponse actionresponse,
-	        final Object obj, final BindException bindexception) throws Exception {
+			final Object obj, final BindException bindexception) throws Exception {
 		PortletUtils.clearAllRenderParameters(actionresponse);
 	}
 
 	@Override
 	protected ModelAndView handleRender(final RenderRequest renderrequest,
-	        final RenderResponse renderresponse, final Object obj, final BindException bindexception)
-	        throws Exception {
+			final RenderResponse renderresponse, final Object obj, final BindException bindexception)
+	throws Exception {
 
 		final RepositorySearchOptions options = (RepositorySearchOptions) obj;
 
-		logger.debug("Executing search");
+		if (logger.isDebugEnabled())
+			logger.debug("Executing search");
+
 		final Collection<Post> results = geRepositoryDao().search(options);
 
 		final Map<String, Object> model = new HashMap<String, Object>();
 
 		if (results != null && results.size() > 0) {
-			logger.debug("Number of search results found: " + results.size());
+
+			if (logger.isDebugEnabled())
+				logger.debug("Number of search results found: " + results.size());
 			model.put("searchResults", results);
 			model.put("portletPreferences", new PortletPreferencesWrapper(renderrequest));
-		} else
+		} else if (logger.isDebugEnabled())
 			logger.debug("No results are found");
 
-		logger.debug("Returning search results");
+		if (logger.isDebugEnabled())
+			logger.debug("Returning search results");
 		final ModelAndView modelAndView = new ModelAndView(PortletView.VIEWSEARCHRESULTS, model);
 
 		return modelAndView;

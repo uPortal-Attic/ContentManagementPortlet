@@ -19,6 +19,12 @@ under the License.
 
 package org.jasig.portlet.cms.controller;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletMode;
@@ -26,9 +32,13 @@ import javax.portlet.PortletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jasig.portlet.cms.model.Attachment;
 import org.jasig.portlet.cms.model.Post;
 import org.jasig.portlet.cms.model.repository.RepositoryDao;
 import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.portlet.multipart.MultipartActionRequest;
 import org.springframework.web.portlet.mvc.SimpleFormController;
 import org.springframework.web.portlet.util.PortletUtils;
 
@@ -40,28 +50,50 @@ public class EditPostController extends SimpleFormController {
 		this.repositoryDao = repositoryDao;
 	}
 
-	private RepositoryDao geRepositoryDao() {
+	private RepositoryDao getRepositoryDao() {
 		return repositoryDao;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void processPostAttachments(final ActionRequest request, final Post post) throws IOException {
+		final MultipartActionRequest multipartRequest = (MultipartActionRequest) request;
+		final Collection<MultipartFile> files = multipartRequest.getFileMap().values();
+
+		for (final MultipartFile file : files)
+			if (!file.isEmpty()) {
+				if (logger.isDebugEnabled()) {
+					logger.debug("Uploading attachment file: " + file.getOriginalFilename());
+					logger.debug("Attachment file size: " + file.getSize());
+				}
+
+				final Attachment attachment = Attachment.fromFile(file.getOriginalFilename(),
+				        file.getContentType(), new Date(),
+						request.getLocale(), file.getBytes());
+
+				post.getAttachments().add(attachment);
+			}
+
 	}
 
 	@Override
 	protected Object formBackingObject(final PortletRequest request) throws Exception {
 
-		logger.debug("Preparing post for edit");
+		if (logger.isDebugEnabled())
+			logger.debug("Preparing post for edit");
+
 		final PortletPreferencesWrapper pref = new PortletPreferencesWrapper(request);
-		Post post = geRepositoryDao().getPost(pref.getPortletRepositoryRoot());
+		Post post = getRepositoryDao().getPost(pref.getPortletRepositoryRoot());
 
 		if (post == null) {
-			logger.debug("No post exists in repository. Configuring blank post");
+			if (logger.isDebugEnabled())
+				logger.debug("No post exists in repository. Configuring blank post");
 			post = new Post();
 			post.setAuthor(pref.getPortletUserName());
 			post.setPath(pref.getPortletRepositoryRoot());
 		}
 
-		logger.debug("Post is at " + post.getPath());
-		logger.debug("Post content is " + post.getContent());
-		logger.debug("Post author is " + post.getAuthor());
-		logger.debug("Post date is " + post.getDate());
+		if (logger.isDebugEnabled())
+			logger.debug("Post: " + post);
 
 		return post;
 	}
@@ -69,22 +101,39 @@ public class EditPostController extends SimpleFormController {
 	@Override
 	protected void onSubmitAction(final ActionRequest request, final ActionResponse response,
 			final Object command, final BindException errors) throws Exception {
-		logger.debug("Received post object");
+
+		if (logger.isDebugEnabled())
+			logger.debug("Received post object");
 		final Post post = (Post) command;
 
-		logger.debug("Post is at " + post.getPath());
-		logger.debug("Post content is " + post.getContent());
-		logger.debug("Post author is " + post.getAuthor());
-		logger.debug("Post date is " + post.getDate());
+		if (logger.isDebugEnabled())
+			logger.debug("Post: " + post);
 
-		logger.debug("Submitting post object");
-		geRepositoryDao().setPost(post);
+		if (logger.isDebugEnabled())
+			logger.debug("Submitting post object");
 
-		logger.debug("Clearing render parameters");
+		processPostAttachments(request, post);
+
+		getRepositoryDao().setPost(post);
+
+		if (logger.isDebugEnabled())
+			logger.debug("Clearing render parameters");
 		PortletUtils.clearAllRenderParameters(response);
 
-		logger.debug("Switing to view mode");
+		if (logger.isDebugEnabled())
+			logger.debug("Switing to view mode");
 		response.setPortletMode(PortletMode.VIEW);
 
+	}
+
+	@Override
+	@SuppressWarnings("rawtypes")
+	protected Map referenceData(final PortletRequest request, final Object command, final Errors errors) throws Exception {
+		final Map<String, Object> data = new HashMap<String, Object>();
+
+		final PortletPreferencesWrapper pref = new PortletPreferencesWrapper(request);
+		data.put("portletPreferencesWrapper", pref);
+
+		return data;
 	}
 }

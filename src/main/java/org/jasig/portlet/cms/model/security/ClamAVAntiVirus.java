@@ -31,13 +31,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public final class ClamAVAntiVirus implements AntiVirusService {
+	private static final int DEFAULT_PORT = 3310;
+	private static final String DEFAULT_IP = "127.0.0.1";
+
 	private final Log logger = LogFactory.getLog(getClass());
 	private String ip;
 	private int port;
 
 	public ClamAVAntiVirus() {
-		setIp("127.0.0.1");
-		setPort(3310);
+		setIp(DEFAULT_IP);
+		setPort(DEFAULT_PORT);
 	}
 
 	@Override
@@ -81,7 +84,7 @@ public final class ClamAVAntiVirus implements AntiVirusService {
 		try {
 			if (socket != null)
 				socket.close();
-		} catch (final Exception e) {
+		} catch (final IOException e) {
 
 		}
 	}
@@ -105,7 +108,7 @@ public final class ClamAVAntiVirus implements AntiVirusService {
 		try {
 			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())),
-			        true);
+					true);
 
 			writer.println(command);
 			writer.flush();
