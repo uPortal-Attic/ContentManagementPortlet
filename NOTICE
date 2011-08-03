@@ -30,7 +30,7 @@ This project includes:
  
   AJAX Portlet Support under The BSD License
   AOP alliance under Public Domain
-  Apache Derby Database Engine and Embedded JDBC Driver under Apache License, Version 2.0
+  Apache Derby Database Engine and Embedded JDBC Driver under Apache 2
   Apache Jackrabbit API under The Apache Software License, Version 2.0
   Apache POI under The Apache Software License, Version 2.0
   Apache Velocity under The Apache Software License, Version 2.0
@@ -47,15 +47,15 @@ This project includes:
   cglib-full under Apache License, Version 1.1
   CLI under Apache License, Version 2.0
   Codec under Apache License, Version 2.0
-  Commons BeanUtils under Apache License, Version 2.0
-  Commons Collections under Apache License, Version 2.0
+  Commons BeanUtils under The Apache Software License, Version 2.0
+  Commons Collections under The Apache Software License, Version 2.0
   Commons FileUpload under The Apache Software License, Version 2.0
   Commons IO under The Apache Software License, Version 2.0
   Commons Lang under The Apache Software License, Version 2.0
   Commons Logging under The Apache Software License, Version 2.0
   Content Repository for Java Technology API under Day Specification License or Day Specification License addendum
   ContentManagementPortlet under Apache License Version 2.0
-  Digester under Apache License, Version 2.0
+  Digester under The Apache Software License, Version 2.0
   Dough Lea's util.concurrent package under Public domain, Sun Microsoystems
   Ehcache Core under The Apache Software License, Version 2.0
   Ehcache Spring Annotations under Apache 2
@@ -89,18 +89,18 @@ This project includes:
   SLF4J API Module under MIT License
   SLF4J LOG4J-12 Binding under MIT License
   Spring Extension JCR under Apache License, Version 2.0
-  Spring Framework: AOP under Apache License, Version 2.0
-  Spring Framework: Beans under Apache License, Version 2.0
-  Spring Framework: Context under Apache License, Version 2.0
-  Spring Framework: Context Support under Apache License, Version 2.0
-  Spring Framework: Core under Apache License, Version 2.0
-  Spring Framework: Transaction under Apache License, Version 2.0
-  Spring Framework: Web under Apache License, Version 2.0
-  Spring Framework: Web MVC under Apache License, Version 2.0
-  Spring Framework: Web MVC Portlet under Apache License, Version 2.0
+  Spring Framework: AOP under The Apache Software License, Version 2.0
+  Spring Framework: Beans under The Apache Software License, Version 2.0
+  Spring Framework: Context under The Apache Software License, Version 2.0
+  Spring Framework: Context Support under The Apache Software License, Version 2.0
+  Spring Framework: Core under The Apache Software License, Version 2.0
+  Spring Framework: Transaction under The Apache Software License, Version 2.0
+  Spring Framework: Web under The Apache Software License, Version 2.0
+  Spring Framework: Web MVC under The Apache Software License, Version 2.0
+  Spring Framework: Web MVC Portlet under The Apache Software License, Version 2.0
   spring-modules-cache under Apache License, Version 2.0
   velocity-tools:velocity-tools under Apache License, Version 2.0
-  Xerces2 Java Parser under Apache License, Version 2.0
+  Xerces2 Java Parser under The Apache Software License, Version 2.0
   XML Commons External Components XML APIs Extensions under The Apache Software License, Version 2.0
   xml-apis under The Apache Software License, Version 2.0
   xmlParserAPIs under Apache License, Version 2.0

@@ -15,15 +15,15 @@
 	<parent>
 		<groupId>org.jasig.parent</groupId>
 		<artifactId>jasig-parent</artifactId>
-		<version>29</version>
+		<version>30</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>content-management-portlet</groupId>
+	<groupId>org.jasig.portlet</groupId>
 	<artifactId>ContentManagementPortlet</artifactId>
 	<packaging>war</packaging>
 	<name>${project.artifactId}</name>
-	<version>0.0.2</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<description>Content Management Portlet (JSR 168)</description>
 	<url>https://wiki.jasig.org/display/PLT/Content+Management+Portlet</url>
 	<organization>
@@ -53,6 +53,12 @@
 		<commons.fileupload.version>1.2.1</commons.fileupload.version>
 		<commons.collections.version>3.2.1</commons.collections.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.gpg.plugin.version>1.3</maven.gpg.plugin.version>
+		<tools.maven.plugin.version>1.2</tools.maven.plugin.version>
+		<maven.enforcer.plugin.version>1.0</maven.enforcer.plugin.version>
+		<maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
+		<maven.war.plugin.version>2.1.1</maven.war.plugin.version>
+		<maven.notice.plugin.version>1.0.4</maven.notice.plugin.version>
 	</properties>
 
 	<ciManagement>
@@ -70,28 +76,27 @@
 	</developers>
 
 	<scm>
-		<url>https://source.jasig.org/portlets/ContentManagementPortlet</url>
-		<tag>HEAD</tag>
-		<connection>scm:svn:https://source.jasig.org/portlets/ContentManagementPortlet</connection>
+		<connection>scm:svn:https://source.jasig.org/portlets/ContentManagementPortlet/trunk</connection>
+		<developerConnection>scm:svn:https://source.jasig.org/portlets/ContentManagementPortlet/trunk</developerConnection>
+		<url>http://developer.jasig.org/source/browse/jasigsvn/portlets/ContentManagementPortlet/trunk</url>
 	</scm>
+
 
 	<build>
 		<defaultGoal>install</defaultGoal>
 		<finalName>${project.name}</finalName>
 
 		<plugins>
-
 			<plugin>
 				<groupId>org.jasig.maven</groupId>
 				<artifactId>maven-notice-plugin</artifactId>
-				<version>1.0.2</version>
 
 				<configuration>
 					<noticeTemplate>ContentManagementPortlet.NOTICE.template</noticeTemplate>
 
-					<licenseLookup>
+					<licenseMapping>
 						<param>https://source.jasig.org/licenses/license-mappings.xml</param>
-					</licenseLookup>
+					</licenseMapping>
 				</configuration>
 
 				<executions>
@@ -108,10 +113,11 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>1.0</version>
+				<version>${maven.enforcer.plugin.version}</version>
 				<executions>
 					<execution>
 						<id>enforce-java</id>
+						<phase>compile</phase>
 						<goals>
 							<goal>enforce</goal>
 						</goals>
@@ -135,7 +141,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>${maven.compiler.plugin.version}</version>
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
@@ -145,7 +151,7 @@
 			<plugin>
 				<groupId>org.apache.geronimo.genesis.plugins</groupId>
 				<artifactId>tools-maven-plugin</artifactId>
-				<version>1.2</version>
+				<version>${tools.maven.plugin.version}</version>
 				<executions>
 					<execution>
 						<id>verify-legal-files</id>
@@ -165,8 +171,23 @@
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>${maven.gpg.plugin.version}</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.1.1</version>
+				<version>${maven.war.plugin.version}</version>
 				<configuration>
 					<webXml>${project.build.directory}/pluto-resources/web.xml</webXml>
 				</configuration>
@@ -205,8 +226,7 @@
 						<configuration>
 							<tasks>
 								<property environment="env" />
-								<property name="catalina.home"
-									value="${catalina.home}" />
+								<property name="catalina.home" value="${env.CATALINA_HOME}" />
 								<delete dir="${catalina.home}/webapps/${project.name}" />
 								<delete file="${catalina.home}/webapps/${project.name}.war" />
 								<copy file="target/${project.name}.war" todir="${catalina.home}/webapps"
@@ -220,6 +240,66 @@
 				</executions>
 			</plugin>
 		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.jasig.maven
+										</groupId>
+										<artifactId>
+											maven-notice-plugin
+										</artifactId>
+										<versionRange>
+											[${maven.notice.plugin.version},)
+										</versionRange>
+										<goals>
+											<goal>generate</goal>
+										</goals>
+									</pluginExecutionFilter>
+
+									<action>
+										<execute />
+									</action>
+								</pluginExecution>
+
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.pluto
+										</groupId>
+										<artifactId>
+											maven-pluto-plugin
+										</artifactId>
+										<versionRange>
+											[${pluto.version},)
+										</versionRange>
+										<goals>
+											<goal>assemble</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+
+			</plugins>
+		</pluginManagement>
+
 	</build>
 
 
@@ -651,13 +731,6 @@
 			<version>${commons.collections.version}</version>
 		</dependency>
 
-		<!-- <dependency> <groupId>xerces</groupId> <artifactId>xercesImpl</artifactId> 
-			<version>2.9.1</version> <scope>runtime</scope> </dependency> <dependency> 
-			<groupId>xml-apis</groupId> <artifactId>xml-apis</artifactId> <version>1.3.04</version> 
-			<scope>runtime</scope> </dependency> <dependency> <groupId>org.apache.xmlbeans</groupId> 
-			<artifactId>xmlbeans</artifactId> <version>2.3.0</version> <scope>runtime</scope> 
-			</dependency> -->
-
 		<dependency>
 			<groupId>net.sf.json-lib</groupId>
 			<artifactId>json-lib-ext-spring</artifactId>
@@ -699,4 +772,6 @@
 			<archive>https://lists.wisc.edu/read/?forum=portlet-user</archive>
 		</mailingList>
 	</mailingLists>
+
+
 </project>
