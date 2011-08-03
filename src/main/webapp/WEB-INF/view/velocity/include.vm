@@ -16,7 +16,6 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-
 <link rel="stylesheet" href="$springMacroRequestContext.contextPath/javascript/jquery/css/jpaginate-style.css" type="text/css">
 <link rel="stylesheet" href="$springMacroRequestContext.contextPath/javascript/jquery/css/redmond/jquery-ui-1.8.4.custom.css" type="text/css">
 

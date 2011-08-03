@@ -16,7 +16,6 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-
 #parse( "include.vm" )
 
 #set ( $returnMode = $portletConstructors.get(0).newInstance("view") )

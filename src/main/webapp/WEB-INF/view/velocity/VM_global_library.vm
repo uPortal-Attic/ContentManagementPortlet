@@ -16,7 +16,6 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-
 #macro( springArgMessage $code $args )
     $springMacroRequestContext.getMessage($code, $args)
 #end

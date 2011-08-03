@@ -19,6 +19,7 @@
     under the License.
 
 -->
+
 <ehcache updateCheck="false" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd">
 	<diskStore path="java.io.tmpdir/ContentManagementPortlet" />
     <defaultCache eternal="true" maxElementsInMemory="100" overflowToDisk="false" />

@@ -140,22 +140,25 @@
 			<plugin>
                 <groupId>com.mycila.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
+                
                 <configuration>
                     <basedir>${basedir}</basedir>
                     <header>${jasig-short-license-url}</header>
-
+					
                     <aggregate>true</aggregate>
                     <strictCheck>true</strictCheck>
                     <excludes>
                         <exclude>LICENSE</exclude>
                         <exclude>NOTICE</exclude>
                         <exclude>src/main/webapp/javascript/**</exclude>
+                        <exclude>src/main/webapp/WEB-INF/view/velocity/**</exclude>
                     </excludes>
                     <mapping>
                         <tld>XML_STYLE</tld>
                         <tag>DYNASCRIPT_STYLE</tag>                     
                     </mapping>
                 </configuration>
+                
             </plugin>
             
 			<plugin>
