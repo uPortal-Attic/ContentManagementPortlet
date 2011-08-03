@@ -1,21 +1,22 @@
-/*
-Licensed to Jasig under one or more contributor license
-agreements. See the NOTICE file distributed with this work
-for additional information regarding copyright ownership.
-Jasig licenses this file to you under the Apache License,
-Version 2.0 (the "License"); you may not use this file
-except in compliance with the License. You may obtain a
-copy of the License at:
+/**
+ * Licensed to Jasig under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work
+ * for additional information regarding copyright ownership.
+ * Jasig licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a
+ * copy of the License at:
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on
-an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied. See the License for the
-specific language governing permissions and limitations
-under the License.
- **/
 
 package org.jasig.portlet.cms.controller;
 
@@ -45,45 +46,16 @@ import org.springframework.web.portlet.util.PortletUtils;
 public class EditPostController extends SimpleFormController {
 	private final Log logger = LogFactory.getLog(getClass());
 	private RepositoryDao repositoryDao = null;
-
-	public void setRepositoryDao(final RepositoryDao repositoryDao) {
-		this.repositoryDao = repositoryDao;
-	}
-
-	private RepositoryDao getRepositoryDao() {
-		return repositoryDao;
-	}
-
-	@SuppressWarnings("unchecked")
-	private void processPostAttachments(final ActionRequest request, final Post post) throws IOException {
-		final MultipartActionRequest multipartRequest = (MultipartActionRequest) request;
-		final Collection<MultipartFile> files = multipartRequest.getFileMap().values();
-
-		for (final MultipartFile file : files)
-			if (!file.isEmpty()) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("Uploading attachment file: " + file.getOriginalFilename());
-					logger.debug("Attachment file size: " + file.getSize());
-				}
-
-				final Attachment attachment = Attachment.fromFile(file.getOriginalFilename(),
-				        file.getContentType(), new Date(),
-						request.getLocale(), file.getBytes());
-
-				post.getAttachments().add(attachment);
-			}
-
-	}
-
+	
 	@Override
 	protected Object formBackingObject(final PortletRequest request) throws Exception {
-
+		
 		if (logger.isDebugEnabled())
 			logger.debug("Preparing post for edit");
-
+		
 		final PortletPreferencesWrapper pref = new PortletPreferencesWrapper(request);
 		Post post = getRepositoryDao().getPost(pref.getPortletRepositoryRoot());
-
+		
 		if (post == null) {
 			if (logger.isDebugEnabled())
 				logger.debug("No post exists in repository. Configuring blank post");
@@ -91,49 +63,78 @@ public class EditPostController extends SimpleFormController {
 			post.setAuthor(pref.getPortletUserName());
 			post.setPath(pref.getPortletRepositoryRoot());
 		}
-
+		
 		if (logger.isDebugEnabled())
 			logger.debug("Post: " + post);
-
+		
 		return post;
 	}
-
+	
+	private RepositoryDao getRepositoryDao() {
+		return repositoryDao;
+	}
+	
 	@Override
 	protected void onSubmitAction(final ActionRequest request, final ActionResponse response,
 			final Object command, final BindException errors) throws Exception {
-
+		
 		if (logger.isDebugEnabled())
 			logger.debug("Received post object");
 		final Post post = (Post) command;
-
+		
 		if (logger.isDebugEnabled())
 			logger.debug("Post: " + post);
-
+		
 		if (logger.isDebugEnabled())
 			logger.debug("Submitting post object");
-
+		
 		processPostAttachments(request, post);
-
+		
 		getRepositoryDao().setPost(post);
-
+		
 		if (logger.isDebugEnabled())
 			logger.debug("Clearing render parameters");
 		PortletUtils.clearAllRenderParameters(response);
-
+		
 		if (logger.isDebugEnabled())
 			logger.debug("Switing to view mode");
 		response.setPortletMode(PortletMode.VIEW);
-
+		
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	private void processPostAttachments(final ActionRequest request, final Post post) throws IOException {
+		final MultipartActionRequest multipartRequest = (MultipartActionRequest) request;
+		final Collection<MultipartFile> files = multipartRequest.getFileMap().values();
+		
+		for (final MultipartFile file : files)
+			if (!file.isEmpty()) {
+				if (logger.isDebugEnabled()) {
+					logger.debug("Uploading attachment file: " + file.getOriginalFilename());
+					logger.debug("Attachment file size: " + file.getSize());
+				}
+				
+				final Attachment attachment = Attachment.fromFile(file.getOriginalFilename(),
+						file.getContentType(), new Date(),
+						request.getLocale(), file.getBytes());
+				
+				post.getAttachments().add(attachment);
+			}
+		
+	}
+	
 	@Override
 	@SuppressWarnings("rawtypes")
 	protected Map referenceData(final PortletRequest request, final Object command, final Errors errors) throws Exception {
 		final Map<String, Object> data = new HashMap<String, Object>();
-
+		
 		final PortletPreferencesWrapper pref = new PortletPreferencesWrapper(request);
 		data.put("portletPreferencesWrapper", pref);
-
+		
 		return data;
+	}
+	
+	public void setRepositoryDao(final RepositoryDao repositoryDao) {
+		this.repositoryDao = repositoryDao;
 	}
 }

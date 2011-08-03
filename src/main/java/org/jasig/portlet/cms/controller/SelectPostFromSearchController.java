@@ -1,21 +1,22 @@
-/*
-Licensed to Jasig under one or more contributor license
-agreements. See the NOTICE file distributed with this work
-for additional information regarding copyright ownership.
-Jasig licenses this file to you under the Apache License,
-Version 2.0 (the "License"); you may not use this file
-except in compliance with the License. You may obtain a
-copy of the License at:
+/**
+ * Licensed to Jasig under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work
+ * for additional information regarding copyright ownership.
+ * Jasig licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a
+ * copy of the License at:
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on
-an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied. See the License for the
-specific language governing permissions and limitations
-under the License.
- **/
 package org.jasig.portlet.cms.controller;
 
 import java.util.Date;
@@ -39,45 +40,45 @@ import org.springframework.web.portlet.util.PortletUtils;
 
 public class SelectPostFromSearchController extends AbstractCommandController {
 	private final Log logger = LogFactory.getLog(getClass());
-
+	
 	private RepositoryDao repositoryDao = null;
-
-	public void setRepositoryDao(final RepositoryDao repositoryDao) {
-		this.repositoryDao = repositoryDao;
-	}
-
+	
 	private RepositoryDao getRepositoryDao() {
 		return repositoryDao;
 	}
-
+	
 	@Override
 	protected void handleAction(final ActionRequest arg0, final ActionResponse actionresponse,
 			final Object arg2, final BindException arg3) throws Exception {
 		PortletUtils.clearAllRenderParameters(actionresponse);
 	}
-
+	
 	@Override
 	protected ModelAndView handleRender(final RenderRequest arg0, final RenderResponse arg1,
 			final Object arg2, final BindException arg3) throws Exception {
-
+		
 		Post post = (Post) arg2;
 		final PortletPreferencesWrapper pref = new PortletPreferencesWrapper(arg0);
-
+		
 		if (logger.isDebugEnabled())
 			logger.debug("Selecting post from search");
-
+		
 		post = getRepositoryDao().getPost(post.getPath());
 		post.setAuthor(pref.getPortletUserName());
 		post.setDate(new Date());
-
+		
 		if (logger.isDebugEnabled())
 			logger.debug("Post: " + post);
-
+		
 		final Map<String, Object> map = new HashMap<String, Object>();
 		map.put("portletPreferencesWrapper", pref);
 		map.put("post", post);
-
+		
 		return new ModelAndView(PortletView.EDITPOST, map);
 	}
-
+	
+	public void setRepositoryDao(final RepositoryDao repositoryDao) {
+		this.repositoryDao = repositoryDao;
+	}
+	
 }
