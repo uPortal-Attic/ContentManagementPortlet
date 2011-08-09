@@ -22,7 +22,7 @@
 	<artifactId>ContentManagementPortlet</artifactId>
 	<packaging>war</packaging>
 	<name>${project.artifactId}</name>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.2</version>
 	<description>Content Management Portlet (JSR 168)</description>
 	<url>https://wiki.jasig.org/display/PLT/Content+Management+Portlet</url>
 	<organization>
@@ -75,9 +75,9 @@
 	</developers>
 
 	<scm>
-        <connection>scm:svn:https://source.jasig.org/portlets/ContentManagementPortlet/trunk</connection>
-        <developerConnection>scm:svn:https://source.jasig.org/portlets/ContentManagementPortlet/trunk</developerConnection>
-        <url>http://developer.jasig.org/source/browse/jasigsvn/portlets/ContentManagementPortlet/trunk</url>
+        <connection>scm:svn:https://source.jasig.org/portlets/ContentManagementPortlet/tags/ContentManagementPortlet-0.0.2-SNAPSHOT</connection>
+        <developerConnection>scm:svn:https://source.jasig.org/portlets/ContentManagementPortlet/tags/ContentManagementPortlet-0.0.2-SNAPSHOT</developerConnection>
+        <url>http://developer.jasig.org/source/browse/jasigsvn/portlets/ContentManagementPortlet/tags/ContentManagementPortlet-0.0.2-SNAPSHOT</url>
     </scm>
     
 	<build>
