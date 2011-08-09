@@ -69,7 +69,7 @@ public class JcrRepositoryDao extends JcrDaoSupport implements RepositoryDao {
 		return postDao;
 	}
 	
-	@SuppressWarnings("unchecked")
+
 	@Override
 	@Cacheable(cacheName = "postCache")
 	public Collection<Post> search(final RepositorySearchOptions options) throws JcrRepositoryException {
