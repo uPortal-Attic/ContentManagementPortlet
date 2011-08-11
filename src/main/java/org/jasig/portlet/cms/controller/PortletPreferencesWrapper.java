@@ -24,28 +24,29 @@ import javax.portlet.PortletPreferences;
 import javax.portlet.PortletRequest;
 
 public final class PortletPreferencesWrapper {
-	private PortletPreferences prefences = null;
+	private PortletPreferences preferences = null;
 	private PortletRequest portletRequest = null;
 	
-	private static final String DEFAULTREPOSITORYROOTNAME = "root";
+	private static final String	DEFAULT_REPOSITORY_ROOT_NAME	= "root";
+	private static final long	DEFAULT_MAX_POST_ATTACHMENTS	= 2;
 	
 	public PortletPreferencesWrapper(final PortletRequest request) {
 		portletRequest = request;
-		prefences = portletRequest.getPreferences();
+		preferences = portletRequest.getPreferences();
 	}
 	
 	public long getMaximumPostAttachments() {
-		final String value = prefences.getValue("post.attachments.max", "2");
+		final String value = preferences.getValue("post.attachments.max", "2");
 		if (value == null || value.trim().length() <= 0)
-			return 2;
+			return PortletPreferencesWrapper.DEFAULT_MAX_POST_ATTACHMENTS;
 		return Long.valueOf(value);
 	}
 	
 	public String getPortletRepositoryRoot() {
-		String result = prefences.getValue("repository.root",
-				PortletPreferencesWrapper.DEFAULTREPOSITORYROOTNAME);
+		String result = preferences.getValue("repository.root",
+				PortletPreferencesWrapper.DEFAULT_REPOSITORY_ROOT_NAME);
 		if (result == null || result.trim().length() <= 0)
-			result = PortletPreferencesWrapper.DEFAULTREPOSITORYROOTNAME;
+			result = PortletPreferencesWrapper.DEFAULT_REPOSITORY_ROOT_NAME;
 		return result;
 	}
 	
@@ -54,7 +55,7 @@ public final class PortletPreferencesWrapper {
 	}
 	
 	public boolean isXssValidationEnabled() {
-		final String value = prefences.getValue("xss.validation.enabled", Boolean.TRUE.toString());
+		final String value = preferences.getValue("xss.validation.enabled", Boolean.TRUE.toString());
 		if (value == null || value.trim().length() <= 0)
 			return true;
 		

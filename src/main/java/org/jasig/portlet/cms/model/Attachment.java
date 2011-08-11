@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.jasig.portlet.cms.model;
 
 import java.text.SimpleDateFormat;

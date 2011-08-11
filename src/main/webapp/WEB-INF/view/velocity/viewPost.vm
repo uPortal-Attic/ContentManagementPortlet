@@ -17,11 +17,34 @@
     under the License.
 *#
 
-
 #parse( "include.vm" )
 
 #set ( $viewAttachmentUrl = $renderResponse.createActionURL() )
 $viewAttachmentUrl.setParameter("action", "viewPostAttachment")
+
+#set ( $updateRatingUrl = $renderResponse.createActionURL() )
+$updateRatingUrl.setParameter("action", "updatePostRating")
+
+#set ( $starRatingsId = $mathTool.random(1,999999999) + "$portletNamespace" )
+#set ( $postRatingFormId = $mathTool.random(1,999999999) + "$portletNamespace" )
+#set ( $postRatingCount = $mathTool.random(1,999999999) + "$portletNamespace" )
+#set ( $errorContainerId = $mathTool.random(1,999999999) + "$portletNamespace" )
+
+<script type="text/javascript">
+	$(document).ready(function(){
+				
+		$("#startRatingId$starRatingsId").rating({showCancel: true, cancelValue: 1, startValue: 3, cancelTitle: '#springMessage("post.rating.caption.cancel")'})
+		$("#startRatingId$starRatingsId").bind("change", function(){
+			var $formChildren = $("#postRatingFormId$postRatingFormId").children();
+			var $postRatingField = $formChildren.filter("input[name^='rateValue']");
+			var rateValue = $("#startRatingId$starRatingsId").val();
+			
+			$postRatingField.val(rateValue);
+			$("#postRatingFormId$postRatingFormId").submit(); 
+		});
+		$("#startRatingId$starRatingsId").rating();
+	});		
+</script>
 
 #if( $post )
    	$!{post.Content}
@@ -29,7 +52,8 @@ $viewAttachmentUrl.setParameter("action", "viewPostAttachment")
     #if ( $post.Attachments.size() > 0 )
     	<p>#springMessage("label.caption.attachments"):</p>  
 	   	#foreach ($attachment in $post.Attachments)
-			<p><img align="middle" hspace="3" src='$springMacroRequestContext.contextPath/images/package.png'>
+			<p>
+				<img align="middle" hspace="3" src='$springMacroRequestContext.contextPath/images/package.png'>
 				$viewAttachmentUrl.setParameter("attachmentPath", "$attachment.Path")
 				$viewAttachmentUrl.setParameter("postPath", "$post.Path")
 				<a href='$viewAttachmentUrl'>$attachment.FileName</a>
@@ -38,7 +62,66 @@ $viewAttachmentUrl.setParameter("action", "viewPostAttachment")
 	#end
 	
 	#set( $args = ["$!{post.Author}","$!{post.Date}"] )
-	<span class="uportal-channel-emphasis">#springArgMessage( "label.caption.postedby" $args )</span> 
+	<span class="uportal-channel-emphasis">#springArgMessage( "label.caption.postedby" $args )</span>
+	<form id="postRatingFormId$postRatingFormId">
+		<select name="startRatingId$starRatingsId" class="rating" id="startRatingId$starRatingsId">
+			#foreach ($number in [1..5])
+				#set ( $selectedText = "" )
+				#if ( $post.Rate == $number )
+					#set ( $selectedText = "selected" )
+				#end
+				<option value="$number" $selectedText>#springMessage("post.rating.option$number")</option>
+			#end
+		</select> 
+		<span id="postRatingCount$postRatingCount">($post.rateCount #springMessage("label.caption.ratings"))</span>
+		<input type="hidden" value="$post.Path" name="postPath" />
+		<input type="hidden" value="$post.Rate" name="rateValue" />
+	</form>
+	
+	<!-- AddThis Script -->
+	<div class="addthis_toolbox addthis_default_style ">
+		<a class="addthis_button_preferred_1"></a>
+		<a class="addthis_button_preferred_2"></a>
+		<a class="addthis_button_preferred_3"></a>
+		<a class="addthis_button_preferred_4"></a>
+		<a class="addthis_button_compact"></a>
+		<a class="addthis_counter addthis_bubble_style"></a>
+	</div>
+	<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-4e4382c563a75546"></script>
+	<!-- End of AddThis Script -->
 #else
 	<span class="uportal-channel-emphasis">#springMessage("invalid.post.content.empty")</span> 
 #end
+<br />
+<div class="uportal-channel-error" style="display:none" id="errorBlockContainer$errorContainerId">
+	<p class="uportal-channel-code" style="text-align:left;" id="errorBlock$errorContainerId"></p>
+</div>
+			
+<script type="text/javascript">	
+	function postRatingUpdated_$portletNamespace(data, statusText, xhr, $form) {
+		if (data.response.updateSuccessful) {
+			var updatedText = "(" + data.response.post.rateCount + " #springMessage("label.caption.ratings"))";
+			$("#postRatingCount$postRatingCount").text(updatedText);
+		} 
+	}
+	
+	$('#errorBlockContainer$errorContainerId').hide();
+			
+	$(document).ready(function(){	
+		try {
+			var instance = contentManagementPortlet.CMP({
+				formUrl: '$updateRatingUrl', 
+				successFunction: postRatingUpdated_$portletNamespace
+			});
+
+			var postRatingForm = $('form[id="postRatingFormId$postRatingFormId"]');
+			for (i = 0; i < postRatingForm.length; i++) {
+				var id = postRatingForm[i].id;
+				instance.addFormHandler('#' + id);
+			}
+		} catch (err) {
+			$('#errorBlockContainer$errorContainerId').show();
+			$('#errorBlock$errorContainerId').text(err);
+		}
+	});			
+</script>

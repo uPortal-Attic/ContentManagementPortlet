@@ -50,7 +50,7 @@ public class ViewPostAttachmentController extends AbstractController {
 		final String postPath = PortletRequestUtils.getRequiredStringParameter(request, "postPath");
 		
 		if (logger.isDebugEnabled())
-			logger.debug("Attachment path to remove: " + attachmentPath);
+			logger.debug("Attachment path to download: " + attachmentPath);
 		
 		final Post post = getRepositoryDao().getPost(postPath);
 		if (post != null) {

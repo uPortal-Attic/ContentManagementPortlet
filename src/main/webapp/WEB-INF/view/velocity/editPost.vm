@@ -30,14 +30,15 @@
 #set ( $busyDialogId = $mathTool.random(1,999999999) + "$portletNamespace" )
 
 #set ( $returnMode = $portletConstructors.get(0).newInstance("view") )
+
 #set ( $cancelUrl = $renderResponse.createRenderURL() )
 $cancelUrl.setPortletMode($returnMode)
 
 #set ( $searchUrl = $renderResponse.createRenderURL() )
 $searchUrl.setParameter("action", "searchRepository")
 
-#set ( $deleteUrl = $renderResponse.createActionURL() )
-$deleteUrl.setParameter("action", "removePostAttachment")
+#set ( $deleteAttachmentUrl = $renderResponse.createActionURL() )
+$deleteAttachmentUrl.setParameter("action", "removePostAttachment")
 
 
 <table cellpadding='0' cellspacing='0' width="100%">
@@ -214,10 +215,8 @@ $deleteUrl.setParameter("action", "removePostAttachment")
 				hide: 'explode'
 			});
 			 
-			 
-			
 			var instance = contentManagementPortlet.CMP({
-				formUrl: '$deleteUrl', 
+				formUrl: '$deleteAttachmentUrl', 
 				successFunction: postAttachmentDeleted_$portletNamespace
 			});
 			

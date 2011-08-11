@@ -37,17 +37,26 @@ public class Post implements Serializable {
 	private static final long serialVersionUID = 6392459877566744761L;
 	
 	@JcrProperty
-	private String author = null;
+	private long				rateCount			= 0;
+	
 	@JcrProperty
-	private Date date = null;
+	private long				rate				= 0;
+	
 	@JcrProperty
-	private String content = null;
+	private String				author				= null;
+	
+	@JcrProperty
+	private Date				date				= null;
+	
+	@JcrProperty
+	private String				content				= null;
 	
 	@JcrChildNode
-	private List<Attachment> attachments = null;
+	private List<Attachment>	attachments			= null;
 	
 	@JcrName
 	private String name;
+	
 	@JcrPath
 	private String path = null;
 	
@@ -63,7 +72,6 @@ public class Post implements Serializable {
 	public String getAuthor() {
 		return author;
 	}
-	
 	public final String getContent() {
 		return content;
 	}
@@ -78,6 +86,14 @@ public class Post implements Serializable {
 	
 	public String getPath() {
 		return path;
+	}
+	
+	public long getRate() {
+		return rate;
+	}
+	
+	public long getRateCount() {
+		return rateCount;
 	}
 	
 	public void setAttachments(final List<Attachment> attachments) {
@@ -101,6 +117,14 @@ public class Post implements Serializable {
 		name = loc;
 	}
 	
+	public void setRate(long rate) {
+		this.rate = rate;
+	}
+	
+	public void setRateCount(long rateCount) {
+		this.rateCount = rateCount;
+	}
+	
 	@Override
 	public String toString() {
 		final ToStringBuilder bldr = new ToStringBuilder(this);
@@ -109,6 +133,8 @@ public class Post implements Serializable {
 		bldr.append("name", getName());
 		bldr.append("path", getPath());
 		bldr.append("content", getContent());
+		bldr.append("rateCount", getRateCount());
+		bldr.append("content", getRate());
 		
 		for (final Attachment attachment : getAttachments())
 			bldr.append("attachment", attachment.toString());
