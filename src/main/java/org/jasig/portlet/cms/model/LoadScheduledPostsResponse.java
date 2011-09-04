@@ -16,19 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.jasig.portlet.cms.model;
 
-public class RemovePostAttachmentResponse {
+import java.util.Collection;
 
-	private boolean removeSuccessful = false;
+public class LoadScheduledPostsResponse {
+	private Collection<Post> scheduledPosts;
 	
-	public boolean isRemoveSuccessful() {
-		return removeSuccessful;
+	public Collection<Post> getScheduledPosts() {
+		return scheduledPosts;
 	}
 	
-	public void setRemoveSuccessful(final boolean removeSuccessful) {
-		this.removeSuccessful = removeSuccessful;
+	public void setScheduledPosts(Collection<Post> scheduledPosts) {
+		this.scheduledPosts = scheduledPosts;
 	}
+	
 	
 }

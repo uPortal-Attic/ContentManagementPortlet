@@ -21,14 +21,19 @@
 <link rel="stylesheet" href="$springMacroRequestContext.contextPath/javascript/jquery/css/jpaginate-style.css" type="text/css">
 <link rel="stylesheet" href="$springMacroRequestContext.contextPath/javascript/jquery/css/redmond/jquery-ui-1.8.4.custom.css" type="text/css">
 <link rel="stylesheet" media="screen" type="text/css" href="$springMacroRequestContext.contextPath/javascript/jquery/css/jquery.rating.css" />
+<link rel="stylesheet" href="$springMacroRequestContext.contextPath/javascript/jquery/css/jquery.timepicker.css" type="text/css">
+<link rel="stylesheet" type="text/css" media="screen" href="$springMacroRequestContext.contextPath/javascript/jquery/css/ui.jqgrid.css" />
 
 <script src="$springMacroRequestContext.contextPath/javascript/ckeditor/ckeditor.js" type="text/javascript"></script>
 <script src="$springMacroRequestContext.contextPath/javascript/jquery/jquery-1.6.2.min.js" type="text/javascript"></script>
 <script src="$springMacroRequestContext.contextPath/javascript/jquery/jquery-ui-1.8.7.custom.min.js" type="text/javascript"></script>
 
+<script src="$springMacroRequestContext.contextPath/javascript/jquery/grid.locale-en.js" type="text/javascript"></script>
+<script src="$springMacroRequestContext.contextPath/javascript/jquery/jquery.jqGrid.min.js" type="text/javascript"></script>
+
 <script src="$springMacroRequestContext.contextPath/javascript/jquery/jquery.form.js" type="text/javascript"></script>
-<script src="$springMacroRequestContext.contextPath/javascript/jquery/jquery.paginate.js" type="text/javascript"></script>
-<script type="text/javascript" src="$springMacroRequestContext.contextPath/javascript/jquery/jquery.rating.js"></script>
+<script src="$springMacroRequestContext.contextPath/javascript/jquery/jquery.rating.js" type="text/javascript"></script>
+<script src="$springMacroRequestContext.contextPath/javascript/jquery/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
 
 <script language="javascript" src="$springMacroRequestContext.contextPath/javascript/cmp.js" type="text/javascript"></script>
 		

@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -33,16 +34,12 @@ import org.jasig.portlet.cms.model.RepositorySearchOptions;
 import org.springframework.extensions.jcr.JcrCallback;
 import org.springframework.extensions.jcr.support.JcrDaoSupport;
 
-import com.googlecode.ehcache.annotations.Cacheable;
-import com.googlecode.ehcache.annotations.TriggersRemove;
-import com.googlecode.ehcache.annotations.When;
-
 public class JcrRepositoryDao extends JcrDaoSupport implements RepositoryDao {
-	private JcrPostDao postDao = null;
-	private final Log logger = LogFactory.getLog(getClass());
+	private static final String	SCHEDULED_POSTS_NODE_NAME	= "scheduledPosts";
+	private JcrPostDao			postDao						= null;
+	private final Log			logger						= LogFactory.getLog(getClass());
 	
 	@Override
-	@Cacheable(cacheName = "postCache")
 	public Post getPost(final String nodeName) throws JcrRepositoryException {
 		final Object post = getTemplate().execute(new JcrCallback() {
 			@Override
@@ -53,8 +50,13 @@ public class JcrRepositoryDao extends JcrDaoSupport implements RepositoryDao {
 				
 				if (dao.exists(nodeName)) {
 					post = dao.get(nodeName);
-					post.setPath(nodeName);
+					if (post.getAuthor() == null)
+						post = null;
 				}
+				
+				if (post != null)
+					if (logger.isErrorEnabled())
+						logger.debug("Retrieved post at path " + post.getPath());
 				return post;
 			}
 		});
@@ -68,10 +70,71 @@ public class JcrRepositoryDao extends JcrDaoSupport implements RepositoryDao {
 	private JcrPostDao getPostDao() {
 		return postDao;
 	}
-	
 
 	@Override
-	@Cacheable(cacheName = "postCache")
+	public Collection<Post> getScheduledPosts(final String rootNodeName) throws JcrRepositoryException {
+		Object list = getTemplate().execute(new JcrCallback() {
+			@Override
+			public Object doInJcr(final Session session) throws IOException, RepositoryException {
+				final JcrPostDao dao = getPostDao();
+				return dao.getChildrenAsList(rootNodeName, JcrRepositoryDao.SCHEDULED_POSTS_NODE_NAME);
+			}
+		});
+		
+		if (list != null)
+			return (Collection<Post>) list;
+		return null;
+	}
+	
+	@Override
+	public void removePost(final String nodeName) throws JcrRepositoryException {
+		getTemplate().execute(new JcrCallback() {
+			@Override
+			public Object doInJcr(final Session session) throws IOException, RepositoryException {
+				final JcrPostDao dao = getPostDao();
+				dao.remove(nodeName);
+				return null;
+			}
+		});
+	}
+	
+	@Override
+	public void schedulePost(final Post post, final String nodeName) throws JcrRepositoryException {
+		getTemplate().execute(new JcrCallback() {
+			@Override
+			public Object doInJcr(final Session session) throws IOException, RepositoryException {
+				try {
+					final JcrPostDao dao = getPostDao();
+					
+					String schedulePath = JcrRepositoryDao.SCHEDULED_POSTS_NODE_NAME;
+					if (logger.isDebugEnabled())
+						logger.debug("Scheduled path for post is " + schedulePath);
+					
+					post.setPath(schedulePath);
+					
+					Node nd = dao.ensureNodeExists(nodeName);
+					nd.checkout();
+					
+					if (logger.isErrorEnabled())
+						logger.debug("Scheduling post...");
+					
+					dao.create(nd.getPath(), post);
+					
+					if (logger.isDebugEnabled())
+						logger.debug("Scheduled post at " + post.getPath() + " to be published on " + post.getScheduledDate());
+					
+				} catch (final RepositoryException e) {
+					if (logger.isErrorEnabled())
+						logger.error(post, e);
+					throw new JcrRepositoryException(e);
+				}
+				return null;
+			}
+		});
+		
+	}
+	
+	@Override
 	public Collection<Post> search(final RepositorySearchOptions options) throws JcrRepositoryException {
 		final Object list = getTemplate().execute(new JcrCallback() {
 			@Override
@@ -80,7 +143,6 @@ public class JcrRepositoryDao extends JcrDaoSupport implements RepositoryDao {
 				try {
 					final JcrPostDao dao = getPostDao();
 					list = dao.findAll(options);
-					
 				} catch (final RepositoryException e) {
 					if (logger.isErrorEnabled())
 						logger.error(list, e);
@@ -93,17 +155,18 @@ public class JcrRepositoryDao extends JcrDaoSupport implements RepositoryDao {
 		if (list != null)
 			return (Collection<Post>) list;
 		return null;
-		
 	}
 	
 	@Override
-	@TriggersRemove(cacheName = "postCache", when = When.AFTER_METHOD_INVOCATION, removeAll = true)
 	public void setPost(final Post post) throws JcrRepositoryException {
 		getTemplate().execute(new JcrCallback() {
 			@Override
 			public Object doInJcr(final Session session) throws IOException, RepositoryException {
 				try {
 					final JcrPostDao dao = getPostDao();
+					
+					if (logger.isErrorEnabled())
+						logger.debug(post.getPath());
 					
 					if (dao.exists(post.getPath()))
 						dao.update(post);
@@ -123,5 +186,4 @@ public class JcrRepositoryDao extends JcrDaoSupport implements RepositoryDao {
 	public void setPostDao(final JcrPostDao postDao) {
 		this.postDao = postDao;
 	}
-	
 }

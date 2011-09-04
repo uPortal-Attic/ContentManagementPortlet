@@ -48,7 +48,7 @@ public class RemovePostAttachmentAjaxController extends AbstractAjaxController {
 	@Override
 	protected Map<String, ?> handleAjaxRequestInternal(final ActionRequest request, final ActionResponse resp)
 			throws Exception {
-		
+
 		final RemovePostAttachmentResponse response = new RemovePostAttachmentResponse();
 		
 		final String attachmentPath = PortletRequestUtils.getRequiredStringParameter(request,
@@ -78,7 +78,7 @@ public class RemovePostAttachmentAjaxController extends AbstractAjaxController {
 						logger.debug("Removing post attachment: " + attachment);
 					it.remove();
 					foundAttachment = true;
-					
+					response.setRemoveSuccessful(foundAttachment);
 				}
 			}
 			
@@ -86,8 +86,6 @@ public class RemovePostAttachmentAjaxController extends AbstractAjaxController {
 				if (logger.isDebugEnabled())
 					logger.debug("Saving post");
 				getRepositoryDao().setPost(post);
-				response.setRemovedAttachment(attachment);
-				response.setRemoveSuccessful(true);
 				if (logger.isDebugEnabled())
 					logger.debug("Saved post: " + post);
 			}

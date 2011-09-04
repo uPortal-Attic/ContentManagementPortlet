@@ -19,12 +19,21 @@
 
 package org.jasig.portlet.cms.model;
 
-public class RemovePostAttachmentResponse {
-
-	private boolean removeSuccessful = false;
+public class RemoveScheduledPostResponse {
+	
+	private boolean	removeSuccessful	= false;
+	private String	postPath			= null;
+	
+	public String getPostPath() {
+		return postPath;
+	}
 	
 	public boolean isRemoveSuccessful() {
 		return removeSuccessful;
+	}
+	
+	public void setPostPath(String postPath) {
+		this.postPath = postPath;
 	}
 	
 	public void setRemoveSuccessful(final boolean removeSuccessful) {

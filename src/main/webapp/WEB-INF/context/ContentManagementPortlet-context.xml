@@ -56,6 +56,7 @@
 				<entry key="view" value="*" />
 				<entry key="help" value="*" />
 				<entry key="edit" value="author" />
+				<entry key="config" value="author" />
 			</map>
 		</property>
 	</bean>
@@ -74,7 +75,6 @@
 					<map>
 						<entry key="viewPostAttachment" value-ref="viewPostAttachmentController" />
 						<entry key="updatePostRating" value-ref="updatePostRatingController" />
-						
 					</map>
 				</entry>
 				<entry key="edit">
@@ -82,6 +82,9 @@
 						<entry key="searchRepository" value-ref="searchController" />
 						<entry key="selectPostFromSearch" value-ref="selectPostFromSearchController" />
 						<entry key="removePostAttachment" value-ref="removePostAttachmentController" />
+						<entry key="loadScheduledPosts" value-ref="loadScheduledPostsController" />
+						<entry key="removeScheduledPost" value-ref="removeScheduledPostController" />
+						<entry key="publishScheduledPost" value-ref="publishScheduledPostController" />
 					</map>
 				</entry>
 				<entry key="help">
@@ -104,6 +107,7 @@
 				<entry key="view" value-ref="viewPostController" />
 				<entry key="edit" value-ref="editPostController" />
 				<entry key="help" value-ref="helpController" />
+				<entry key="config" value-ref="configController" />
 			</map>
 		</property>
 	</bean>
@@ -170,4 +174,20 @@
 
 		<property name="repositoryDao" ref="repositoryDao" />
 	</bean>
+	
+	<bean name="loadScheduledPostsController"
+		class="org.jasig.portlet.cms.controller.LoadScheduledPostsController">
+
+		<property name="repositoryDao" ref="repositoryDao" />
+	</bean>
+	
+	<bean name="removeScheduledPostController" class="org.jasig.portlet.cms.controller.RemovedScheduledPostAjaxController">
+		<property name="repositoryDao" ref="repositoryDao" />
+	</bean>
+	
+	<bean name="publishScheduledPostController" class="org.jasig.portlet.cms.controller.PublishScheduledPostController">
+		<property name="repositoryDao" ref="repositoryDao" />
+	</bean>
+	
+	<bean name="configController" class="org.jasig.portlet.cms.controller.ConfigController" />
 </beans>

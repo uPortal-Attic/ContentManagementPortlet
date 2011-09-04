@@ -28,6 +28,12 @@
 #set ( $attachmentsFormId = $mathTool.random(1,999999999) + "$portletNamespace" )
 #set ( $attachmentsDialogId = $mathTool.random(1,999999999) + "$portletNamespace" )
 #set ( $busyDialogId = $mathTool.random(1,999999999) + "$portletNamespace" )
+#set ( $postOptionsAccordionId = $mathTool.random(1,999999999) + "$portletNamespace" )
+#set ( $postIsScheduledId = $mathTool.random(1,999999999) + "$portletNamespace" )
+#set ( $scheduledPostPublishDateId = $mathTool.random(1,999999999) + "$portletNamespace" )
+#set ( $scheduledPostsId = $mathTool.random(1,999999999) + "$portletNamespace" )
+#set ( $postOptionsTabsId = $mathTool.random(1,999999999) + "$portletNamespace" )
+#set ( $previewScheduledPostContentId = $mathTool.random(1,999999999) + "$portletNamespace" )
 
 #set ( $returnMode = $portletConstructors.get(0).newInstance("view") )
 
@@ -40,6 +46,15 @@ $searchUrl.setParameter("action", "searchRepository")
 #set ( $deleteAttachmentUrl = $renderResponse.createActionURL() )
 $deleteAttachmentUrl.setParameter("action", "removePostAttachment")
 
+#set ( $loadScheduledPostsUrl = $renderResponse.createActionURL() )
+$loadScheduledPostsUrl.setParameter("action", "loadScheduledPosts")
+
+#set ( $removeScheduledPostUrl = $renderResponse.createActionURL() )
+$removeScheduledPostUrl.setParameter("action", "removeScheduledPost")
+$removeScheduledPostUrl.setParameter("path", "{path}")
+
+#set ( $publishScheduledPostUrl = $renderResponse.createActionURL() )
+$publishScheduledPostUrl.setParameter("action", "publishScheduledPost")
 
 <table cellpadding='0' cellspacing='0' width="100%">
 	<tr>
@@ -55,41 +70,87 @@ $deleteAttachmentUrl.setParameter("action", "removePostAttachment")
 
 <form method='POST' id="editPostFormId$editPostFormId" action='$renderResponse.createActionURL()' enctype="multipart/form-data">
 <table cellpadding='0' cellspacing='0' width="100%">
+	
+	#springBind( "post.content" )
+	
 	<tr>
-		<td align='center'>	
-			#springBind( "post.content" )
+		<td align='center'>			
 			#set ( $content = $escapeTool.html(${status.value}) )
 			<textarea id="fckEditorId$editorId" name="${status.expression}" isEditor="false">$!content</textarea>
 		</td>
 	</tr>
-		
-	#if ($post.Attachments.size() > 0)
-		<tr>
-			<td>
-				<span id="$editAttachmentsButtonId">
-					<input class="uportal-button" type="button" value='#springMessage("button.caption.edit.attachments")' 
-							onClick="showEditAttachmentsDialog_$portletNamespace()" />
-				</span>
-			</td>
-		</tr>  
-	#end
 	
 	#if ($status.errorCodes.size() > 0)
-		<tr>
-			<td>
-				#foreach($error in $status.errorMessages) 
-					<p class="uportal-channel-error">$error</p> 
-				#end
-			</td>
-		</tr>
+	<tr>
+		<td>
+			#foreach($error in $status.errorMessages) 
+				<p class="uportal-channel-error">$error</p> 
+			#end
+		</td>
+	</tr>
+	#end
+	
+	#springBind( "post.scheduledDate" )
+	#if ($status.errorCodes.size() > 0)
+	<tr>
+		<td>
+			#foreach($error in $status.errorMessages) 
+				<p class="uportal-channel-error">$error</p> 
+			#end
+		</td>
+	</tr>
 	#end
 	
 	<tr>
 		<td>
-			#springMessage("label.caption.attachments"):
-			<div id="browseFileId$browseFileId"></div>
+			<div class="uportal-channel-error" style="display:none" id="errorBlockContainer$errorContainerId">
+				<p class="uportal-channel-code" style="text-align:left;" id="errorBlock$errorContainerId"></p>
+			</div>
 		</td>
 	</tr>
+	
+	<tr>
+		<td>
+			<div id="postOptionsTabs$postOptionsTabsId">
+				<ul>
+					<li><a href="#postOptionsAccordion$postOptionsAccordionId">#springMessage("post.options.caption")</a></li> 
+					<li><a href="#postOptionsAccordion$scheduledPostsId">#springMessage("post.scheduled.posts.caption")</a></li>
+				</ul>
+				
+				<div id="postOptionsAccordion$postOptionsAccordionId" style="width:99%">
+					<!--- Post Options -->
+					<h3><a href="#">#springMessage("label.caption.attachments")</a></h3>
+					<div>
+						#if ($post.Attachments.size() > 0)
+
+							<span id="$editAttachmentsButtonId">
+								<input class="uportal-button" type="button" value='#springMessage("button.caption.edit.attachments")' 
+										onClick="showEditAttachmentsDialog_$portletNamespace()" />
+							</span>
+							<p/>
+						#end
+						
+						<div id="browseFileId$browseFileId"></div>
+						
+					</div>
+										
+					<h3><a href="#">#springMessage("post.schedule.caption")</a></h3>
+					<div>
+						<input type="checkbox" name="postIsScheduled" id="postIsScheduled$postIsScheduledId"/> #springMessage("post.schedule.post.caption")
+						<p>#springMessage("post.schedule.publish.date.caption"): 
+						<input name="scheduledPostPublishDate" id="scheduledPostPublishDate$scheduledPostPublishDateId" type="text" readonly="readonly"></p>
+					</div>
+				
+					<!-- End of Post Options -->
+				</div>
+				
+				<div id="postOptionsAccordion$scheduledPostsId"></div>
+			</div>
+		
+		</td>
+	</tr>
+		
+		
 	<tr>
 		<td width="100%" align="right">
 			<input class="uportal-button" type="submit" name="post" value='#springMessage("button.caption.submit")'  />
@@ -98,13 +159,7 @@ $deleteAttachmentUrl.setParameter("action", "removePostAttachment")
 		</td>
 		
 	</tr>
-	<tr>
-		<td>
-			<div class="uportal-channel-error" style="display:none" id="errorBlockContainer$errorContainerId">
-				<p class="uportal-channel-code" style="text-align:left;" id="errorBlock$errorContainerId"></p>
-			</div>
-		</td>
-	</tr>
+	
 </table>
 </form>
 
@@ -138,9 +193,12 @@ $deleteAttachmentUrl.setParameter("action", "removePostAttachment")
 	<span>#springMessage("label.caption.view.loading")</span>
 </div>
 
+<div id="previewScheduledPostContentId$previewScheduledPostContentId" title='#springMessage("label.caption.preview")'></div>
+
 <script type="text/javascript">
 			
 	$('#errorBlockContainer$errorContainerId').hide();
+	$('#previewScheduledPostContentId$previewScheduledPostContentId').hide();
 	
 	$("#busyDialogId$busyDialogId").dialog({
 		minHeight: 80,
@@ -153,7 +211,51 @@ $deleteAttachmentUrl.setParameter("action", "removePostAttachment")
 		closeOnEscape: false,
 		open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 	}); 
+	
+	function showScheduledPostPreviewDialog_$portletNamespace(obj) {
+		var content = $(obj).attr("tag");
+		$("#previewScheduledPostContentId$previewScheduledPostContentId").dialog({
+			open: function(event, ui) { 
+				$("#previewScheduledPostContentId$previewScheduledPostContentId").html(unescape(content));
+			},
+			minWidth: $(window).width() / 1.5,
+			minHeight: 250,
+			height: $(window).height() / 1.5,
+			position: 'center',
+			autoOpen: false,
+			show: 'slide',
+			hide: 'explode'
+		});
+			
+		$("#previewScheduledPostContentId$previewScheduledPostContentId").dialog('open');
 		
+	}
+	
+	function removeScheduledPost_$portletNamespace(obj) {
+		var formObj = jQuery(obj).parent();
+		var formId = formObj.attr('id');
+		var postPath = jQuery("#" + formId + " [name='path']").attr('value');
+		
+		var formUrl = new String("$removeScheduledPostUrl");
+		formUrl = formUrl.replace(escape("{path}"), postPath);
+
+		jQuery.ajax({
+			url: formUrl,
+			timeout:5000,
+			success: function(data){
+				if (data.response.removeSuccessful)
+					formObj.parent().remove();
+			},
+			error: function(req,error){
+			  
+			},
+			beforeSend: function(data){
+				
+			}
+		});
+
+	}
+	
 	function showEditAttachmentsDialog_$portletNamespace() {
 		$("#attachmentsDialogId$attachmentsDialogId").dialog('open');
 	}
@@ -185,7 +287,7 @@ $deleteAttachmentUrl.setParameter("action", "removePostAttachment")
 		
 		$(document).ready(function(){
 			$("#busyDialogId$busyDialogId").dialog('open');
-			
+						
 			var config = {
 				defaultLanguage: 'en', 
 				language: '$springMacroRequestContext.locale.getLanguage()',
@@ -201,7 +303,6 @@ $deleteAttachmentUrl.setParameter("action", "removePostAttachment")
 			//create attachments 
 			for (i = 0; i < $portletPreferencesWrapper.maximumPostAttachments; i++) {
 				var element = '<input name="attachment' + i + '" type="file" size="50" class="uportal-input-text" /><br/>';
-							  
 				$('#browseFileId$browseFileId').after(element);
 	    	}	 
 			
@@ -226,11 +327,90 @@ $deleteAttachmentUrl.setParameter("action", "removePostAttachment")
 				instance.addFormHandler('#' + id);
 			}
 			
+			$("#postOptionsAccordion$postOptionsAccordionId").accordion();
+			$("#scheduledPostPublishDate$scheduledPostPublishDateId").parent().hide();
+			$("#scheduledPostPublishDate$scheduledPostPublishDateId").datetimepicker(
+			{ 
+				minDate: +1,
+				monthNames: ['#springMessage("post.schedule.date.month.jan")', '#springMessage("post.schedule.date.month.feb")', '#springMessage("post.schedule.date.month.mar")', 
+							 '#springMessage("post.schedule.date.month.apr")', '#springMessage("post.schedule.date.month.may")', '#springMessage("post.schedule.date.month.jun")',
+							 '#springMessage("post.schedule.date.month.jul")', '#springMessage("post.schedule.date.month.aug")', '#springMessage("post.schedule.date.month.sep")',
+							 '#springMessage("post.schedule.date.month.oct")', '#springMessage("post.schedule.date.month.nov")', '#springMessage("post.schedule.date.month.dec")'						
+							],
+				nextText: '#springMessage("post.schedule.date.next.caption")',
+				prevText: '#springMessage("post.schedule.date.prev.caption")',
+				showButtonPanel: true,				
+				dayNamesMin: 	['#springMessage("post.schedule.date.day.sun")', '#springMessage("post.schedule.date.day.mon")', '#springMessage("post.schedule.date.day.tue")', 
+							     '#springMessage("post.schedule.date.day.wed")', '#springMessage("post.schedule.date.day.thu")', '#springMessage("post.schedule.date.day.fri")', 
+								 '#springMessage("post.schedule.date.day.sat")'								
+								],
+				hideIfNoPrevNext: true,
+				closeText: '#springMessage("button.caption.close")'
+			}); 
+																
+			$('#postIsScheduled$postIsScheduledId').change(function () {
+				if ($(this).attr("checked")) {
+					$("#scheduledPostPublishDate$scheduledPostPublishDateId").parent().show();
+					return;
+				}
+				
+				$("#scheduledPostPublishDate$scheduledPostPublishDateId").parent().hide();
+			});
+			
+			$("#postOptionsTabs$postOptionsTabsId").tabs( 
+			{
+				fx: { opacity: 'toggle' }, 
+				spinner: '#springMessage("label.caption.loading")',
+				select: function(event, ui) 
+				{
+					try {
+						if (ui.panel.id == "postOptionsAccordion$scheduledPostsId") {
+							jQuery.ajax({
+								url: "$loadScheduledPostsUrl",
+								timeout:5000,
+								success: function(data){
+									var results = data.response.scheduledPosts;
+									var element = "";
+									
+									if (results.length > 0) {
+										element += "<ul>";
+										for (var res in results) {
+											var post = results[res];
+											element += "<li>";
+											element += "<span class='uportal-channel-emphasis'>#springMessage('label.caption.scheduledby') " + post.author + " @ " + post.scheduledDate + "</span>&nbsp";
+											
+											element += "<form id='scheduledPostFormId" + post.uuid + "' method='POST' action='$publishScheduledPostUrl'>";
+    											element += "<input type='hidden' name='path' value='" + post.path + "' />";
+    											element += "<input class='uportal-button' type='button' value=#springMessage('button.caption.preview') onClick='javascript:showScheduledPostPreviewDialog_$portletNamespace(this);' tag='" + escape(post.content) + "' />&nbsp";
+    											element += "<input class='uportal-button' type='button' value=#springMessage('button.caption.remove') onClick='javascript:removeScheduledPost_$portletNamespace(this);' />&nbsp";
+    											element += "<input class='uportal-button' type='submit' value=#springMessage('button.caption.submit') />";
+											element += "</form>";
+											
+											element += "</li><p/>";
+										}
+										element += "</ul>";
+										jQuery("#postOptionsAccordion$scheduledPostsId").empty();
+										jQuery("#postOptionsAccordion$scheduledPostsId").append(element);
+									}
+								},
+								error: function(req,error){
+								  
+								},
+								beforeSend: function(data){
+								 
+								}
+							});
+	  
+						}
+					} catch (err) {
+					   
+					}
+				}
+			});
+			
 		});
 	} catch (err) {
 		showError_$portletNamespace(err);
-	} 
-	
-	
-				
+	} 	
+
 </script>

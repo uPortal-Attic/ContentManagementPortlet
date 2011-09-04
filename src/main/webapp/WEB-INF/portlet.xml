@@ -36,7 +36,8 @@
 			<value>/WEB-INF/context/ContentManagementPortlet-context.xml, 
 			       /WEB-INF/context/ContentManagementPortlet-data.xml, 
 			       /WEB-INF/context/ContentManagementPortlet-view.xml,
-			       /WEB-INF/context/ContentManagementPortlet-cache.xml
+			       /WEB-INF/context/ContentManagementPortlet-cache.xml,
+			       /WEB-INF/context/ContentManagementPortlet-quartz.xml,
 			</value>
 		</init-param>
 
@@ -48,7 +49,7 @@
 			<portlet-mode>VIEW</portlet-mode>
 			<portlet-mode>EDIT</portlet-mode>
 			<portlet-mode>HELP</portlet-mode>
-			
+			<portlet-mode>CONFIG</portlet-mode>
 		</supports>
 
 		<portlet-info>
@@ -56,27 +57,6 @@
 			<short-title>CMS</short-title>
 			<keywords>portlet, content, management, JackRabbit</keywords>
 		</portlet-info>
-
-		<portlet-preferences>
-			<preference>
-				<name>repository.root</name>
-				<value>root</value>
-				<read-only>false</read-only>
-			</preference>
-			
-			<preference>
-				<name>xss.validation.enabled</name>
-				<value>true</value>
-				<read-only>false</read-only>
-			</preference>
-			
-			<preference>
-				<name>post.attachments.max</name>
-				<value>2</value>
-				<read-only>false</read-only>
-			</preference>
-						
-		</portlet-preferences>
 		
 		<security-role-ref>
 			<role-name>author</role-name>

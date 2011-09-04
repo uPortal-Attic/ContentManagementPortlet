@@ -21,8 +21,6 @@ package org.jasig.portlet.cms.model;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -37,14 +35,12 @@ import org.jcrom.annotations.JcrProperty;
 public class Attachment extends JcrFile {
 	private static final long serialVersionUID = -6710317679666037037L;
 	
-	public static Attachment fromFile(final String fileName, final String contentType, final Date lastModified,
-			final Locale lc, final byte[] contents) {
+	public static Attachment fromFile(final String fileName, final String contentType, final Calendar lastModified,
+			final byte[] contents) {
 		
 		final Attachment attachment = new Attachment();
 		attachment.setMimeType(contentType);
-		final Calendar c = Calendar.getInstance(lc);
-		c.setTime(lastModified);
-		attachment.setLastModified(c);
+		attachment.setLastModified(lastModified);
 		
 		attachment.setFileName(fileName);
 		attachment.setContents(contents);

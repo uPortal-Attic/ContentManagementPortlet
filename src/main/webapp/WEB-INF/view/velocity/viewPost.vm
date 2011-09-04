@@ -61,7 +61,8 @@ $updateRatingUrl.setParameter("action", "updatePostRating")
 		#end
 	#end
 	
-	#set( $args = ["$!{post.Author}","$!{post.Date}"] )
+	 
+	#set( $args = ["$!{post.Author}", "$!{post.LastModifiedDate}"] )
 	<span class="uportal-channel-emphasis">#springArgMessage( "label.caption.postedby" $args )</span>
 	<form id="postRatingFormId$postRatingFormId">
 		<select name="startRatingId$starRatingsId" class="rating" id="startRatingId$starRatingsId">
@@ -79,6 +80,7 @@ $updateRatingUrl.setParameter("action", "updatePostRating")
 	</form>
 	
 	<!-- AddThis Script -->
+	<p>
 	<div class="addthis_toolbox addthis_default_style ">
 		<a class="addthis_button_preferred_1"></a>
 		<a class="addthis_button_preferred_2"></a>
@@ -88,6 +90,7 @@ $updateRatingUrl.setParameter("action", "updatePostRating")
 		<a class="addthis_counter addthis_bubble_style"></a>
 	</div>
 	<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-4e4382c563a75546"></script>
+	</p>
 	<!-- End of AddThis Script -->
 #else
 	<span class="uportal-channel-emphasis">#springMessage("invalid.post.content.empty")</span> 

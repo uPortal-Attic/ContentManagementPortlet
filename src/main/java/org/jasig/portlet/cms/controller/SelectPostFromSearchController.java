@@ -19,7 +19,6 @@
 
 package org.jasig.portlet.cms.controller;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +29,7 @@ import javax.portlet.RenderResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jasig.portlet.cms.model.PortletConfiguration;
 import org.jasig.portlet.cms.model.Post;
 import org.jasig.portlet.cms.model.repository.RepositoryDao;
 import org.jasig.portlet.cms.view.PortletView;
@@ -48,24 +48,23 @@ public class SelectPostFromSearchController extends AbstractCommandController {
 	}
 	
 	@Override
-	protected void handleAction(final ActionRequest arg0, final ActionResponse actionresponse,
+	protected void handleAction(final ActionRequest req, final ActionResponse actionresponse,
 			final Object arg2, final BindException arg3) throws Exception {
 		PortletUtils.clearAllRenderParameters(actionresponse);
 	}
 	
 	@Override
-	protected ModelAndView handleRender(final RenderRequest arg0, final RenderResponse arg1,
+	protected ModelAndView handleRender(final RenderRequest req, final RenderResponse res,
 			final Object arg2, final BindException arg3) throws Exception {
 		
 		Post post = (Post) arg2;
-		final PortletPreferencesWrapper pref = new PortletPreferencesWrapper(arg0);
+		final PortletConfiguration pref = new PortletConfiguration();
 		
 		if (logger.isDebugEnabled())
-			logger.debug("Selecting post from search");
+			logger.debug("Selecting post from search " + post);
 		
 		post = getRepositoryDao().getPost(post.getPath());
-		post.setAuthor(pref.getPortletUserName());
-		post.setDate(new Date());
+		post.setAuthor(req.getUserPrincipal().getName());
 		
 		if (logger.isDebugEnabled())
 			logger.debug("Post: " + post);
@@ -74,7 +73,7 @@ public class SelectPostFromSearchController extends AbstractCommandController {
 		map.put("portletPreferencesWrapper", pref);
 		map.put("post", post);
 		
-		return new ModelAndView(PortletView.EDITPOST, map);
+		return new ModelAndView(PortletView.EDIT_POST, map);
 	}
 	
 	public void setRepositoryDao(final RepositoryDao repositoryDao) {

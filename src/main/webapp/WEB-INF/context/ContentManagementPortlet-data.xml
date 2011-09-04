@@ -99,6 +99,7 @@
   <bean id= "postDao" class="org.jasig.portlet.cms.model.repository.JcrPostDao" >
 		<constructor-arg ref="jcrSessionFactory"></constructor-arg>
 		<constructor-arg ref="jcrom"></constructor-arg>
+		<constructor-arg value="mix:versionable"></constructor-arg>
 	</bean>
 			
 	<bean id="repositoryDao" parent="txProxyTemplate">

@@ -21,19 +21,15 @@ package org.jasig.portlet.cms.controller;
 
 import java.util.List;
 
-import javax.portlet.PortletRequest;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jasig.portlet.cms.model.PortletConfiguration;
 import org.jasig.portlet.cms.model.Post;
 import org.jasig.portlet.cms.model.security.AntiVirusService;
 import org.jasig.portlet.cms.model.security.XssValidatorService;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.portlet.context.PortletRequestAttributes;
 
 public class PostValidator implements Validator {
 	private AntiVirusService antiVirusService = null;
@@ -70,17 +66,17 @@ public class PostValidator implements Validator {
 			logger.debug("Validaing post content " + errors.getFieldValue("content"));
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "content", "invalid.post.content.empty");
 		
-		if (post.getContent().trim().isEmpty() && !errors.hasErrors())
-			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "content", "invalid.post.content.empty");
+		if (errors.getFieldValue("content") != null)
+			if (post.getContent().trim().isEmpty() && !errors.hasErrors())
+				ValidationUtils.rejectIfEmptyOrWhitespace(errors, "content", "invalid.post.content.empty");
 		
-		final RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
-		final PortletRequest request = ((PortletRequestAttributes) requestAttributes).getRequest();
-		final PortletPreferencesWrapper pref = new PortletPreferencesWrapper(request);
+		final PortletConfiguration pref = new PortletConfiguration();
 		
 		if (pref.isXssValidationEnabled())
 			validatePostContent(post, errors);
 		
 		validatePostAttachments(post, errors);
+		
 		
 		if (logger.isDebugEnabled())
 			if (errors.getErrorCount() == 0)
@@ -97,10 +93,12 @@ public class PostValidator implements Validator {
 	
 	@SuppressWarnings("unchecked")
 	private void validatePostContent(final Post post, final Errors errors) {
-		final List<String> errorList = (List<String>) getXssValidatorService().scan(post.getContent());
-		
-		if (errorList != null && errorList.size() > 0)
-			for (final String err : errorList)
-				errors.rejectValue("content", "invalid.post.content.xss", new String[] { err }, null);
+		if (errors.getFieldValue("content") != null) {
+			final List<String> errorList = (List<String>) getXssValidatorService().scan(post.getContent());
+			
+			if (errorList != null && errorList.size() > 0)
+				for (final String err : errorList)
+					errors.rejectValue("content", "invalid.post.content.xss", new String[] { err }, null);
+		}
 	}
 }

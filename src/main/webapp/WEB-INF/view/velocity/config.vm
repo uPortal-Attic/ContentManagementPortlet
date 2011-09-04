@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-
+#*
     Licensed to Jasig under one or more contributor license
     agreements. See the NOTICE file distributed with this work
     for additional information regarding copyright ownership.
@@ -17,13 +15,22 @@
     KIND, either express or implied. See the License for the
     specific language governing permissions and limitations
     under the License.
+*#
 
--->
+#parse( "include.vm" )
 
-<ehcache updateCheck="false"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd">
-	<diskStore path="java.io.tmpdir/ContentManagementPortlet" />
-    <defaultCache eternal="true" maxElementsInMemory="100" overflowToDisk="false"  />
-      
-</ehcache>
+#set ( $prefKeys = $portletPreferences.Keys )
 
+<p>#springMessage("label.caption.configure"):</p>
 
+<form action='$renderResponse.createActionURL()' method="POST">
+	<table width="50%">
+    #foreach ($key in $prefKeys)
+		<tr>
+			<td><span class="uportal-label">#springMessage("label.caption.configure.$key"):</span></td>
+			<td><input class="uportal-input-text" type='text' name="$key" value="$portletPreferences.getProperty($key)" /></td>
+    	</tr>
+	#end
+	</table>
+	<input class="uportal-button" type='submit' value='#springMessage("button.caption.close")' />
+</form>

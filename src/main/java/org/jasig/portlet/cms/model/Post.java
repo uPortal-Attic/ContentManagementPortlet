@@ -21,20 +21,20 @@ package org.jasig.portlet.cms.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.jcrom.annotations.JcrChildNode;
 import org.jcrom.annotations.JcrName;
 import org.jcrom.annotations.JcrNode;
 import org.jcrom.annotations.JcrPath;
 import org.jcrom.annotations.JcrProperty;
+import org.jcrom.annotations.JcrUUID;
 
 @JcrNode(mixinTypes = { "mix:versionable" })
 public class Post implements Serializable {
 	
-	private static final long serialVersionUID = 6392459877566744761L;
+	private static final long	serialVersionUID	= 6392459877566744761L;
 	
 	@JcrProperty
 	private long				rateCount			= 0;
@@ -46,7 +46,10 @@ public class Post implements Serializable {
 	private String				author				= null;
 	
 	@JcrProperty
-	private Date				date				= null;
+	private String				lastModifiedDate	= null;
+	
+	@JcrProperty
+	private String				scheduledDate		= null;
 	
 	@JcrProperty
 	private String				content				= null;
@@ -54,15 +57,20 @@ public class Post implements Serializable {
 	@JcrChildNode
 	private List<Attachment>	attachments			= null;
 	
+	@JcrUUID
+	private String				uuid				= null;
+	
 	@JcrName
-	private String name;
+	private String				name;
 	
 	@JcrPath
-	private String path = null;
+	private String				path				= null;
+	
+	@JcrProperty
+	private String				language			= null;
 	
 	public Post() {
 		setAttachments(new ArrayList<Attachment>());
-		setDate(new Date());
 	}
 	
 	public List<Attachment> getAttachments() {
@@ -72,12 +80,17 @@ public class Post implements Serializable {
 	public String getAuthor() {
 		return author;
 	}
+	
 	public final String getContent() {
 		return content;
 	}
 	
-	public Date getDate() {
-		return date;
+	public String getLastModifiedDate() {
+		return lastModifiedDate;
+	}
+	
+	public Locale getLocale() {
+		return new Locale(language);
 	}
 	
 	public String getName() {
@@ -96,6 +109,14 @@ public class Post implements Serializable {
 		return rateCount;
 	}
 	
+	public String getScheduledDate() {
+		return scheduledDate;
+	}
+	
+	public String getUuid() {
+		return uuid;
+	}
+	
 	public void setAttachments(final List<Attachment> attachments) {
 		this.attachments = attachments;
 	}
@@ -108,8 +129,12 @@ public class Post implements Serializable {
 		this.content = content;
 	}
 	
-	public void setDate(final Date dateTime) {
-		date = dateTime;
+	public void setLanguage(String lang) {
+		language = lang;
+	}
+	
+	public void setLastModifiedDate(String date) {
+		lastModifiedDate = date;
 	}
 	
 	public void setPath(final String loc) {
@@ -125,20 +150,19 @@ public class Post implements Serializable {
 		this.rateCount = rateCount;
 	}
 	
+	public void setScheduledDate(String scheduledDate) {
+		this.scheduledDate = scheduledDate;
+	}
+	
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+	
 	@Override
 	public String toString() {
-		final ToStringBuilder bldr = new ToStringBuilder(this);
-		bldr.append("author", getAuthor());
-		bldr.append("date", getDate());
-		bldr.append("name", getName());
-		bldr.append("path", getPath());
-		bldr.append("content", getContent());
-		bldr.append("rateCount", getRateCount());
-		bldr.append("content", getRate());
-		
-		for (final Attachment attachment : getAttachments())
-			bldr.append("attachment", attachment.toString());
-				
-				return bldr.toString();
+		return "Post [rateCount=" + rateCount + ", rate=" + rate + ", author=" + author + ", lastModifiedDate="
+				+ lastModifiedDate + ", scheduledDate=" + scheduledDate + ", content=" + content + ", attachments=" + attachments
+				+ ", uuid=" + uuid + ", name=" + name + ", path=" + path + ", language=" + language + "]";
 	}
+	
 }

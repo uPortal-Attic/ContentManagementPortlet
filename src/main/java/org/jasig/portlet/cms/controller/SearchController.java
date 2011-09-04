@@ -30,6 +30,7 @@ import javax.portlet.RenderResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jasig.portlet.cms.model.PortletConfiguration;
 import org.jasig.portlet.cms.model.Post;
 import org.jasig.portlet.cms.model.RepositorySearchOptions;
 import org.jasig.portlet.cms.model.repository.RepositoryDao;
@@ -72,13 +73,13 @@ public class SearchController extends AbstractCommandController {
 			if (logger.isDebugEnabled())
 				logger.debug("Number of search results found: " + results.size());
 			model.put("searchResults", results);
-			model.put("portletPreferences", new PortletPreferencesWrapper(renderrequest));
+			model.put("portletPreferences", new PortletConfiguration());
 		} else if (logger.isDebugEnabled())
 			logger.debug("No results are found");
 		
 		if (logger.isDebugEnabled())
 			logger.debug("Returning search results");
-		final ModelAndView modelAndView = new ModelAndView(PortletView.VIEWSEARCHRESULTS, model);
+		final ModelAndView modelAndView = new ModelAndView(PortletView.VIEW_SEARCH_RESULTS, model);
 		
 		return modelAndView;
 	}
