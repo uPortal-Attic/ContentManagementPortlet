@@ -23,6 +23,7 @@
 #set ( $cancelUrl = $renderResponse.createRenderURL() )
 $cancelUrl.setPortletMode($returnMode)
 
-<div class="uportal-channel-warning">#springMessage("attachment.size.exceeded.exception")</div>
+<div class="portlet-msg-alert portlet-msg alert">#springMessage("attachment.size.exceeded.exception")</div>
 <br/>
-<input class="uportal-button" type='button' value='#springMessage("button.caption.back")'	onclick="window.location.href='${cancelUrl}';"/> 
+<input class="button" type='button' value='#springMessage("button.caption.back")'	
+	onclick="window.location.href='${cancelUrl}';"/> 

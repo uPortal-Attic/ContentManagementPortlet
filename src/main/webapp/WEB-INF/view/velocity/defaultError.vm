@@ -18,34 +18,34 @@
 *#
 
 
-<p class="uportal-label">#springMessage("unhandled.exception.occurred")</p>
+<p>#springMessage("unhandled.exception.occurred")</p>
 
 #if($exception.Message)
-	<div class="uportal-channel-error" style="border-bottom-width:0px;">
-		<span class="uportal-label">#springMessage("label.caption.message"):</span>
-		<p class="uportal-channel-code">$exception.Message</p>
+	<div class="portlet-msg-error portlet-msg error" style="border-bottom-width:0px;">
+		<span>#springMessage("label.caption.message"):</span>
+		<pre>$exception.Message</pre>
 	</div>
-	<div class="uportal-channel-error" style="border-bottom-width:0px;border-top-width:0px;">
+	<div class="portlet-msg-error portlet-msg error" style="border-bottom-width:0px;border-top-width:0px;">
 #else
-	<div class="uportal-channel-error" style="border-bottom-width:0px;">
+	<div class="portlet-msg-error portlet-msg error" style="border-bottom-width:0px;">
 #end
-	<span class="uportal-label">#springMessage("label.caption.class"):</span>
-	<p class="uportal-channel-code">$exception.Class.Name</p>
+	<span>#springMessage("label.caption.class"):</span>
+	<pre>$exception.Class.Name</pre>
 </div>
 
 #if($exception.Cause)
-	<div class="uportal-channel-error" style="border-bottom-width:0px;border-top-width:0px;">
-		<span class="uportal-label">#springMessage("label.caption.cause"):</span>
-		<p class="uportal-channel-code">$exception.Cause.toString()</p>
+	<div class="portlet-msg-error portlet-msg error" style="border-bottom-width:0px;border-top-width:0px;">
+		<span>#springMessage("label.caption.cause"):</span>
+		<pre>$exception.Cause.toString()</p>
 	</div>
 #end
 		
 #set($cause = $exception)
-<div class="uportal-channel-error" style="border-top-width:0px;">
-	<span class="uportal-label">#springMessage("label.caption.stack"):</span>
+<div class="portlet-msg-error portlet-msg error" style="border-top-width:0px;">
+	<span>#springMessage("label.caption.stack"):</span>
 	<ul type="square">
 		#foreach($stack in $cause.getStackTrace())
-			<li class="uportal-channel-code">$stack.toString()</li>
+			<li><pre>$stack.toString()</pre></li>
 		#end
 	</ul>
 </div>

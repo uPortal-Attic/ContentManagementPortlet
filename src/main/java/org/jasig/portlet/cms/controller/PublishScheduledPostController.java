@@ -19,6 +19,8 @@
 
 package org.jasig.portlet.cms.controller;
 
+import java.util.Collection;
+
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletException;
@@ -26,51 +28,62 @@ import javax.portlet.PortletMode;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jasig.portlet.cms.model.PortletConfiguration;
 import org.jasig.portlet.cms.model.Post;
+import org.jasig.portlet.cms.model.repository.JcrRepositoryException;
 import org.jasig.portlet.cms.model.repository.RepositoryDao;
+import org.jasig.portlet.cms.model.repository.schedule.ScheduledPostsManager;
 import org.springframework.web.portlet.bind.PortletRequestUtils;
 import org.springframework.web.portlet.mvc.AbstractController;
 
 public class PublishScheduledPostController extends AbstractController {
-	private RepositoryDao	repositoryDao	= null;
 	private final Log		logger			= LogFactory.getLog(getClass());
-	
-	private RepositoryDao geRepositoryDao() {
+	private RepositoryDao	repositoryDao	= null;
+
+	public void setRepositoryDao(final RepositoryDao repositoryDao) {
+		this.repositoryDao = repositoryDao;
+	}
+
+	private void ensureRepositoryRootIsScheduled(final PortletPreferencesWrapper pref) throws JcrRepositoryException {
+		if (!ScheduledPostsManager.getInstance().containsRoot(pref.getPortletRepositoryRoot())) {
+			final Collection<Post> col = getRepositoryDao().getScheduledPosts(pref.getPortletRepositoryRoot());
+			if (col != null && col.size() > 0)
+				ScheduledPostsManager.getInstance().addRepositoryRoot(pref.getPortletRepositoryRoot());
+		}
+	}
+
+	private RepositoryDao getRepositoryDao() {
 		return repositoryDao;
 	}
-	
+
 	@Override
-	protected void handleActionRequestInternal(ActionRequest request, ActionResponse response) throws Exception {
-		final PortletConfiguration pref = new PortletConfiguration();
-		
+	protected void handleActionRequestInternal(final ActionRequest request, final ActionResponse response) throws Exception {
+		final PortletPreferencesWrapper pref = new PortletPreferencesWrapper(request);
+
 		final String postPath = PortletRequestUtils.getRequiredStringParameter(request, "path");
 		final String toNewPath = pref.getPortletRepositoryRoot();
-		
+
 		if (logger.isDebugEnabled()) {
 			logger.debug("Scheduled post is at " + postPath);
 			logger.debug("Moving post to path " + toNewPath);
 		}
-		
-		Post post = geRepositoryDao().getPost(postPath);
+
+		final Post post = getRepositoryDao().getPost(postPath);
 		if (post != null) {
 			if (logger.isDebugEnabled())
 				logger.debug("Retrieved scheduled post " + post);
-			
-			geRepositoryDao().removePost(post.getPath());
+
+			getRepositoryDao().removePost(post.getPath());
 			post.setPath(toNewPath);
-			
+
 			post.setRateCount(0);
 			post.setRate(0);
 
-			geRepositoryDao().setPost(post);
-			
+			getRepositoryDao().setPost(post);
+
+			ensureRepositoryRootIsScheduled(pref);
+
 			response.setPortletMode(PortletMode.VIEW);
 		} else
 			throw new PortletException(postPath + " does not exist");
-	}
-	
-	public void setRepositoryDao(final RepositoryDao repositoryDao) {
-		this.repositoryDao = repositoryDao;
 	}
 }

@@ -31,7 +31,7 @@
 
 		<property name="jobDetail" ref="scheduledPostPublisherJob" />
 		<property name="repeatInterval" value="60000" />
-		<property name="startDelay" value="50000" />
+		<property name="startDelay" value="120000" />
 
 	</bean>
 

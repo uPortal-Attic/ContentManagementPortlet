@@ -40,130 +40,135 @@ import org.jcrom.dao.AbstractJcrDAO;
 import org.springframework.extensions.jcr.SessionFactory;
 
 public class JcrPostDao extends AbstractJcrDAO<Post> {
-	
+
 	private final Log	logger	= LogFactory.getLog(getClass());
-	
+
 	public JcrPostDao(final Session session, final Jcrom jcrom) {
 		super(Post.class, session, jcrom);
 	}
-	
+
 	public JcrPostDao(final SessionFactory factory, final Jcrom jcrom) throws RepositoryException {
 		super(Post.class, factory.getSession(), jcrom);
 	}
-	
-	public JcrPostDao(final SessionFactory factory, final Jcrom jcrom, String[] mixinType) throws RepositoryException {
+
+	public JcrPostDao(final SessionFactory factory, final Jcrom jcrom, final String[] mixinType) throws RepositoryException {
 		super(Post.class, factory.getSession(), jcrom, mixinType);
 	}
-	
+
 	@Override
 	public Post create(final Post entity) {
 		return super.create(entity);
 	}
-	
+
 	@Override
 	public Post create(final String parentNodePath, final Post entity) {
 		return super.create(parentNodePath, entity);
 	}
-	
-	public Node ensureNodeExists(String nodeName) throws RepositoryException {
+
+	public Node ensureNodeExists(final String nodeName) throws RepositoryException {
 		Node nd = null;
 		if (!exists(nodeName)) {
 			if (logger.isDebugEnabled())
 				logger.debug("Creating node " + nodeName);
 			nd = getSession().getRootNode().addNode(nodeName);
-			
+
+			if (logger.isDebugEnabled())
+				logger.debug("Created node " + nd.getPath());
+
 			if (logger.isDebugEnabled())
 				logger.debug("Mixin types for node are " + Arrays.toString(getMixinTypes()));
-			
-			for (String type : getMixinTypes()) {
+
+			for (final String type : getMixinTypes()) {
 				if (logger.isDebugEnabled())
 					logger.debug("Adding mixin type " + type + " to node " + nodeName);
 				nd.addMixin(type);
 				if (logger.isDebugEnabled())
 					logger.debug("Added mixin type " + type + " to node " + nodeName);
 			}
+			if (getSession().hasPendingChanges())
+				getSession().save();
 		}
 		else
 			nd = getSession().getRootNode().getNode(nodeName);
 		return nd;
 	}
-	
+
 	@Override
 	public boolean exists(final String arg0) {
 		return super.exists(arg0);
 	}
-	
+
 	public List<Post> findAll(final RepositorySearchOptions options) throws RepositoryException {
 		final String keyword = StringEscapeUtils.escapeHtml(options.getKeyword());
-		List<Post> list = Collections.EMPTY_LIST;
-		
-		
+		List<Post> list = Collections.emptyList();
+
+
 		if (!StringUtils.isBlank(keyword)) {
-			String searchQuery = "//element(*,mix:versionable)[jcr:like(@content, '%" + keyword + "%')]";
+			final String searchQuery = "//element(*,mix:versionable)[jcr:like(@content, '%" + keyword + "%')]";
 			if (logger.isDebugEnabled())
 				logger.debug("Search query generated: " + searchQuery);
 			list = findByXPath(searchQuery, "*", -1);
 		}
-		
+
 		return list;
 	}
-	
-	public List<Post> findByXPath(String xpath) {
+
+	public List<Post> findByXPath(final String xpath) {
 		return super.findByXPath(xpath, "*", -1);
 	}
-	
+
 	@Override
-	public List<Post> findByXPath(String xpath, String childNameFilter, int maxDepth) {
+	public List<Post> findByXPath(final String xpath, final String childNameFilter, final int maxDepth) {
 		return super.findByXPath(xpath, childNameFilter, maxDepth);
 	}
-	
+
 	@Override
 	public Post get(final String path) {
 		return super.get(path);
 	}
-	
-	public List<Post> getChildrenAsList(String rootNodeName, String childNodeName) throws RepositoryException {
+
+	public List<Post> getChildrenAsList(final String rootNodeName, final String childNodeName) throws RepositoryException {
 		List<Post> list = null;
 		try {
-			Node nd = getSession().getRootNode().getNode(rootNodeName);
-			NodeIterator it = nd.getNodes(childNodeName);
+			final Node nd = getSession().getRootNode().getNode(rootNodeName);
+			final NodeIterator it = nd.getNodes(childNodeName);
 			list = toList(it, "*", -1);
-		} catch (PathNotFoundException e) {
-			
+		} catch (final PathNotFoundException e) {
+
 		}
 		return list;
 	}
-	
+
 	public Jcrom getJcrom() {
 		return jcrom;
 	}
-	
+
 	public String[] getMixinTypes () {
 		return mixinTypes;
 	}
-	
+
 	@Override
-	public void move(Post arg0, String arg1) {
+	public void move(final Post arg0, final String arg1) {
 		super.move(arg0, arg1);
 	}
-	
-	@Override
-	protected List<Post> toList(NodeIterator nodeIterator, String childNameFilter, int maxDepth) {
-		return super.toList(nodeIterator, childNameFilter, maxDepth);
-	}
-	
-	@Override
-	protected List<Post> toList(NodeIterator nodeIterator, String childNameFilter, int maxDepth, long resultSize) {
-		return super.toList(nodeIterator, childNameFilter, maxDepth, resultSize);
-	}
-	
+
 	@Override
 	public String update(final Post entity) {
 		return super.update(entity);
 	}
-	
+
 	@Override
 	public String update(final Post arg0, final String arg1, final int arg2) {
 		return super.update(arg0, arg1, arg2);
+	}
+
+	@Override
+	protected List<Post> toList(final NodeIterator nodeIterator, final String childNameFilter, final int maxDepth) {
+		return super.toList(nodeIterator, childNameFilter, maxDepth);
+	}
+
+	@Override
+	protected List<Post> toList(final NodeIterator nodeIterator, final String childNameFilter, final int maxDepth, final long resultSize) {
+		return super.toList(nodeIterator, childNameFilter, maxDepth, resultSize);
 	}
 }

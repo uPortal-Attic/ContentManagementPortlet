@@ -28,9 +28,8 @@
 						http://www.springframework.org/schema/jee
 						http://www.springframework.org/schema/jee/spring-jee-2.0.xsd
 						http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd">
-
 	<jee:jndi-lookup id="repository" lookup-on-startup="true"
-		cache="true" resource-ref="true" jndi-name="jcr/repository"
+		cache="true" resource-ref="true" jndi-name="java:comp/env/jcr/repository"
 		proxy-interface="javax.jcr.Repository" />
 
 	<bean id="jcrSessionFactory" class="org.springframework.extensions.jcr.JcrSessionFactory">
@@ -58,19 +57,19 @@
 		<property name="allowNonTxRepository" value="true" />
 		<property name="targetFactory" ref="jcrSessionFactory" />
 	</bean>
-
+		
+	<!-- 
+		We do not want to force the use of CGLIB proxies.
+		We only want to proxy only those methods implemented, and not every method defined for the target object. 
+		So, we only proxy methods provided by the RpositoryDao interface that are implemented. Other methods that are
+		part of the implementation class have a number of final methods that can be advised/overridden. Also, using CGLIB proxies conflicts with the use of ehcache as it also needs the proxy.
+		Setting the value to false creates dynamic JDK proxies.
+	-->
+		
 	<bean id="txProxyTemplate" abstract="true"
 		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 		
-		<!-- 
-			We do not want to force the use of CGLIB proxies.
-			We only want to proxy only those methods implemented, and not every method defined for the target object.
-			So, we only proxy methods provided by the RpositoryDao interface that are implemented. Other methods that are
-			part of the implementation class have a number of final methods that can be advised/overridden. Also,
-			using CGLIB proxies conflicts with the use of ehcache as it also needs the proxy.
-			
-			Setting the value to false creates dynamic JDK proxies.
-		 -->
+		
 		<property name="proxyTargetClass">
 			<value>false</value>
 		</property>
@@ -96,7 +95,7 @@
 	    </constructor-arg>
 	  </bean>
   
-  <bean id= "postDao" class="org.jasig.portlet.cms.model.repository.JcrPostDao" >
+  	<bean id= "postDao" class="org.jasig.portlet.cms.model.repository.JcrPostDao" >
 		<constructor-arg ref="jcrSessionFactory"></constructor-arg>
 		<constructor-arg ref="jcrom"></constructor-arg>
 		<constructor-arg value="mix:versionable"></constructor-arg>
@@ -106,8 +105,10 @@
 		<property name="target">
 			<bean class="org.jasig.portlet.cms.model.repository.JcrRepositoryDao">
 				<property name="sessionFactory" ref="jcrSessionFactory" />
-				<property name="postDao" ref="postDao"></property>
+				<property name="postDao" ref="postDao" />
 			</bean>
 		</property>
 	</bean>
+			
+	 
 </beans>

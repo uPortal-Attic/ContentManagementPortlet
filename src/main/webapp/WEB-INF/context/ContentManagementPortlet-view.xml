@@ -57,6 +57,7 @@ http://www.springframework.org/schema/jee/spring-jee-2.0.xsd">
 		<property name="exposeRequestAttributes" value="true" />
 		<property name="exposeSessionAttributes" value="true" />
 		<property name="toolboxConfigLocation" value="/WEB-INF/config/velocity/toolbox.xml" />
+		<property name="viewClass" value="org.jasig.portlet.cms.view.VelocityToolboxView" />
 	</bean>
 	
 	<bean id="requiredAnnotationBeanPostProcessor" class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor" />

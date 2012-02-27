@@ -27,10 +27,10 @@
 	<table width="50%">
     #foreach ($key in $prefKeys)
 		<tr>
-			<td><span class="uportal-label">#springMessage("label.caption.configure.$key"):</span></td>
-			<td><input class="uportal-input-text" type='text' name="$key" value="$portletPreferences.getProperty($key)" /></td>
+			<td><span class="fl-text-align-right">#springMessage("label.caption.configure.$key"):</span></td>
+			<td><input type='text' name="$key" value="$portletPreferences.getProperty($key)" /></td>
     	</tr>
 	#end
 	</table>
-	<input class="uportal-button" type='submit' value='#springMessage("button.caption.close")' />
+	<input class="button" type='submit' value='#springMessage("button.caption.close")' />
 </form>

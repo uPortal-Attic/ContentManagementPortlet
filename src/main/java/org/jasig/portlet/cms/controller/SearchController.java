@@ -30,7 +30,6 @@ import javax.portlet.RenderResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jasig.portlet.cms.model.PortletConfiguration;
 import org.jasig.portlet.cms.model.Post;
 import org.jasig.portlet.cms.model.RepositorySearchOptions;
 import org.jasig.portlet.cms.model.repository.RepositoryDao;
@@ -43,49 +42,52 @@ import org.springframework.web.portlet.util.PortletUtils;
 public class SearchController extends AbstractCommandController {
 	private final Log logger = LogFactory.getLog(getClass());
 	private RepositoryDao repositoryDao = null;
-	
-	private RepositoryDao geRepositoryDao() {
+
+	public void setRepositoryDao(final RepositoryDao repositoryDao) {
+		this.repositoryDao = repositoryDao;
+	}
+
+	private RepositoryDao getRepositoryDao() {
 		return repositoryDao;
 	}
-	
+
 	@Override
 	protected void handleAction(final ActionRequest actionrequest, final ActionResponse actionresponse,
 			final Object obj, final BindException bindexception) throws Exception {
 		PortletUtils.clearAllRenderParameters(actionresponse);
 	}
-	
+
 	@Override
-	protected ModelAndView handleRender(final RenderRequest renderrequest,
-			final RenderResponse renderresponse, final Object obj, final BindException bindexception)
+	protected ModelAndView handleRender(final RenderRequest request, final RenderResponse response, final Object obj,
+			final BindException bindexception)
 					throws Exception {
-		
+
 		final RepositorySearchOptions options = (RepositorySearchOptions) obj;
-		
+
 		if (logger.isDebugEnabled())
 			logger.debug("Executing search");
-		
-		final Collection<Post> results = geRepositoryDao().search(options);
-		
+
+		final Collection<Post> results = getRepositoryDao().search(options);
+
 		final Map<String, Object> model = new HashMap<String, Object>();
-		
+
 		if (results != null && results.size() > 0) {
-			
+
 			if (logger.isDebugEnabled())
 				logger.debug("Number of search results found: " + results.size());
 			model.put("searchResults", results);
-			model.put("portletPreferences", new PortletConfiguration());
+
+			final PortletPreferencesWrapper pref = new PortletPreferencesWrapper(request);
+			model.put("portletPreferences", pref);
+
 		} else if (logger.isDebugEnabled())
 			logger.debug("No results are found");
-		
+
 		if (logger.isDebugEnabled())
 			logger.debug("Returning search results");
-		final ModelAndView modelAndView = new ModelAndView(PortletView.VIEW_SEARCH_RESULTS, model);
-		
+		final ModelAndView modelAndView = new ModelAndView(PortletView.VIEW_SEARCH_RESULTS_VIEW, model);
+
 		return modelAndView;
 	}
-	
-	public void setRepositoryDao(final RepositoryDao repositoryDao) {
-		this.repositoryDao = repositoryDao;
-	}
-	
+
 }

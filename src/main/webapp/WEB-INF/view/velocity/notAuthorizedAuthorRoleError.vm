@@ -26,4 +26,7 @@ $cancelUrl.setPortletMode($returnMode)
 
 <div class="uportal-channel-warning">#springMessage("user.role.edit.unauthorized")</div>
 <br/>
-<input class="uportal-button" type='button' value='#springMessage("button.caption.cancel")'	onclick="window.location.href='${cancelUrl}';"/> 
+<input class="button" 
+	type='button' value='#springMessage("button.caption.cancel")'	onclick="window.location.href='${cancelUrl}';"/>
+	
+	

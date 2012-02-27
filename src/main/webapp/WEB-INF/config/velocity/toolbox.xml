@@ -19,24 +19,15 @@
     under the License.
 
 -->
-
-<toolbox>
-	<tool>
-		<key>mathTool</key>
-		<scope>application</scope>
-		<class>org.apache.velocity.tools.generic.MathTool</class>
-	</tool>
-
-	<tool>
-		<key>contextTool</key>
-		<scope>request</scope>
-		<class>org.apache.velocity.tools.view.tools.ContextTool</class>
-	</tool>
-
-	<tool>
-		<key>escapeTool</key>
-		<scope>application</scope>
-		<class>org.apache.velocity.tools.generic.EscapeTool</class>
-	</tool>
-
-</toolbox>
+<tools>
+	<toolbox scope="request">
+		<tool key="contextTool" class="org.apache.velocity.tools.generic.ContextTool" />
+	</toolbox>
+	
+	<toolbox scope="application">
+		<tool key="escapeTool" class="org.apache.velocity.tools.generic.EscapeTool" />
+		<tool key="mathTool" class="org.apache.velocity.tools.generic.MathTool" />
+		<tool key="numberTool" class="org.apache.velocity.tools.generic.NumberTool" />
+		<tool key="dateTool" class="org.apache.velocity.tools.generic.DateTool" />
+	</toolbox>
+</tools>

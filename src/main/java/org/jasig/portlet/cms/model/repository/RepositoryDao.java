@@ -25,15 +25,15 @@ import org.jasig.portlet.cms.model.Post;
 import org.jasig.portlet.cms.model.RepositorySearchOptions;
 
 public interface RepositoryDao {
-	public Post getPost(final String nodeName) throws JcrRepositoryException;
+	public Post getPost(final String nodeName) throws GenericRepositoryException;
 	
-	public Collection<Post> getScheduledPosts(final String rootNodeName) throws JcrRepositoryException;
+	public Collection<Post> getScheduledPosts(final String rootNodeName) throws GenericRepositoryException;
 	
-	public void removePost(final String nodeName) throws JcrRepositoryException;
+	public void removePost(final String nodeName) throws GenericRepositoryException;
 	
-	public void schedulePost(final Post post, String nodeName) throws JcrRepositoryException;
+	public void schedulePost(final Post post, String nodeName) throws GenericRepositoryException;
 	
-	public Collection<Post> search(final RepositorySearchOptions options) throws JcrRepositoryException;
+	public Collection<Post> search(final RepositorySearchOptions options) throws GenericRepositoryException;
 	
-	public void setPost(final Post post) throws JcrRepositoryException;
+	public void setPost(final Post post) throws GenericRepositoryException;
 }

@@ -3,6 +3,7 @@
 	<name>ContentManagementPortlet</name>
 	<comment></comment>
 	<projects>
+		<project>jcrom</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

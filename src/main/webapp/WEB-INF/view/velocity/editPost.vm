@@ -32,13 +32,19 @@
 #set ( $postIsScheduledId = $mathTool.random(1,999999999) + "$portletNamespace" )
 #set ( $scheduledPostPublishDateId = $mathTool.random(1,999999999) + "$portletNamespace" )
 #set ( $scheduledPostsId = $mathTool.random(1,999999999) + "$portletNamespace" )
+#set ( $scheduledPostsContainerId = $mathTool.random(1,999999999) + "$portletNamespace" ) 
+#set ( $manageSchedulerId = $mathTool.random(1,999999999) + "$portletNamespace" ) 
 #set ( $postOptionsTabsId = $mathTool.random(1,999999999) + "$portletNamespace" )
 #set ( $previewScheduledPostContentId = $mathTool.random(1,999999999) + "$portletNamespace" )
+#set ( $manageSchedulerButtonId = $mathTool.random(1,999999999) + "$portletNamespace" )
 
 #set ( $returnMode = $portletConstructors.get(0).newInstance("view") )
 
 #set ( $cancelUrl = $renderResponse.createRenderURL() )
 $cancelUrl.setPortletMode($returnMode)
+
+#set ( $viewAttachmentUrl = $renderResponse.createActionURL() )
+$viewAttachmentUrl.setParameter("action", "viewPostAttachment")
 
 #set ( $searchUrl = $renderResponse.createRenderURL() )
 $searchUrl.setParameter("action", "searchRepository")
@@ -53,6 +59,10 @@ $loadScheduledPostsUrl.setParameter("action", "loadScheduledPosts")
 $removeScheduledPostUrl.setParameter("action", "removeScheduledPost")
 $removeScheduledPostUrl.setParameter("path", "{path}")
 
+#set ( $removeRepositoryRootUrl = $renderResponse.createActionURL() )
+$removeRepositoryRootUrl.setParameter("action", "removeScheduledRepositoryRoot")
+$removeRepositoryRootUrl.setParameter("path", "{path}")
+
 #set ( $publishScheduledPostUrl = $renderResponse.createActionURL() )
 $publishScheduledPostUrl.setParameter("action", "publishScheduledPost")
 
@@ -60,9 +70,9 @@ $publishScheduledPostUrl.setParameter("action", "publishScheduledPost")
 	<tr>
 		<td align='center'>	
 			<form method='POST' action='$searchUrl'>
-				<span class="uportal-label">#springMessage("label.caption.keyword"):</span>
-				<input class="uportal-input-text" type='text' name="keyword" />
-				<input class="uportal-button" type='submit' value='#springMessage("button.caption.search")' />
+				<span>#springMessage("label.caption.keyword"):</span>
+				<input type='text' name="keyword" />
+				<input class="button" type='submit' value='#springMessage("button.caption.search")' />
 			</form>
 		</td>
 	</tr>
@@ -72,7 +82,6 @@ $publishScheduledPostUrl.setParameter("action", "publishScheduledPost")
 <table cellpadding='0' cellspacing='0' width="100%">
 	
 	#springBind( "post.content" )
-	
 	<tr>
 		<td align='center'>			
 			#set ( $content = $escapeTool.html(${status.value}) )
@@ -84,7 +93,7 @@ $publishScheduledPostUrl.setParameter("action", "publishScheduledPost")
 	<tr>
 		<td>
 			#foreach($error in $status.errorMessages) 
-				<p class="uportal-channel-error">$error</p> 
+				<p class="portlet-msg-error portlet-msg error">$error</p> 
 			#end
 		</td>
 	</tr>
@@ -95,16 +104,17 @@ $publishScheduledPostUrl.setParameter("action", "publishScheduledPost")
 	<tr>
 		<td>
 			#foreach($error in $status.errorMessages) 
-				<p class="uportal-channel-error">$error</p> 
+				<p class="portlet-msg-error portlet-msg error">$error</p> 
 			#end
 		</td>
 	</tr>
 	#end
 	
+	
 	<tr>
 		<td>
-			<div class="uportal-channel-error" style="display:none" id="errorBlockContainer$errorContainerId">
-				<p class="uportal-channel-code" style="text-align:left;" id="errorBlock$errorContainerId"></p>
+			<div class="portlet-msg-error portlet-msg error" style="display:none" id="errorBlockContainer$errorContainerId">
+				<pre style="text-align:left;" id="errorBlock$errorContainerId"></pre>
 			</div>
 		</td>
 	</tr>
@@ -114,17 +124,20 @@ $publishScheduledPostUrl.setParameter("action", "publishScheduledPost")
 			<div id="postOptionsTabs$postOptionsTabsId">
 				<ul>
 					<li><a href="#postOptionsAccordion$postOptionsAccordionId">#springMessage("post.options.caption")</a></li> 
-					<li><a href="#postOptionsAccordion$scheduledPostsId">#springMessage("post.scheduled.posts.caption")</a></li>
+					
+					#if ( $scheduledRepositoryRoots.hasNext() )
+						<li><a href="#postOptionsAccordion$scheduledPostsContainerId">#springMessage("post.scheduled.posts.caption")</a></li>
+					#end
 				</ul>
 				
-				<div id="postOptionsAccordion$postOptionsAccordionId" style="width:99%">
+				<div id="postOptionsAccordion$postOptionsAccordionId" style="width:98%">
 					<!--- Post Options -->
 					<h3><a href="#">#springMessage("label.caption.attachments")</a></h3>
 					<div>
 						#if ($post.Attachments.size() > 0)
 
 							<span id="$editAttachmentsButtonId">
-								<input class="uportal-button" type="button" value='#springMessage("button.caption.edit.attachments")' 
+								<input class="button" type="button" value='#springMessage("button.caption.edit.attachments")' 
 										onClick="showEditAttachmentsDialog_$portletNamespace()" />
 							</span>
 							<p/>
@@ -144,17 +157,30 @@ $publishScheduledPostUrl.setParameter("action", "publishScheduledPost")
 					<!-- End of Post Options -->
 				</div>
 				
-				<div id="postOptionsAccordion$scheduledPostsId"></div>
+				<div id="postOptionsAccordion$scheduledPostsContainerId">
+					#if ( $scheduledRepositoryRoots.hasNext() )
+						<input id='manageSchedulerButtonId$manageSchedulerButtonId' class='uportal-button' type='button' 
+							value='#springMessage("label.caption.schedule.manage.scheduler")' 
+							onClick="javascript:showManageSchedulerDialog_$portletNamespace()" /> 
+					#end
+					
+					<div id="postOptionsAccordion$scheduledPostsId" />
+				</div>
 			</div>
 		
 		</td>
 	</tr>
-		
-		
+			
 	<tr>
 		<td width="100%" align="right">
-			<input class="uportal-button" type="submit" name="post" value='#springMessage("button.caption.submit")'  />
-			<input class="uportal-button" type="button" name="cancel" value='#springMessage("button.caption.cancel")'
+			#if( $post.Content )
+				#set ($submitButtonCaption="#springMessage('button.caption.update')")
+			#else
+				#set ($submitButtonCaption="#springMessage('button.caption.submit')")
+			#end
+			
+			<input class="button" type="submit" name="post" value='$submitButtonCaption'  />
+			<input class="button" type="button" name="cancel" value='#springMessage("button.caption.cancel")'
 				   onclick="window.location.href='${cancelUrl}';"  />
 		</td>
 		
@@ -172,14 +198,18 @@ $publishScheduledPostUrl.setParameter("action", "publishScheduledPost")
 					<form id="attachmentsFormId$id" enctype="multipart/form-data">
 						<td width="80%">
 							<img align="middle" hspace="3" src='$springMacroRequestContext.contextPath/images/package.png'>
-							<a href='javascript:void(0);'>$attachment.FileName</a>
+							
+							
+							$viewAttachmentUrl.setParameter("attachmentPath", "$attachment.Path")
+							$viewAttachmentUrl.setParameter("postPath", "$post.Path")
+							<a href='$viewAttachmentUrl'>$attachment.Title</a>
+				
 							<input type="hidden" value="$attachment.Path" name="attachmentPath" />
 							<input type="hidden" value="$post.Path" name="postPath" />
-							 
 						</td>
 						
 						<td>
-							<input class="uportal-button" type="submit" value='#springMessage("button.caption.remove")'  />
+							<input class="button" type="submit" value='#springMessage("button.caption.remove")'  />
 						</td>
 					</form>
 				</tr>
@@ -190,21 +220,39 @@ $publishScheduledPostUrl.setParameter("action", "publishScheduledPost")
 
 <div id="busyDialogId$busyDialogId" title='#springMessage("label.caption.loading")'> 
 	<img valign="bottom" src='$springMacroRequestContext.contextPath/images/hourglass.png'>
-	<span>#springMessage("label.caption.view.loading")</span>
+	<span>#springMessage("label.caption.view.loading")</span> <p>
+	<img valign="bottom" src='$springMacroRequestContext.contextPath/images/loading.gif'>
 </div>
 
 <div id="previewScheduledPostContentId$previewScheduledPostContentId" title='#springMessage("label.caption.preview")'></div>
+
+<div id="manageScheduler$manageSchedulerId" 
+	title='#springMessage("label.caption.schedule.manage.scheduler")'>
+	<table width="100%">
+		#foreach($root in $scheduledRepositoryRoots)
+		<tr>
+			<form id='scheduledRepositoryRootFormId$root' type='134'>
+				<td><img align="middle" hspace="3" src='$springMacroRequestContext.contextPath/images/package.png'> $root</td>
+				<input type="hidden" value="$root" name="repositoryRootPath"></input>
+				<td><input class="button" type="button" onClick='javascript:removeScheduledRepositoryRoot_$portletNamespace(this);' 
+					value='#springMessage("button.caption.remove")' /></td>
+			</form>
+		</tr>
+		#end
+	</table>
+</div>
+
 
 <script type="text/javascript">
 			
 	$('#errorBlockContainer$errorContainerId').hide();
 	$('#previewScheduledPostContentId$previewScheduledPostContentId').hide();
+	$('#manageScheduler$manageSchedulerId').hide();
 	
 	$("#busyDialogId$busyDialogId").dialog({
 		minHeight: 80,
 		modal: true,
 		position: 'center',
-		minWidth: 450,
 		autoOpen: false,
 		disabled: true,
 		draggable: false,
@@ -231,6 +279,18 @@ $publishScheduledPostUrl.setParameter("action", "publishScheduledPost")
 		
 	}
 	
+	function showManageSchedulerDialog_$portletNamespace() {
+		$("#manageScheduler$manageSchedulerId").dialog({
+			minHeight: 250,
+			position: 'center',
+			autoOpen: false,
+			show: 'slide',
+			hide: 'explode'
+		});
+			
+		$("#manageScheduler$manageSchedulerId").dialog('open');
+	}
+	
 	function removeScheduledPost_$portletNamespace(obj) {
 		var formObj = jQuery(obj).parent();
 		var formId = formObj.attr('id');
@@ -245,6 +305,36 @@ $publishScheduledPostUrl.setParameter("action", "publishScheduledPost")
 			success: function(data){
 				if (data.response.removeSuccessful)
 					formObj.parent().remove();
+			},
+			error: function(req,error){
+			  
+			},
+			beforeSend: function(data){
+				
+			}
+		});
+
+	}
+	
+	function removeScheduledRepositoryRoot_$portletNamespace(obj) {
+		var formId = obj.form.id;
+		var rootPath = jQuery("#" + formId + " [name='repositoryRootPath']").attr('value');
+				
+		var formUrl = new String("$removeRepositoryRootUrl");
+		formUrl = formUrl.replace(escape("{path}"), rootPath);
+		
+		jQuery.ajax({
+			url: formUrl,
+			timeout:5000,
+			success: function(data){
+				jQuery("#" + formId).remove();
+				
+				var numberOfFormsLeft = jQuery('form[id^="scheduledRepositoryRootFormId"]').length;
+				if (numberOfFormsLeft == 0) {
+						$("#manageScheduler$manageSchedulerId").dialog('close');
+						jQuery("#manageSchedulerButtonId$manageSchedulerButtonId").remove();
+				}
+
 			},
 			error: function(req,error){
 			  
@@ -302,9 +392,11 @@ $publishScheduledPostUrl.setParameter("action", "publishScheduledPost")
 				
 			//create attachments 
 			for (i = 0; i < $portletPreferencesWrapper.maximumPostAttachments; i++) {
-				var element = '<input name="attachment' + i + '" type="file" size="50" class="uportal-input-text" /><br/>';
+				var element = '#springMessage("label.caption.title"): <input name="attachmentTitle' + i + '" />';
+				element += '<br/><input name="attachment' + i + '" type="file" size="50" /><br/><br/>';
 				$('#browseFileId$browseFileId').after(element);
 	    	}	 
+						
 			
 	    	$("#attachmentsDialogId$attachmentsDialogId").dialog({
 				minHeight: 140,
@@ -332,6 +424,9 @@ $publishScheduledPostUrl.setParameter("action", "publishScheduledPost")
 			$("#scheduledPostPublishDate$scheduledPostPublishDateId").datetimepicker(
 			{ 
 				minDate: +1,
+				hourMin: 1,
+				hourMax: 12,
+				ampm: true,
 				monthNames: ['#springMessage("post.schedule.date.month.jan")', '#springMessage("post.schedule.date.month.feb")', '#springMessage("post.schedule.date.month.mar")', 
 							 '#springMessage("post.schedule.date.month.apr")', '#springMessage("post.schedule.date.month.may")', '#springMessage("post.schedule.date.month.jun")',
 							 '#springMessage("post.schedule.date.month.jul")', '#springMessage("post.schedule.date.month.aug")', '#springMessage("post.schedule.date.month.sep")',
@@ -364,7 +459,7 @@ $publishScheduledPostUrl.setParameter("action", "publishScheduledPost")
 				select: function(event, ui) 
 				{
 					try {
-						if (ui.panel.id == "postOptionsAccordion$scheduledPostsId") {
+						if (ui.panel.id == "postOptionsAccordion$scheduledPostsContainerId") {
 							jQuery.ajax({
 								url: "$loadScheduledPostsUrl",
 								timeout:5000,

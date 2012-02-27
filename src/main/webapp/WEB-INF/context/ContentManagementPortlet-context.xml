@@ -33,11 +33,14 @@
 		<property name="defaultErrorView" value="defaultError" />
 	</bean>
 
+
 	<bean id="portletMultipartResolver"
 		class="org.springframework.web.portlet.multipart.CommonsPortletMultipartResolver">
-		<property name="maxUploadSize" value="5242880" />
+		<property name="maxUploadSize" value="50000000" />
+		<property name="maxInMemorySize" value="50000000" />
+		<property name="defaultEncoding" value="utf8" />
 	</bean>
-
+	 
 	<bean id="messageSource"
 		class="org.springframework.context.support.ResourceBundleMessageSource">
 		<property name="basenames">
@@ -64,6 +67,7 @@
 	<bean id="portletModeParameterHandlerMapping"
 		class="org.springframework.web.portlet.handler.PortletModeParameterHandlerMapping">
 		<property name="order" value="100" />
+		<property name="allowDuplicateParameters" value="true" />
 		<property name="interceptors">
 			<list>
 				<ref bean="portletModeUserRoleAuthorizationInterceptor" />
@@ -75,16 +79,19 @@
 					<map>
 						<entry key="viewPostAttachment" value-ref="viewPostAttachmentController" />
 						<entry key="updatePostRating" value-ref="updatePostRatingController" />
+						<entry key="createAttachmentThumnailResource" value-ref="createAttachmentThumnailResourceController" />
 					</map>
 				</entry>
 				<entry key="edit">
 					<map>
+						<entry key="viewPostAttachment" value-ref="viewPostAttachmentController" />
 						<entry key="searchRepository" value-ref="searchController" />
 						<entry key="selectPostFromSearch" value-ref="selectPostFromSearchController" />
 						<entry key="removePostAttachment" value-ref="removePostAttachmentController" />
 						<entry key="loadScheduledPosts" value-ref="loadScheduledPostsController" />
 						<entry key="removeScheduledPost" value-ref="removeScheduledPostController" />
 						<entry key="publishScheduledPost" value-ref="publishScheduledPostController" />
+						<entry key="removeScheduledRepositoryRoot" value-ref="removeScheduledRepositoryRootController" />
 					</map>
 				</entry>
 				<entry key="help">
@@ -189,5 +196,11 @@
 		<property name="repositoryDao" ref="repositoryDao" />
 	</bean>
 	
+	<bean name="createAttachmentThumnailResourceController" class="org.jasig.portlet.cms.controller.CreateAttachmentThumnailResourceController">
+		 <property name="repositoryDao" ref="repositoryDao" />
+	</bean>
+	
+	
+	<bean name="removeScheduledRepositoryRootController" class="org.jasig.portlet.cms.controller.RemoveScheduledRepositoryRootAjaxController" />
 	<bean name="configController" class="org.jasig.portlet.cms.controller.ConfigController" />
 </beans>

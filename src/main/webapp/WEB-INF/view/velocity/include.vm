@@ -17,12 +17,12 @@
     under the License.
 *#
 
-
-<link rel="stylesheet" href="$springMacroRequestContext.contextPath/javascript/jquery/css/jpaginate-style.css" type="text/css">
 <link rel="stylesheet" href="$springMacroRequestContext.contextPath/javascript/jquery/css/redmond/jquery-ui-1.8.4.custom.css" type="text/css">
-<link rel="stylesheet" media="screen" type="text/css" href="$springMacroRequestContext.contextPath/javascript/jquery/css/jquery.rating.css" />
+<link rel="stylesheet" href="$springMacroRequestContext.contextPath/javascript/jquery/css/jquery.rating.css" media="screen" type="text/css" />
 <link rel="stylesheet" href="$springMacroRequestContext.contextPath/javascript/jquery/css/jquery.timepicker.css" type="text/css">
-<link rel="stylesheet" type="text/css" media="screen" href="$springMacroRequestContext.contextPath/javascript/jquery/css/ui.jqgrid.css" />
+<link rel="stylesheet" href="$springMacroRequestContext.contextPath/javascript/jquery/css/ui.jqgrid.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="$springMacroRequestContext.contextPath/javascript/jquery/css/video-js.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="$springMacroRequestContext.contextPath/javascript/jquery/css/jquery.fancybox.css" type="text/css" media="screen" />
 
 <script src="$springMacroRequestContext.contextPath/javascript/ckeditor/ckeditor.js" type="text/javascript"></script>
 <script src="$springMacroRequestContext.contextPath/javascript/jquery/jquery-1.6.2.min.js" type="text/javascript"></script>
@@ -34,6 +34,11 @@
 <script src="$springMacroRequestContext.contextPath/javascript/jquery/jquery.form.js" type="text/javascript"></script>
 <script src="$springMacroRequestContext.contextPath/javascript/jquery/jquery.rating.js" type="text/javascript"></script>
 <script src="$springMacroRequestContext.contextPath/javascript/jquery/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
+<script src="$springMacroRequestContext.contextPath/javascript/jquery/video.js" type="text/javascript"></script>
+
+<script src="$springMacroRequestContext.contextPath/javascript/jquery/fancybox/jquery.easing-1.3.pack.js" type="text/javascript"></script>
+<script src="$springMacroRequestContext.contextPath/javascript/jquery/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+<script src="$springMacroRequestContext.contextPath/javascript/jquery/fancybox/jquery.mousewheel-3.0.6.pack.js" type="text/javascript"></script>
 
 <script language="javascript" src="$springMacroRequestContext.contextPath/javascript/cmp.js" type="text/javascript"></script>
 		
@@ -41,3 +46,4 @@
 #set ( $renderResponse = $request.getAttribute("javax.portlet.response") )
 #set ( $portletNamespace = $renderResponse.getNamespace() )
 #set ( $portletConstructors = $renderRequest.getPortletMode().getClass().getConstructors() )
+

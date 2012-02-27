@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- Licensed to Jasig under one or more contributor license agreements. 
-	See the NOTICE file distributed with this work for additional information 
-	regarding copyright ownership. Jasig licenses this file to you under the 
-	Apache License, Version 2.0 (the "License"); you may not use this file except 
-	in compliance with the License. You may obtain a copy of the License at: 
-	http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable 
-	law or agreed to in writing, software distributed under the License is distributed 
-	on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either 
-	express or implied. See the License for the specific language governing permissions 
-	and limitations under the License. -->
+<!-- Licensed to Jasig under one or more contributor license agreements. See the NOTICE file distributed 
+	with this work for additional information regarding copyright ownership. Jasig licenses this file to 
+	you under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance 
+	with the License. You may obtain a copy of the License at: http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed under the License is 
+	distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+	See the License for the specific language governing permissions and limitations under the License. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -32,32 +29,61 @@
 	</organization>
 
 	<properties>
-		<servlet-api.version>2.4</servlet-api.version>
-		<portlet-api.version>1.0</portlet-api.version>
-		<spring.version>2.5.6.SEC01</spring.version>
-		<spring.jcr.version>0.8</spring.jcr.version>
-		<velocity.version>1.6.2</velocity.version>
-		<velocity.tools.version>1.4</velocity.tools.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<servlet-api.version>2.5</servlet-api.version>
+		<portlet-api.version>2.0</portlet-api.version>
+		<pluto.version>2.0.3</pluto.version>
+
+		<spring.version>3.0.6.RELEASE</spring.version>
+		<spring.jcr.version>0.9</spring.jcr.version>
+
+		<velocity.version>1.7</velocity.version>
+		<velocity.tools.version>2.0</velocity.tools.version>
+
 		<quartz.version>1.6.3</quartz.version>
+
 		<java.version>1.6</java.version>
 
-		<pluto.version>1.1.4</pluto.version>
-		<jackrabbit.version>1.6.4</jackrabbit.version>
-		<jcr.version>1.0</jcr.version>
+		<jackrabbit.version>2.3.0</jackrabbit.version>
+		<jcr.version>2.0</jcr.version>
+		<jcrom.version>1.3.2</jcrom.version>
+		<javax.transaction.version>1.1</javax.transaction.version>
+
+		<log4j.version>1.2.16</log4j.version>
+
+		<spring.modules.cache.version>0.8</spring.modules.cache.version>
+		<ehcache.version>2.2.0</ehcache.version>
+
+		<xstream.version>1.3.1</xstream.version>
+
+		<antisamy.version>1.4</antisamy.version>
+
+	 
+		
 		<commons.beanutils.version>1.8.0</commons.beanutils.version>
 		<commons.digester.version>1.8</commons.digester.version>
-		<log4j.version>1.2.14</log4j.version>
-		<jcrom.version>1.3.2</jcrom.version>
-		<spring.modules.cache.version>0.8a</spring.modules.cache.version>
-		<ehcache.version>2.2.0</ehcache.version>
-		<antisamy.version>1.4</antisamy.version>
-		<commons.fileupload.version>1.2.1</commons.fileupload.version>
+		<commons.fileupload.version>1.2.2</commons.fileupload.version>
 		<commons.collections.version>3.2.1</commons.collections.version>
-		<commons.configuration.version>1.6</commons.configuration.version>
+		<commons.logging.version>1.1.1</commons.logging.version>
+		<commons.httpclient.version>3.1</commons.httpclient.version>
+		<commons.lang.version>2.6</commons.lang.version>
+		<commons.io.version>2.1</commons.io.version>
 
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<w3c.css.sac.version>1.3</w3c.css.sac.version>
+
+		<jasig.ajax.portlet.version>1.0.9</jasig.ajax.portlet.version>
+
+		<json.lib.spring.version>1.0.2</json.lib.spring.version>
+
+		<joda.time.version>2.0</joda.time.version>
+
+		<batik.version>1.6-1</batik.version>
+
+		<slf4j.version>1.6.1</slf4j.version>
+
 		<maven.gpg.plugin.version>1.3</maven.gpg.plugin.version>
-		<tools.maven.plugin.version>1.2</tools.maven.plugin.version>
+		<maven.tools.plugin.version>1.2</maven.tools.plugin.version>
 		<maven.enforcer.plugin.version>1.0</maven.enforcer.plugin.version>
 		<maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
 		<maven.war.plugin.version>2.1.1</maven.war.plugin.version>
@@ -87,7 +113,6 @@
 	<build>
 		<defaultGoal>integration-test</defaultGoal>
 		<finalName>${project.name}</finalName>
-
 
 		<plugins>
 
@@ -159,7 +184,7 @@
 			<plugin>
 				<groupId>org.apache.geronimo.genesis.plugins</groupId>
 				<artifactId>tools-maven-plugin</artifactId>
-				<version>${tools.maven.plugin.version}</version>
+				<version>${maven.tools.plugin.version}</version>
 				<executions>
 					<execution>
 						<id>verify-legal-files</id>
@@ -202,7 +227,7 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.apache.pluto</groupId>
+				<groupId>org.apache.portals.pluto</groupId>
 				<artifactId>maven-pluto-plugin</artifactId>
 				<version>${pluto.version}</version>
 				<executions>
@@ -237,8 +262,8 @@
 								<property name="catalina.home" value="${env.CATALINA_HOME}" />
 								<delete dir="${catalina.home}/webapps/${project.name}" />
 								<delete file="${catalina.home}/webapps/${project.name}.war" />
-								<copy file="target/${project.name}.war" todir="${catalina.home}/webapps"
-									overwrite="true" failonerror="true" />
+								<copy file="target/${project.name}.war" todir="${catalina.home}/webapps" overwrite="true"
+									failonerror="true" />
 							</tasks>
 						</configuration>
 						<goals>
@@ -251,8 +276,8 @@
 
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
-					only. It has no influence on the Maven build itself. -->
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on 
+					the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -284,7 +309,7 @@
 								<pluginExecution>
 									<pluginExecutionFilter>
 										<groupId>
-											org.apache.pluto
+											org.apache.portals.pluto
 										</groupId>
 										<artifactId>
 											maven-pluto-plugin
@@ -297,7 +322,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore />
+										<ignore></ignore>
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
@@ -322,18 +347,12 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>commons-configuration</groupId>
-			<artifactId>commons-configuration</artifactId>
-			<version>${commons.configuration.version}</version>
-			<scope>compile</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache-core</artifactId>
 			<version>${ehcache.version}</version>
 			<scope>runtime</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>com.googlecode.ehcache-spring-annotations</groupId>
 			<artifactId>ehcache-spring-annotations</artifactId>
@@ -367,6 +386,7 @@
 			</exclusions>
 		</dependency>
 
+		
 		<dependency>
 			<groupId>org.springmodules</groupId>
 			<artifactId>spring-modules-cache</artifactId>
@@ -487,12 +507,14 @@
 			<version>${servlet-api.version}</version>
 			<scope>provided</scope>
 		</dependency>
+
 		<dependency>
-			<groupId>portlet-api</groupId>
+			<groupId>javax.portlet</groupId>
 			<artifactId>portlet-api</artifactId>
 			<version>${portlet-api.version}</version>
 			<scope>provided</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
@@ -510,7 +532,7 @@
 			<groupId>org.apache.velocity</groupId>
 			<artifactId>velocity</artifactId>
 			<version>${velocity.version}</version>
-			<scope>runtime</scope>
+			<scope>compile</scope>
 
 			<exclusions>
 				<exclusion>
@@ -521,18 +543,18 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.pluto</groupId>
+			<groupId>org.apache.portals.pluto</groupId>
 			<artifactId>pluto-util</artifactId>
 			<version>${pluto.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
-			<groupId>velocity-tools</groupId>
+			<groupId>org.apache.velocity</groupId>
 			<artifactId>velocity-tools</artifactId>
 			<version>${velocity.tools.version}</version>
 			<type>jar</type>
-			<scope>runtime</scope>
+			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
@@ -573,21 +595,24 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.6.1</version>
+			<version>${slf4j.version}</version>
 			<scope>runtime</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.6.1</version>
+			<version>${slf4j.version}</version>
 			<scope>runtime</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
 			<version>${spring.version}</version>
 			<scope>runtime</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc-portlet</artifactId>
@@ -597,7 +622,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>se-jcr</artifactId>
-			<version>0.9</version>
+			<version>${spring.jcr.version}</version>
 			<!-- see http://jira.springframework.org/browse/SEJCR-4 -->
 			<exclusions>
 				<exclusion>
@@ -662,7 +687,7 @@
 		<dependency>
 			<groupId>javax.transaction</groupId>
 			<artifactId>jta</artifactId>
-			<version>1.1</version>
+			<version>${javax.transaction.version}</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -678,58 +703,65 @@
 			<version>${log4j.version}</version>
 			<scope>runtime</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
-			<version>1.1.1</version>
+			<version>${commons.logging.version}</version>
 			<scope>compile</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.owasp</groupId>
 			<artifactId>antisamy</artifactId>
 			<version>${antisamy.version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
-			<version>3.1</version>
+			<version>${commons.httpclient.version}</version>
 			<scope>runtime</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.w3c.css</groupId>
 			<artifactId>sac</artifactId>
-			<version>1.3</version>
+			<version>${w3c.css.sac.version}</version>
 			<scope>runtime</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>batik</groupId>
 			<artifactId>batik-css</artifactId>
-			<version>1.6-1</version>
+			<version>${batik.version}</version>
 			<scope>runtime</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>batik</groupId>
 			<artifactId>batik-util</artifactId>
-			<version>1.6-1</version>
+			<version>${batik.version}</version>
 			<scope>runtime</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
 			<version>${commons.fileupload.version}</version>
-			<scope>runtime</scope>
+			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
-			<version>2.5</version>
+			<version>${commons.lang.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>1.4</version>
+			<version>${commons.io.version}</version>
 			<scope>runtime</scope>
 
 			<exclusions>
@@ -749,20 +781,20 @@
 		<dependency>
 			<groupId>net.sf.json-lib</groupId>
 			<artifactId>json-lib-ext-spring</artifactId>
-			<version>1.0.2</version>
+			<version>${json.lib.spring.version}</version>
 			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jasig</groupId>
 			<artifactId>AjaxPortletSupport</artifactId>
-			<version>1.0.9</version>
+			<version>${jasig.ajax.portlet.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
-			<version>1.3.1</version>
+			<version>${xstream.version}</version>
 		</dependency>
 
 		<dependency>
@@ -770,6 +802,12 @@
 			<artifactId>quartz</artifactId>
 			<version>${quartz.version}</version>
 			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>${joda.time.version}</version>
 		</dependency>
 	</dependencies>
 

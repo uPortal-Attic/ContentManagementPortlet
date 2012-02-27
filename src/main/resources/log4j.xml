@@ -29,14 +29,14 @@
 	</appender>
 	
 	<appender name="file" class="org.apache.log4j.FileAppender">
-		<param name="File"  value="ContentManagementPortlet.log" />
+		<param name="File"  value="logs/ContentManagementPortlet.log" />
     	<param name="Append" value="false" />    		
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%p %t %c%n%d{ABSOLUTE} %5p %c{1}:%L - %m%n%n"/>
 		</layout>
 	</appender>
 	
-	<!-- Here are the levels: TRACE < DEBUG < INFO < WARN < ERROR < FATAL -->
+	<!-- Here are the levels: ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < OFF -->
 	<logger name="org.jasig.portlet.cms">
         <level value="debug"/>
     </logger>
@@ -49,8 +49,20 @@
     	<level value="warn"/>
     </logger>
     
+    <logger name="org.springframework.scheduling.quartz">
+    	<level value="warn" />
+    </logger>
+    
     <logger name="org.apache">
         <level value="warn"/>
+    </logger>
+    
+    <logger name="net.sf.jmimemagic">
+    	<level value="off" />
+    </logger>
+    
+    <logger name="org.jasig.portlet.cms.view">
+    	<level value="off" />
     </logger>
     
 	<root>

@@ -36,44 +36,48 @@ import org.jasig.web.portlet.mvc.AbstractAjaxController;
 import org.springframework.web.portlet.bind.PortletRequestUtils;
 
 public class RemovePostAttachmentAjaxController extends AbstractAjaxController {
-	
+
 	private final Log logger = LogFactory.getLog(getClass());
-	
+
 	private RepositoryDao repositoryDao = null;
-	
+
+	public void setRepositoryDao(final RepositoryDao repositoryDao) {
+		this.repositoryDao = repositoryDao;
+	}
+
 	private RepositoryDao getRepositoryDao() {
 		return repositoryDao;
 	}
-	
+
 	@Override
 	protected Map<String, ?> handleAjaxRequestInternal(final ActionRequest request, final ActionResponse resp)
 			throws Exception {
 
 		final RemovePostAttachmentResponse response = new RemovePostAttachmentResponse();
-		
+
 		final String attachmentPath = PortletRequestUtils.getRequiredStringParameter(request,
 				"attachmentPath");
 		final String postPath = PortletRequestUtils.getRequiredStringParameter(request, "postPath");
-		
+
 		if (logger.isDebugEnabled()) {
 			logger.debug("Retrieving repository post at " + postPath);
 			logger.debug("Attachment path to remove: " + attachmentPath);
 		}
-		
+
 		final Post post = getRepositoryDao().getPost(postPath);
 		if (post != null) {
-			
+
 			if (logger.isDebugEnabled())
 				logger.debug("Retrieved repository post " + post);
-			
+
 			final Iterator<Attachment> it = post.getAttachments().iterator();
-			
+
 			Attachment attachment = null;
 			boolean foundAttachment = false;
 			while (!foundAttachment && it.hasNext()) {
 				attachment = it.next();
 				if (attachment.getPath().equals(attachmentPath)) {
-					
+
 					if (logger.isDebugEnabled())
 						logger.debug("Removing post attachment: " + attachment);
 					it.remove();
@@ -81,21 +85,20 @@ public class RemovePostAttachmentAjaxController extends AbstractAjaxController {
 					response.setRemoveSuccessful(foundAttachment);
 				}
 			}
-			
+
 			if (foundAttachment) {
 				if (logger.isDebugEnabled())
 					logger.debug("Saving post");
 				getRepositoryDao().setPost(post);
+
+				request.getPortletSession();
+
 				if (logger.isDebugEnabled())
 					logger.debug("Saved post: " + post);
 			}
 		}
-		
+
 		return Collections.singletonMap("response", response);
 	}
-	
-	public void setRepositoryDao(final RepositoryDao repositoryDao) {
-		this.repositoryDao = repositoryDao;
-	}
-	
+
 }

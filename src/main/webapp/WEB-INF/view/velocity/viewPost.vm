@@ -19,6 +19,13 @@
 
 #parse( "include.vm" )
 
+#set ( $editMode = $portletConstructors.get(0).newInstance("edit") )
+#set ( $editUrl = $renderResponse.createRenderURL() )
+$editUrl.setPortletMode($editMode)
+
+#set ( $viewAttachmentThumbnailUrl = $renderResponse.createResourceURL() )
+$viewAttachmentThumbnailUrl.setParameter("action", "createAttachmentThumnailResource")
+
 #set ( $viewAttachmentUrl = $renderResponse.createActionURL() )
 $viewAttachmentUrl.setParameter("action", "viewPostAttachment")
 
@@ -29,6 +36,8 @@ $updateRatingUrl.setParameter("action", "updatePostRating")
 #set ( $postRatingFormId = $mathTool.random(1,999999999) + "$portletNamespace" )
 #set ( $postRatingCount = $mathTool.random(1,999999999) + "$portletNamespace" )
 #set ( $errorContainerId = $mathTool.random(1,999999999) + "$portletNamespace" )
+#set ( $thumbnailsContainerId = $mathTool.random(1,999999999) + "$portletNamespace" )
+#set ( $videoPlayerId = $mathTool.random(1,999999999) + "$portletNamespace" )
 
 <script type="text/javascript">
 	$(document).ready(function(){
@@ -46,24 +55,40 @@ $updateRatingUrl.setParameter("action", "updatePostRating")
 	});		
 </script>
 
+
+#if ( $scheduledPostSuccess )
+	<div class="portlet-msg-info portlet-msg info">#springMessage("label.caption.scheduler.post.scheduled")
+	<br/><br/><input class="button" type='button' value='#springMessage("button.caption.close")' 
+		onclick="javascript:jQuery(this).parent().remove();" />
+	</div>
+#end
+
+
 #if( $post )
    	$!{post.Content}
    
     #if ( $post.Attachments.size() > 0 )
+		<hr>
     	<p>#springMessage("label.caption.attachments"):</p>  
-	   	#foreach ($attachment in $post.Attachments)
-			<p>
-				<img align="middle" hspace="3" src='$springMacroRequestContext.contextPath/images/package.png'>
-				$viewAttachmentUrl.setParameter("attachmentPath", "$attachment.Path")
-				$viewAttachmentUrl.setParameter("postPath", "$post.Path")
-				<a href='$viewAttachmentUrl'>$attachment.FileName</a>
-			</p>
-		#end
-	#end
-	
-	 
+		
+		
+		#if ( $portletPreferences.AttachmentThumbnailsEnabled )
+			$viewAttachmentThumbnailUrl.setParameter("postPath", "$post.Path")
+			<ul id="gallery$thumbnailsContainerId"></ul>
+		#else
+    	   	#foreach ($attachment in $post.Attachments)
+    			<p>
+    				<img align="middle" hspace="3" src='$springMacroRequestContext.contextPath/images/package.png'>
+    				$viewAttachmentUrl.setParameter("attachmentPath", "$attachment.Path")
+    				$viewAttachmentUrl.setParameter("postPath", "$post.Path")
+    				<a href='$viewAttachmentUrl'>$attachment.Title</a>
+    			</p>
+    		#end
+		#end		
+	#end	
+		 
 	#set( $args = ["$!{post.Author}", "$!{post.LastModifiedDate}"] )
-	<span class="uportal-channel-emphasis">#springArgMessage( "label.caption.postedby" $args )</span>
+	<span class="title">#springArgMessage( "label.caption.postedby" $args )</span>
 	<form id="postRatingFormId$postRatingFormId">
 		<select name="startRatingId$starRatingsId" class="rating" id="startRatingId$starRatingsId">
 			#foreach ($number in [1..5])
@@ -93,15 +118,27 @@ $updateRatingUrl.setParameter("action", "updatePostRating")
 	</p>
 	<!-- End of AddThis Script -->
 #else
-	<span class="uportal-channel-emphasis">#springMessage("invalid.post.content.empty")</span> 
+	<span class="title">#springMessage("invalid.post.content.empty")</span> 	
 #end
+
+#if ( $isAuthorRole )
+	<br/><br/>
+	<input class="button" type='button' value='#springMessage("button.caption.edit")'	
+		onclick="window.location.href='${editUrl}';"/>			
+#end
+		
 <br />
-<div class="uportal-channel-error" style="display:none" id="errorBlockContainer$errorContainerId">
-	<p class="uportal-channel-code" style="text-align:left;" id="errorBlock$errorContainerId"></p>
+<div class="portlet-msg-alert portlet-msg alert" style="display:none" id="errorBlockContainer$errorContainerId">
+	<pre style="text-align:left;" id="errorBlock$errorContainerId"></p>
 </div>
-			
+
+
+<div id="multimediaContainerId$portletNamespace" style="width:100%">
+	<div id="videoPlayerContainerId$portletNamespace"></div>	
+</div>
+
 <script type="text/javascript">	
-	function postRatingUpdated_$portletNamespace(data, statusText, xhr, $form) {
+	function postRatingUpdated_$portletNamespace(data, statusText, xhr, form) {
 		if (data.response.updateSuccessful) {
 			var updatedText = "(" + data.response.post.rateCount + " #springMessage("label.caption.ratings"))";
 			$("#postRatingCount$postRatingCount").text(updatedText);
@@ -122,9 +159,78 @@ $updateRatingUrl.setParameter("action", "updatePostRating")
 				var id = postRatingForm[i].id;
 				instance.addFormHandler('#' + id);
 			}
+			
+			#if ( $post.Attachments.size() > 0 && $portletPreferences.AttachmentThumbnailsEnabled )
+				
+				$("#multimediaContainerId$portletNamespace").hide();	
+							
+				jQuery.ajax({
+					url: "$viewAttachmentThumbnailUrl",
+					cache: false,
+					success: function(html){
+						
+						$("#gallery$thumbnailsContainerId").html(html); 
+						 
+						$("a#thumbnailMultimediaLinkId$portletNamespace").click(function() {
+							$("#videoPlayerContainerId$portletNamespace").empty();
+							
+							var attachmentPath = $(this).attr('path');
+							var type = $(this).attr('type');
+							
+							var videoElement = "<video id='videoPlayerId$videoPlayerId' class='video-js vjs-default-skin'";
+							videoElement += "data-setup='{}' width='600' height='264' controls preload='auto'>";
+							videoElement += "<source type='" + type + "' src='" + attachmentPath + "' />";
+							videoElement += "</video>";
+							
+							$("#videoPlayerContainerId$portletNamespace").wrapInner(videoElement);
+							
+							_V_("videoPlayerId$videoPlayerId");
+							$("#multimediaContainerId$portletNamespace").show();
+						});
+						
+						$("a[type^='video']").fancybox({
+							'scrolling'		: 'no',
+							'closeClick'	: false,
+							'beforeClose'	: function() {
+								if ($(".vjs-fullscreen").size() > 0)
+									return false;
+									
+								return true;							 
+							},
+							'afterClose'	: function() {
+								var player = _V_("videoPlayerId$videoPlayerId");
+								player.pause();
+								$("#videoPlayerContainerId$portletNamespace").empty();
+							}
+						});
+						
+						$("a[rel^='image-gallery']").fancybox({
+							'scrolling'		: 'no',
+							'closeClick'	: false,
+							'beforeLoad'	: function(obj) {
+								 
+							},
+							'beforeClose'	: function() {
+								if ($(".vjs-fullscreen").size() > 0)
+									return false;
+									
+								return true;							 
+							},
+							'afterClose'	: function() {
+								
+							}
+						});
+					}
+				});
+			#else
+				$("#multimediaContainerId$portletNamespace").hide();				
+			#end
+			
+		
+			
 		} catch (err) {
 			$('#errorBlockContainer$errorContainerId').show();
 			$('#errorBlock$errorContainerId').text(err);
-		}
+		} 		
 	});			
 </script>

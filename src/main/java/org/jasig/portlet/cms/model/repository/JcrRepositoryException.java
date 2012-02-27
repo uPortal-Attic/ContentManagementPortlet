@@ -19,9 +19,7 @@
 
 package org.jasig.portlet.cms.model.repository;
 
-import javax.jcr.RepositoryException;
-
-public class JcrRepositoryException extends RepositoryException {
+public class JcrRepositoryException extends GenericRepositoryException {
 	private static final long serialVersionUID = 1L;
 	
 	public JcrRepositoryException(final Exception e) {
