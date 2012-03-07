@@ -28,6 +28,8 @@ import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.version.VersionException;
+import javax.jcr.version.VersionManager;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -65,32 +67,84 @@ public class JcrPostDao extends AbstractJcrDAO<Post> {
 		return super.create(parentNodePath, entity);
 	}
 
-	public Node ensureNodeExists(final String nodeName) throws RepositoryException {
+	public Node schedulePost(final String nodeName, Post post) throws RepositoryException {
 		Node nd = null;
+		Node parent = getSession().getRootNode();
+
 		if (!exists(nodeName)) {
-			if (logger.isDebugEnabled())
-				logger.debug("Creating node " + nodeName);
-			nd = getSession().getRootNode().addNode(nodeName);
-
-			if (logger.isDebugEnabled())
-				logger.debug("Created node " + nd.getPath());
-
-			if (logger.isDebugEnabled())
-				logger.debug("Mixin types for node are " + Arrays.toString(getMixinTypes()));
-
-			for (final String type : getMixinTypes()) {
-				if (logger.isDebugEnabled())
-					logger.debug("Adding mixin type " + type + " to node " + nodeName);
-				nd.addMixin(type);
-				if (logger.isDebugEnabled())
-					logger.debug("Added mixin type " + type + " to node " + nodeName);
-			}
-			if (getSession().hasPendingChanges())
-				getSession().save();
+			nd = createNode(parent, nodeName);
+			saveSession();
+		} else {
+			nd = parent.getNode(nodeName);
+			ensureNodeMixinTypes(nd);
 		}
-		else
-			nd = getSession().getRootNode().getNode(nodeName);
+
+		Node schedNode = null;
+
+		if (logger.isDebugEnabled())
+			logger.debug("Parent scheduled posts node " + nd.getPath());
+
+		if (!nd.hasNode(post.getPath())) {
+
+			checkOutNode(nd);
+			schedNode = jcrom.addNode(nd, post);
+			saveSession();
+		} else {
+			schedNode = nd.getNode(post.getPath());
+			create(nd.getPath(), post);
+		}
+
+		return schedNode;
+	}
+
+	private void saveSession() throws RepositoryException {
+		if (getSession().hasPendingChanges())
+			getSession().save();
+	}
+
+	private Node createNode(Node parent, String nodeName) throws RepositoryException {
+		if (logger.isDebugEnabled())
+			logger.debug("Creating node " + nodeName);
+
+		checkOutNode(parent);
+
+		Node nd = parent.addNode(nodeName);
+		ensureNodeMixinTypes(nd);
+
+		if (logger.isDebugEnabled())
+			logger.debug("Created node " + nd.getPath());
+
 		return nd;
+
+	}
+
+	private void checkOutNode(Node nd) throws RepositoryException {
+
+		final VersionManager mgr = session.getWorkspace().getVersionManager();
+
+		if (!mgr.isCheckedOut(nd.getPath()))
+			mgr.checkout(nd.getPath());
+
+		if (!mgr.isCheckedOut(nd.getPath()))
+			throw new VersionException("Node path at " + nd.getPath() + " could not be checked out.");
+	}
+
+	private void ensureNodeMixinTypes(Node nd) throws RepositoryException {
+		if (logger.isDebugEnabled())
+			logger.debug("Mixin types for node are " + Arrays.toString(getMixinTypes()));
+
+		checkOutNode(nd);
+
+		for (final String type : getMixinTypes()) {
+			if (logger.isDebugEnabled())
+				logger.debug("Adding mixin type " + type + " to node " + nd.getPath());
+			nd.addMixin(type);
+			if (logger.isDebugEnabled())
+				logger.debug("Added mixin type " + type + " to node " + nd.getPath());
+		}
+
+		saveSession();
+
 	}
 
 	@Override
@@ -102,9 +156,8 @@ public class JcrPostDao extends AbstractJcrDAO<Post> {
 		final String keyword = StringEscapeUtils.escapeHtml(options.getKeyword());
 		List<Post> list = Collections.emptyList();
 
-
 		if (!StringUtils.isBlank(keyword)) {
-			final String searchQuery = "//element(*,mix:versionable)[jcr:like(@content, '%" + keyword + "%')]";
+			final String searchQuery = "//element(*,mix:versionable)[jcr:contains(@content, '%" + keyword + "%')]";
 			if (logger.isDebugEnabled())
 				logger.debug("Search query generated: " + searchQuery);
 			list = findByXPath(searchQuery, "*", -1);
@@ -143,7 +196,7 @@ public class JcrPostDao extends AbstractJcrDAO<Post> {
 		return jcrom;
 	}
 
-	public String[] getMixinTypes () {
+	public String[] getMixinTypes() {
 		return mixinTypes;
 	}
 
@@ -160,6 +213,10 @@ public class JcrPostDao extends AbstractJcrDAO<Post> {
 	@Override
 	public String update(final Post arg0, final String arg1, final int arg2) {
 		return super.update(arg0, arg1, arg2);
+	}
+
+	private String update(Node node, Post entity) {
+		return super.update(node, entity, "*", -1);
 	}
 
 	@Override

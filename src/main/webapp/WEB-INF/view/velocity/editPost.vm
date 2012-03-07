@@ -425,7 +425,7 @@ $publishScheduledPostUrl.setParameter("action", "publishScheduledPost")
 			{ 
 				minDate: +1,
 				hourMin: 1,
-				hourMax: 12,
+				hourMax: 24,
 				ampm: true,
 				monthNames: ['#springMessage("post.schedule.date.month.jan")', '#springMessage("post.schedule.date.month.feb")', '#springMessage("post.schedule.date.month.mar")', 
 							 '#springMessage("post.schedule.date.month.apr")', '#springMessage("post.schedule.date.month.may")', '#springMessage("post.schedule.date.month.jun")',

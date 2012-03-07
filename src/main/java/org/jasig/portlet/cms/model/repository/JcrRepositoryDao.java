@@ -23,10 +23,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.version.VersionManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -111,23 +109,12 @@ public class JcrRepositoryDao extends JcrDaoSupport implements RepositoryDao {
 					final JcrPostDao dao = getPostDao();
 
 					final String schedulePath = JcrRepositoryDao.SCHEDULED_POSTS_NODE_NAME;
-					if (logger.isDebugEnabled())
-						logger.debug("Scheduled path for post is " + schedulePath);
-
 					post.setPath(schedulePath);
 
-					final Node nd = dao.ensureNodeExists(nodeName);
-
 					if (logger.isDebugEnabled())
-						logger.debug("Checking out node " + nd.getPath());
+						logger.debug("Scheduled path for post is " + post.getPath());
 
-					final VersionManager mgr = session.getWorkspace().getVersionManager();
-					mgr.checkout(nd.getPath());
-
-					if (logger.isDebugEnabled())
-						logger.debug("Scheduling post...");
-
-					dao.create(nd.getPath(), post);
+					dao.schedulePost(nodeName, post);
 
 					if (logger.isDebugEnabled())
 						logger.debug("Scheduled post at " + post.getPath() + " to be published on " + post.getScheduledDate());

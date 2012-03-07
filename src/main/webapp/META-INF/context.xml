@@ -37,8 +37,8 @@
 	          auth="Container"
 	          type="javax.jcr.Repository"
 	          factory="org.apache.jackrabbit.core.jndi.BindableRepositoryFactory"
-	          configFilePath="webapps/ContentManagementPortlet/WEB-INF/config/repository/jackrabbit/repository.xml"
-	          repHomeDir="webapps/ContentManagementPortlet/WEB-INF/config/repository">
+	          configFilePath="${jcr.repository.config.file}"
+	          repHomeDir="${jcr.repository.path}">
 	</Resource>
 
 	     
