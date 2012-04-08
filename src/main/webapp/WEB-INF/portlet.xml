@@ -39,6 +39,7 @@
 			       /WEB-INF/context/ContentManagementPortlet-view.xml,
 			       /WEB-INF/context/ContentManagementPortlet-cache.xml,
 			       /WEB-INF/context/ContentManagementPortlet-quartz.xml,
+			       /WEB-INF/context/ContentManagementPortlet-mvc.xml
 			</value>
 		</init-param>
 

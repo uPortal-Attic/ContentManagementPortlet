@@ -215,10 +215,6 @@ public class JcrPostDao extends AbstractJcrDAO<Post> {
 		return super.update(arg0, arg1, arg2);
 	}
 
-	private String update(Node node, Post entity) {
-		return super.update(node, entity, "*", -1);
-	}
-
 	@Override
 	protected List<Post> toList(final NodeIterator nodeIterator, final String childNameFilter, final int maxDepth) {
 		return super.toList(nodeIterator, childNameFilter, maxDepth);

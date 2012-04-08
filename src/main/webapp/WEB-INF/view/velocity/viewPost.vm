@@ -160,7 +160,7 @@ $updateRatingUrl.setParameter("action", "updatePostRating")
 				instance.addFormHandler('#' + id);
 			}
 			
-			#if ( $post.Attachments.size() > 0 && $portletPreferences.AttachmentThumbnailsEnabled )
+			#if ($post && $post.Attachments.size() > 0 && $portletPreferences.AttachmentThumbnailsEnabled )
 				
 				$("#multimediaContainerId$portletNamespace").hide();	
 							

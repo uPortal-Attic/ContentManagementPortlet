@@ -32,14 +32,17 @@ import org.jasig.portlet.cms.model.Attachment;
 import org.jasig.portlet.cms.model.Post;
 import org.jasig.portlet.cms.model.RepositorySearchOptions;
 import org.springframework.extensions.jcr.JcrCallback;
+import org.springframework.extensions.jcr.SessionFactory;
 import org.springframework.extensions.jcr.support.JcrDaoSupport;
 
-public class JcrRepositoryDao extends JcrDaoSupport implements RepositoryDao {
+public final class JcrRepositoryDao extends JcrDaoSupport implements RepositoryDao {
 	private static final String	SCHEDULED_POSTS_NODE_NAME	= "scheduledPosts";
+
 	private final Log			logger						= LogFactory.getLog(getClass());
 	private JcrPostDao			postDao						= null;
 
-	@Override
+
+    @Override
 	public Post getPost(final String nodeName) {
 		final Object post = getTemplate().execute(new JcrCallback() {
 			@Override
@@ -183,6 +186,14 @@ public class JcrRepositoryDao extends JcrDaoSupport implements RepositoryDao {
 			}
 		});
 	}
+
+    /**
+     * Serves as a proxy method so @AutoWired can set the session factory in the parent class
+     * which is now configured as a <code>final</code> method.
+     */
+    public final void setSessionFactoryProxy(SessionFactory factory) {
+        super.setSessionFactory(factory);
+    }
 
 	public void setPostDao(final JcrPostDao postDao) {
 		this.postDao = postDao;

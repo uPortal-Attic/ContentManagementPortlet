@@ -28,6 +28,8 @@ import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.cms.model.Post;
 import org.jasig.portlet.cms.model.security.AntiVirusService;
 import org.jasig.portlet.cms.model.security.XssValidatorService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
@@ -35,11 +37,12 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.portlet.context.PortletRequestAttributes;
 
+@Service
 public class PostValidator implements Validator {
 	private AntiVirusService antiVirusService = null;
 	private XssValidatorService xssValidatorService = null;
 
-	private final Log logger = LogFactory.getLog(getClass());
+    private final static Log    logger              = LogFactory.getLog(PostValidator.class);
 
 	private AntiVirusService getAntiVirusService() {
 		return antiVirusService;
@@ -49,11 +52,13 @@ public class PostValidator implements Validator {
 		return xssValidatorService;
 	}
 
-	public void setAntiVirusService(final AntiVirusService svc) {
+    @Autowired
+    protected void setAntiVirusService(final AntiVirusService svc) {
 		antiVirusService = svc;
 	}
 
-	public void setXssValidatorService(final XssValidatorService svc) {
+    @Autowired
+    protected void setXssValidatorService(final XssValidatorService svc) {
 		xssValidatorService = svc;
 	}
 

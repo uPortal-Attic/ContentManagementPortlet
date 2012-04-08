@@ -66,7 +66,15 @@
 	</target>
 
 
-	<target name="deploy" depends="stopTomcat, package, startTomcat" />
+	<target name="deploy" depends="clean">
+		<echo message="Packaging application artifacts..." />
+		<exec dir="." executable="${maven.exec}">
+			<arg value="integration-test" />
+			<arg value="-f" />
+			<arg value="pom.xml" />
+			<arg value="-e" />
+		</exec>
+	</target>
 
 	<target name="compile" depends="clean">
 		<echo message="Compiling application artifacts..." />
@@ -82,23 +90,23 @@
 	<target name="package" depends="clean">
 		<echo message="Packaging application artifacts..." />
 		<exec dir="." executable="${maven.exec}">
-			<arg value="integration-test" />
+			<arg value="package" />
 			<arg value="-f" />
 			<arg value="pom.xml" />
 			<arg value="-e" />
 		</exec>
 	</target>
-	
+
 	<target name="cleanWar">
 		<echo message="Cleaning war file..." />
 		<delete file="${tomcat.dir}\webapps\${ant.project.name}.war" verbose="false" />
 	</target>
-	
+
 	<target name="cleanDeploymentDirectory">
 		<echo message="Cleaning deployment directorty..." />
 		<delete dir="${tomcat.dir}\webapps\${ant.project.name}" verbose="false" includeemptydirs="true" />
 	</target>
-	
+
 	<target name="clean" depends="cleanWar, cleanDeploymentDirectory">
 		<echo message="Cleaning application artifacts..." />
 		<exec dir="." executable="${maven.exec}">

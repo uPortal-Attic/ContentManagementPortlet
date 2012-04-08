@@ -25,51 +25,56 @@ import javax.portlet.PortletMode;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.cms.model.repository.schedule.ScheduledPostsManager;
 import org.jasig.portlet.cms.view.PortletView;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.ModelAndView;
-import org.springframework.web.portlet.mvc.AbstractController;
+import org.springframework.web.portlet.bind.annotation.ActionMapping;
+import org.springframework.web.portlet.bind.annotation.RenderMapping;
 
-public class ConfigController extends AbstractController {
+@Controller
+@RequestMapping("CONFIG")
+public class ConfigController extends AbstractPortletController {
 
-	private final Log	logger	= LogFactory.getLog(getClass());
+    @ActionMapping
+    protected void handleAction(final ActionRequest request, final ActionResponse response) throws Exception {
+        final PortletPreferencesWrapper pref = new PortletPreferencesWrapper(request);
+        final Object[] keys = pref.getKeys();
 
-	@Override
-	protected void handleActionRequestInternal(final ActionRequest request, final ActionResponse response)
-			throws Exception {
-		final PortletPreferencesWrapper pref = new PortletPreferencesWrapper(request);
-		final Object[] keys = pref.getKeys();
+        final Map<String, ?> params = request.getParameterMap();
 
-		final Map<?, ?> params = request.getParameterMap();
+        ScheduledPostsManager.getInstance().removeRepositoryRoot(pref.getPortletRepositoryRoot());
 
-		ScheduledPostsManager.getInstance().removeRepositoryRoot(pref.getPortletRepositoryRoot());
+        for (final Object keyObj : keys) {
 
-		for (final Object key : keys)
-			if (params.containsKey(key.toString())) {
-				final String value = request.getParameter(key.toString());
-				pref.setProperty(key.toString(), value);
-			}
+            String key = keyObj.toString();
 
-		if (logger.isDebugEnabled())
-			logger.debug("Saving portlet preferences...");
+            final String value = request.getParameter(key);
+        
+            if (params.containsKey(key.toString())) 
+                pref.setProperty(key.toString(), value);
+            else if (value == null)
+                pref.setProperty(key, false);
+        }
 
-		pref.save();
+        logDebug("Saving portlet preferences...");
 
-		ScheduledPostsManager.getInstance().addRepositoryRoot(pref.getPortletRepositoryRoot());
-		response.setPortletMode(PortletMode.VIEW);
-	}
+        pref.save();
 
-	@Override
-	protected ModelAndView handleRenderRequestInternal(final RenderRequest request, final RenderResponse response)
-			throws Exception {
+        ScheduledPostsManager.getInstance().addRepositoryRoot(pref.getPortletRepositoryRoot());
+        response.setPortletMode(PortletMode.VIEW);
 
-		final Map<String, Object> model = new HashMap<String, Object>();
-		final PortletPreferencesWrapper pref = new PortletPreferencesWrapper(request);
-		model.put("portletPreferences", pref);
+    }
 
-		return new ModelAndView(PortletView.VIEW_CONFIG_PORTLET, model);
-	}
+    @RenderMapping
+    protected ModelAndView handleRender(final RenderRequest request, final RenderResponse response) throws Exception {
+
+        final Map<String, Object> model = new HashMap<String, Object>();
+        final PortletPreferencesWrapper pref = new PortletPreferencesWrapper(request);
+        model.put("portletPreferences", pref);
+
+        return new ModelAndView(PortletView.VIEW_CONFIG_PORTLET, model);
+    }
 
 }

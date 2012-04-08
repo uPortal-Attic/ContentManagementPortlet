@@ -27,7 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.cms.model.Attachment;
-import org.jasig.portlet.cms.util.PortletUtils;
+import org.jasig.portlet.cms.util.PortletUtilities;
 
 public abstract class AbstractAttachmentThumbnailCreator {
 	private static final String		TEMP_DIRECTORY_NAME		= "temp";
@@ -82,18 +82,18 @@ public abstract class AbstractAttachmentThumbnailCreator {
 
 		final String rel = getGalleryGroupKey();
 
-		builder = PortletUtils.appendFormat(builder, "<li class=''{0}''>",
+		builder = PortletUtilities.appendFormat(builder, "<li class=''{0}''>",
 				getListItemCssClassName());
 
 		final String path = StringUtils.defaultIfBlank(getLinkElementAttachmentPath(tmpFile), "");
 
-		builder = PortletUtils.appendFormat(builder,
+		builder = PortletUtilities.appendFormat(builder,
 				"<a id=''{0}'' href=''{1}'' rel=''{2}'' title=''{3}'' path=''{4}'' type=''{5}''>",
 				getLinkElementId(), getPathToAttachment(tmpFile), rel, StringEscapeUtils
 				.escapeHtml(getAttachment().getTitle()), path, getAttachment()
 				.getMimeType());
 
-		builder = PortletUtils.appendFormat(builder,
+		builder = PortletUtilities.appendFormat(builder,
 				"<img id=''{0}'' class=''{1}'' src=''{2}'' alt=''{3}'' />", getImageElementId(),
 				getListItemImageCssClassName(), getPathToAttachmentImage(tmpFile),
 				StringEscapeUtils.escapeHtml(getAttachment().getName()));
@@ -166,9 +166,9 @@ public abstract class AbstractAttachmentThumbnailCreator {
 		return attachment;
 	}
 
-	PortletContext getPortletContext() {
-		return portletContext;
-	}
+    PortletContext getPortletContext() {
+        return portletContext;
+    }
 
 	ResourceRequest getRequest() {
 		return request;

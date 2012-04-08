@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.jasig.portlet.cms.controller;
 
 import java.io.OutputStream;
@@ -27,48 +26,43 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.portlet.cms.model.Attachment;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-public class DownloadPostAttachmentController extends AbstractController {
+@Controller
+@RequestMapping("/downloadPostAttachment")
+public class DownloadPostAttachmentController extends AbstractPortletController {
 	
-	private final Log logger = LogFactory.getLog(getClass());
-	
-	@Override
-	protected ModelAndView handleRequestInternal(final HttpServletRequest request, final HttpServletResponse response)
+    @RequestMapping
+    protected void handleRequest(final HttpServletRequest request, final HttpServletResponse response)
 			throws Exception {
 		
 		final HttpSession session = request.getSession();
 		final Attachment attachment = (Attachment) session.getAttribute("attachment");
 		
-		if (logger.isDebugEnabled())
-			logger.debug("Attempting to download attachment: " + attachment);
+        logDebug("Attempting to download attachment: " + attachment);
+
 		response.setContentType("application/x-download");
 		
-		if (logger.isDebugEnabled())
-			logger.debug("Set content type to: " + response.getContentType());
+        logDebug("Set content type to: " + response.getContentType());
 		
 		final String encoding = response.getCharacterEncoding();
-		if (logger.isDebugEnabled())
-			logger.debug("Encoded file name based on: " + encoding);
+
+        logDebug("Encoded file name based on: " + encoding);
 		
 		final String fileName = URLEncoder.encode(attachment.getFileName(), encoding);
 		response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
 		
-		if (logger.isDebugEnabled())
-			logger.debug("Downloading file: " + fileName);
+        logDebug("Downloading file: " + fileName);
 		
 		final OutputStream out = response.getOutputStream();
 		out.write(attachment.getContents());
 		out.flush();
 		
-		if (logger.isDebugEnabled())
-			logger.debug("Clearing session attribute");
+        logDebug("Clearing session attribute");
 		session.setAttribute("attachment", null);
-		return null;
+
 	}
 	
 }

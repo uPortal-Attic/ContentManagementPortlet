@@ -278,6 +278,7 @@
 								<property name="catalina.home" value="${tomcat.dir}" />
 								<delete dir="${catalina.home}/webapps/${project.name}" failonerror="true" />
 								<delete file="${catalina.home}/webapps/${project.name}.war" failonerror="true" />
+								<delete file="${catalina.home}/logs/${project.name}.log" failonerror="false" />
 								<delete file="${catalina.home}/conf/Catalina/localhost/${project.name}.xml" failonerror="false" />
 								
 								<echo message="Copying ${project.name}.war to directory ${catalina.home}/webapps" />

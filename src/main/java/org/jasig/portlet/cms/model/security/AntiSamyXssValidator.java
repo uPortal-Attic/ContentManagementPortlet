@@ -30,60 +30,62 @@ import org.apache.commons.logging.LogFactory;
 import org.owasp.validator.html.AntiSamy;
 import org.owasp.validator.html.CleanResults;
 import org.owasp.validator.html.Policy;
+import org.springframework.stereotype.Service;
 
+@Service
 public class AntiSamyXssValidator implements XssValidatorService {
-	private final Log logger = LogFactory.getLog(getClass());
-	private AntiSamy antiSamy = null;
-	
-	public AntiSamyXssValidator() {
-		InputStream policyFile = null;
-		try {
-			if (logger.isDebugEnabled())
-				logger.debug("Loading xss policy file");
-			
-			policyFile = getClass().getResourceAsStream("/properties/antiSamyPolicy.xml");
-			final Policy policy = Policy.getInstance(policyFile);
-			antiSamy = new AntiSamy(policy);
-		} catch (final Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			try {
-				if (policyFile != null)
-					policyFile.close();
-			} catch (final IOException e) {
-				logger.error(e.getMessage(), e);
-			}
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<?> scan(String html) {
-		ArrayList<String> errorList = new ArrayList<String>();
-		
-		try {
-			
-			if (logger.isDebugEnabled())
-				logger.debug("Unescaping html content");
-			html = StringEscapeUtils.unescapeHtml(html);
-			
-			if (logger.isDebugEnabled())
-				logger.debug("Validaing content for xss");
-			final CleanResults cr = antiSamy.scan(html);
-			
-			if (cr.getNumberOfErrors() > 0) {
-				
-				if (logger.isDebugEnabled())
-					logger.debug("Rejecting content for xss");
-				errorList = cr.getErrorMessages();
-			}
-			
-		} catch (final Exception e) {
-			logger.error(e.getMessage(), e);
-			errorList.add(e.getMessage());
-		}
-		return errorList;
-		
-	}
-	
+    private final static Log logger   = LogFactory.getLog(AntiSamyXssValidator.class);
+    private AntiSamy         antiSamy = null;
+
+    public AntiSamyXssValidator() {
+        InputStream policyFile = null;
+        try {
+            if (logger.isDebugEnabled())
+                logger.debug("Loading xss policy file");
+
+            policyFile = getClass().getResourceAsStream("/properties/antiSamyPolicy.xml");
+            final Policy policy = Policy.getInstance(policyFile);
+            antiSamy = new AntiSamy(policy);
+        } catch (final Exception e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            try {
+                if (policyFile != null)
+                    policyFile.close();
+            } catch (final IOException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<?> scan(String html) {
+        ArrayList<String> errorList = new ArrayList<String>();
+
+        try {
+
+            if (logger.isDebugEnabled())
+                logger.debug("Unescaping html content");
+            html = StringEscapeUtils.unescapeHtml(html);
+
+            if (logger.isDebugEnabled())
+                logger.debug("Validaing content for xss");
+            final CleanResults cr = antiSamy.scan(html);
+
+            if (cr.getNumberOfErrors() > 0) {
+
+                if (logger.isDebugEnabled())
+                    logger.debug("Rejecting content for xss");
+                errorList = cr.getErrorMessages();
+            }
+
+        } catch (final Exception e) {
+            logger.error(e.getMessage(), e);
+            errorList.add(e.getMessage());
+        }
+        return errorList;
+
+    }
+
 }

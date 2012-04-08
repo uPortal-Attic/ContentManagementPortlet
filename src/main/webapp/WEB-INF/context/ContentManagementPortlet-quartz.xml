@@ -12,7 +12,7 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
 
 	<bean id="scheduledPostPublisherTask"
 		class="org.jasig.portlet.cms.model.repository.schedule.ScheduledPostPublisher">
@@ -36,6 +36,8 @@
 	</bean>
 
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="configLocation" value="classpath:quartz.properties" />
+		
 		<property name="jobDetails">
 			<list>
 				<ref bean="scheduledPostPublisherJob" />

@@ -24,10 +24,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
 	xmlns:jee="http://www.springframework.org/schema/jee"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
-						http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
-						http://www.springframework.org/schema/jee
-						http://www.springframework.org/schema/jee/spring-jee-2.0.xsd
-						http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd">
+						http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+						http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
+						http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+						
 	<jee:jndi-lookup id="repository" lookup-on-startup="true"
 		cache="true" resource-ref="true" jndi-name="java:comp/env/jcr/repository"
 		proxy-interface="javax.jcr.Repository" />
@@ -96,11 +96,11 @@
 	  </bean>
   
   	<bean id= "postDao" class="org.jasig.portlet.cms.model.repository.JcrPostDao" >
-		<constructor-arg ref="jcrSessionFactory"></constructor-arg>
-		<constructor-arg ref="jcrom"></constructor-arg>
-		<constructor-arg value="mix:versionable"></constructor-arg>
+		<constructor-arg ref="jcrSessionFactory" />
+		<constructor-arg ref="jcrom" />
+		<constructor-arg value="mix:versionable" />
 	</bean>
-			
+
 	<bean id="repositoryDao" parent="txProxyTemplate">
 		<property name="target">
 			<bean class="org.jasig.portlet.cms.model.repository.JcrRepositoryDao">

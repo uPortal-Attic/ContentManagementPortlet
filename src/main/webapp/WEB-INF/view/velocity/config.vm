@@ -28,7 +28,19 @@
     #foreach ($key in $prefKeys)
 		<tr>
 			<td><span class="fl-text-align-right">#springMessage("label.caption.configure.$key"):</span></td>
-			<td><input type='text' name="$key" value="$portletPreferences.getProperty($key)" /></td>
+			
+			#set ( $value = $portletPreferences.getProperty($key) )
+			
+			<td>
+			 
+			#if ($value == "true" || $value == "on")
+				<input type='checkbox' name="$key" checked />
+			#elseif ($value == "false" || $value == "false")
+				<input type='checkbox' name="$key" />
+			#else
+				<input type='text' name="$key" value="$value" />
+			#end
+			</td>
     	</tr>
 	#end
 	</table>

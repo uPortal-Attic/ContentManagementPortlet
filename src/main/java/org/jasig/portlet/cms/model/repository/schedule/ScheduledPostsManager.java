@@ -22,39 +22,52 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-
 public final class ScheduledPostsManager {
-	private static ScheduledPostsManager	instance	= null;
+    private static ScheduledPostsManager instance = null;
 
-	public static ScheduledPostsManager getInstance() {
-		if (instance == null)
-			instance = new ScheduledPostsManager();
-		return instance;
-	}
+    private static final Object          lock     = new Object();
 
-	private Set<String>	repositoryRootsSet	= null;
+    public static ScheduledPostsManager getInstance() {
+        if (instance == null)
+            instance = new ScheduledPostsManager();
+        return instance;
+    }
 
-	private ScheduledPostsManager() {
-		repositoryRootsSet = new TreeSet<String>();
-	}
+    private Set<String> repositoryRootsSet = null;
 
-	public void addRepositoryRoot(final String root) {
-		repositoryRootsSet.add(root);
-	}
+    private ScheduledPostsManager() {
+        repositoryRootsSet = new TreeSet<String>();
+    }
 
-	public boolean containsRoot(final String root) {
-		return repositoryRootsSet.contains(root);
-	}
+    public synchronized void addRepositoryRoot(final String root) {
+        synchronized (lock) {
+            repositoryRootsSet.add(root);
+        }
 
-	public Iterator<String> getRepositoryRoots() {
-		return repositoryRootsSet.iterator();
-	}
+    }
 
-	public void removeRepositoryRoot(final String root) {
-		repositoryRootsSet.remove(root);
-	}
+    public boolean containsRoot(final String root) {
+        synchronized (lock) {
+            return repositoryRootsSet.contains(root);
+        }
 
-	public int size() {
-		return repositoryRootsSet.size();
-	}
+    }
+
+    public Iterator<String> getRepositoryRoots() {
+        synchronized (lock) {
+            return repositoryRootsSet.iterator();
+        }
+    }
+
+    public synchronized void removeRepositoryRoot(final String root) {
+        synchronized (lock) {
+            repositoryRootsSet.remove(root);
+        }
+    }
+
+    public synchronized int size() {
+        synchronized (lock) {
+            return repositoryRootsSet.size();
+        }
+    }
 }
