@@ -20,16 +20,14 @@
 <link rel="stylesheet" href="$springMacroRequestContext.contextPath/javascript/jquery/css/redmond/jquery-ui-1.8.4.custom.css" type="text/css">
 <link rel="stylesheet" href="$springMacroRequestContext.contextPath/javascript/jquery/css/jquery.rating.css" media="screen" type="text/css" />
 <link rel="stylesheet" href="$springMacroRequestContext.contextPath/javascript/jquery/css/jquery.timepicker.css" type="text/css">
-<link rel="stylesheet" href="$springMacroRequestContext.contextPath/javascript/jquery/css/ui.jqgrid.css" type="text/css" media="screen" />
 <link rel="stylesheet" href="$springMacroRequestContext.contextPath/javascript/jquery/css/video-js.css" type="text/css" media="screen" />
 <link rel="stylesheet" href="$springMacroRequestContext.contextPath/javascript/jquery/css/jquery.fancybox.css" type="text/css" media="screen" />
 
 <script src="$springMacroRequestContext.contextPath/javascript/ckeditor/ckeditor.js" type="text/javascript"></script>
-<script src="$springMacroRequestContext.contextPath/javascript/jquery/jquery-1.6.2.min.js" type="text/javascript"></script>
+<script src="$springMacroRequestContext.contextPath/javascript/jquery/jquery-1.7.2.min.js" type="text/javascript"></script>
 <script src="$springMacroRequestContext.contextPath/javascript/jquery/jquery-ui-1.8.7.custom.min.js" type="text/javascript"></script>
+<script src="$springMacroRequestContext.contextPath/javascript/jquery/MyInfusion.js" type="text/javascript"></script>
 
-<script src="$springMacroRequestContext.contextPath/javascript/jquery/grid.locale-en.js" type="text/javascript"></script>
-<script src="$springMacroRequestContext.contextPath/javascript/jquery/jquery.jqGrid.min.js" type="text/javascript"></script>
 
 <script src="$springMacroRequestContext.contextPath/javascript/jquery/jquery.form.js" type="text/javascript"></script>
 <script src="$springMacroRequestContext.contextPath/javascript/jquery/jquery.rating.js" type="text/javascript"></script>
