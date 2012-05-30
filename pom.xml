@@ -45,7 +45,7 @@
 
 		<java.version>1.6</java.version>
 
-		<jackrabbit.version>2.4.0</jackrabbit.version>
+		<jackrabbit.version>2.4.1</jackrabbit.version>
 		<jcr.version>2.0</jcr.version>
 		<jcrom.version>1.3.2</jcrom.version>
 		<javax.transaction.version>1.1</javax.transaction.version>

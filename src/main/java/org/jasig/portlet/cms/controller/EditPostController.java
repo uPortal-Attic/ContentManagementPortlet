@@ -119,7 +119,8 @@ public class EditPostController extends AbstractPortletController {
         }
     }
 
-    private void savePost(final ActionRequest request, final BindingResult result, Post post, boolean postIsScheduled, String scheduledDate)
+    private void savePost(final ActionRequest request, final BindingResult result, 
+        Post post, boolean postIsScheduled, String scheduledDate, boolean removeExistingPost)
             throws PortletRequestBindingException, JcrRepositoryException {
 
         final PortletPreferencesWrapper pref = new PortletPreferencesWrapper(request);
@@ -139,11 +140,17 @@ public class EditPostController extends AbstractPortletController {
             else {
 
                 logDebug("Post is scheduled to be published on " + scheduledDate);
-
                 final DateTime dt = DateTime.parse(scheduledDate, fmt);
                 post.setScheduledDate(dt.toString(fmt));
+                
+                if (removeExistingPost) {
+                  if (getRepositoryDao().exists(post.getPath())) {
+                    logDebug("Preparing scheduled post. Removing existing post at " + post.getPath());
+                    getRepositoryDao().removePost(post.getPath());
+                  }
+                }
+                
                 getRepositoryDao().schedulePost(post, pref.getPortletRepositoryRoot());
-
                 ensureRepositoryRootIsScheduled(pref);
             }
         } else {
@@ -156,7 +163,9 @@ public class EditPostController extends AbstractPortletController {
     @ActionMapping
     protected void handleAction(final ActionRequest request, final ActionResponse response,
             @RequestParam(value = "postIsScheduled", required = false) boolean postIsScheduled,
-            @RequestParam(value = "scheduledPostPublishDate", required = false) String scheduledDate, @ModelAttribute Post post, BindingResult result)
+            @RequestParam(value = "scheduledPostPublishDate", required = false) String scheduledDate, 
+            @RequestParam(value = "removeExistingPost", required = false) boolean removeExistingPost, 
+            @ModelAttribute Post post, BindingResult result)
             throws Exception {
 
         logDebug("Received post object");
@@ -172,7 +181,7 @@ public class EditPostController extends AbstractPortletController {
             logDebug("Post: " + post);
             logDebug("Submitting post object");
 
-            savePost(request, result, post, postIsScheduled, scheduledDate);
+            savePost(request, result, post, postIsScheduled, scheduledDate, removeExistingPost);
 
             if (!result.hasErrors()) {
 
@@ -351,7 +360,8 @@ public class EditPostController extends AbstractPortletController {
     }
 
     @ActionMapping(params = "action=removeScheduledPost")
-    protected void handleActionRemoveScheduledPost(final ActionRequest request, final ActionResponse resp, @RequestParam("path") String postPath)
+    protected void handleActionRemoveScheduledPost(final ActionRequest request, 
+            final ActionResponse resp, @RequestParam("path") String postPath)
             throws Exception {
 
         RemoveScheduledPostResponse response = new RemoveScheduledPostResponse();

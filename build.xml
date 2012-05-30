@@ -25,16 +25,6 @@
 		<os family="windows" />
 	</condition>
 	<property name="maven.exec" value="${maven.home}\bin\${maven.exec.file}" />
-
-	<condition property="tomcat.startup.file" value="startup.bat" else="startup">
-		<os family="windows" />
-	</condition>
-	<property name="tomcat.startup" value="${tomcat.dir}\bin\${tomcat.startup.file}" />
-
-	<condition property="tomcat.shutdown.file" value="shutdown.bat" else="shutdown">
-		<os family="windows" />
-	</condition>
-	<property name="tomcat.shutdown" value="${tomcat.dir}\bin\${tomcat.shutdown.file}" />
 	<!-- ******************************************************** -->
 
 	<!-- ******************* PROPERTY CHECKS ************************* -->
@@ -44,12 +34,8 @@
 	<available type="file" file="${maven.exec}" property="maven.exec.present" />
 	<fail unless="${maven.exec.present}" message="Maven exec ${maven.exec} does not exist" />
 
-	<available type="file" file="${tomcat.startup}" property="tomcat.startup.present" />
-	<fail unless="${tomcat.startup.present}" message="Tomcat startup script ${tomcat.startup} does not exist" />
-
-	<available type="file" file="${tomcat.shutdown}" property="tomcat.shutdown.present" />
-	<fail unless="${tomcat.shutdown.present}" message="Tomcat shutdown {tomcat.shutdown} does not exist" />
-
+	<available type="dir" file="${tomcat.dir}" property="tomcat.directory.present" />
+	<fail unless="${tomcat.directory.present}" message="Tomcat directory ${tomcat.dir} does not exist" />
 	<!-- ************************************************************* -->
 
 	<!-- *************************** PROMPTS ************************* -->
@@ -57,14 +43,6 @@
 	<echo message="Tomcat directory: ${tomcat.dir}" level="info" />
 	<echo message="Maven directory: ${maven.home}" level="info" />
 	<!-- ************************************************************* -->
-
-	<target name="connectToTomcat">
-		<echo message="Checking to see if Tomcat is running on ${tomcat.host}:${tomcat.port}" />
-		<condition property="tomcat.running">
-			<socket server="${tomcat.host}" port="${tomcat.port}" />
-		</condition>
-	</target>
-
 
 	<target name="deploy" depends="clean">
 		<echo message="Packaging application artifacts..." />
@@ -76,7 +54,7 @@
 		</exec>
 	</target>
 
-	<target name="compile" depends="clean">
+	<target name="compile" depends="clean" description="Compile project artifacts">
 		<echo message="Compiling application artifacts..." />
 		<exec dir="." executable="${maven.exec}">
 			<arg value="clean" />
@@ -87,7 +65,7 @@
 		</exec>
 	</target>
 
-	<target name="package" depends="clean">
+	<target name="package" depends="clean" description="Package project artifacts">
 		<echo message="Packaging application artifacts..." />
 		<exec dir="." executable="${maven.exec}">
 			<arg value="package" />
@@ -97,7 +75,7 @@
 		</exec>
 	</target>
 
-	<target name="cleanWar">
+	<target name="cleanWar" description="Removes the deployed WAR file from tomcat webapps">
 		<echo message="Cleaning war file..." />
 		<delete file="${tomcat.dir}\webapps\${ant.project.name}.war" verbose="false" />
 	</target>
@@ -116,16 +94,5 @@
 			<arg value="-e" />
 		</exec>
 	</target>
-
-	<target name="startTomcat" depends="connectToTomcat" unless="${tomcat.running}">
-		<echo message="Starting Tomcat..." />
-		<exec dir="${tomcat.dir}" executable="${tomcat.startup}" />
-	</target>
-
-	<target name="stopTomcat" depends="connectToTomcat" if="${tomcat.running}">
-		<echo message="Stopping Tomcat..." />
-		<exec dir="${tomcat.dir}" executable="${tomcat.shutdown}" />
-	</target>
-
 </project>
 

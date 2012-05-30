@@ -36,4 +36,7 @@ public interface RepositoryDao {
 	public Collection<Post> search(final RepositorySearchOptions options) throws GenericRepositoryException;
 	
 	public void setPost(final Post post) throws GenericRepositoryException;
+	
+	public boolean exists(String nodeName);
+	
 }

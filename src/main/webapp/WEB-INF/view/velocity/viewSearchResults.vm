@@ -35,109 +35,102 @@ $removeScheduledPostUrl.setParameter("path", "{path}")
 
 #if ($searchResults)
 	<div id="previewScheduledPostContentId$previewScheduledPostContentId" title='#springMessage("label.caption.preview")'></div>
-	<div align="center"><table id="paginationId$paginationId"></table></div>
-	
-	<script type="text/javascript">
+  <h2>#springMessage('label.caption.search.results.found'): $searchResults.size() </h2>
+  
+  <script type="text/javascript">
 		function showScheduledPostPreviewDialog_$portletNamespace(obj) {
-    		var content = $(obj).attr("tag");
-    		$("#previewScheduledPostContentId$previewScheduledPostContentId").dialog({
-    			open: function(event, ui) { 
-    				$("#previewScheduledPostContentId$previewScheduledPostContentId").html(unescape(content));
-    			},
-    			minWidth: $(window).width() / 1.5,
-    			minHeight: 250,
-    			height: $(window).height() / 1.5,
-    			position: 'center',
-    			autoOpen: false,
-    			show: 'slide',
-    			hide: 'explode'
-    		});
-    			
-    		$("#previewScheduledPostContentId$previewScheduledPostContentId").dialog('open');
-		
+      var content = $(obj).attr("tag");
+      $("#previewScheduledPostContentId$previewScheduledPostContentId").dialog({
+        open: function(event, ui) { 
+          $("#previewScheduledPostContentId$previewScheduledPostContentId").html(unescape(content));
+        },
+        minWidth: $(window).width() / 1.5,
+        minHeight: 250,
+        height: $(window).height() / 1.5,
+        position: 'center',
+        autoOpen: false,
+        show: 'slide',
+        hide: 'explode'
+      });
+        
+      $("#previewScheduledPostContentId$previewScheduledPostContentId").dialog('open');
 		}
-    	
-		function removeScheduledPost_$portletNamespace(obj, rowId) {
-    		var formObj = jQuery(obj).parent();
-    		var formId = formObj.attr('id');
-    		var postPath = jQuery("#" + formId + " [name='path']").attr('value');
-    		
-    		var formUrl = new String("$removeScheduledPostUrl");
-    		formUrl = formUrl.replace(escape("{path}"), postPath);
     
-    		jQuery.ajax({
-    			url: formUrl,
-    			timeout:5000,
-    			success: function(data){
-    				if (data.response.removeSuccessful) 
-						jQuery("#paginationId$paginationId").jqGrid('delRowData', rowId);
-    			},
-    			error: function(req,error){
-    			  
-    			},
-    			beforeSend: function(data){
-    				
-    			}
-    		});
-    
-    	}
-	
-		$(document).ready(function(){	
-			$("#paginationId$paginationId").jqGrid({ 
-				datatype: "local", 
-				height: 250,
-				width: $(window).width() - 150,
-				colNames:['Author','Location', 'Created Date', 'Scheduled Date', 'Actions'], 
-				colModel:[ 
-						   {name:'author',index:'author', width:60, sorttype:"text"}, 
-						   {name:'location',location:'author', width:100, sorttype:"text"}, 
-						   {name:'createdDate',index:'createdDate', width:90, sorttype:"date"}, 
-						   {name:'scheduledDate',index:'scheduledDate', width:100, sorttype:"date"}, 
-						   {name:'actions',index:'actions', width:70, sortable:false}
-						 ], 
-				multiselect: false, 
-				caption: "#springMessage('label.caption.search.results.found'): $searchResults.size()"									
-			});
-			
-			#foreach( $post in $searchResults )
-				#set ($data = "<form id='formId'" + $post.uuid + " method='POST' action='$selectPostUrl'>")
-				
-				#set ($data = $data + "<input type='hidden' name='path' value='" + $post.Path + "' />" )
-				#set ($data = $data + "<input type='hidden' name='content' value='" + $escapeTool.javascript($post.Content) + "' />" )
-				
-				#set ($caption = "#springMessage('button.caption.select')")
-				
-				#set ($data = $data + "<input class='uportal-button' type='submit' value='$caption' />" )
-				
-				#if ( $post.ScheduledDate )
-					#set ($caption = "#springMessage('button.caption.remove')")
-					#set ($data = $data + "<input class='uportal-button' type='button' onClick='javascript:removeScheduledPost_$portletNamespace(this," + $velocityCount + ");' value='$caption' />" )
-				#else
-					#set ($data = $data + "<span></span>")
-				#end
-				
-				#set ($caption = "#springMessage('button.caption.preview')")
-				#set ($data = $data + "<input class='uportal-button' type='button' onClick='javascript:showScheduledPostPreviewDialog_$portletNamespace(this);' tag='" + $escapeTool.javascript($post.Content) + "' value='$caption' />" )		
-				#set ($data = $data + "</form>")
-			
-			
-				var rowData = "$data";
-				var mydata = [  
-							{author:"$post.Author",location:"$post.Path", createdDate:"$post.LastModifiedDate",
-							 scheduledDate:"$!{post.ScheduledDate}", 
-							 actions:rowData},
-						 ]; 
-				
-				for(var i = 0; i<= mydata.length;i++) 
-					jQuery("#paginationId$paginationId").jqGrid('addRowData',i+1,mydata[i]);
-			#end
-					
-		});	
+    function removeScheduledPost_$portletNamespace(postPath, rowId) {
+      
+      var formUrl = new String("$removeScheduledPostUrl");
+      formUrl = formUrl.replace(escape("{path}"), postPath);
+
+      jQuery.ajax({
+        url: formUrl,
+        timeout:5000,
+        success: function(data){
+          if (data.response.removeSuccessful) 
+            jQuery("#" + rowId).empty();
+        },
+        error: function(req,error){
+          
+        },
+        beforeSend: function(data){
+          
+        }
+      });
+    }
 	</script>
+  
+  <div style="overflow-x: hidden; overflow-y: auto; height:250px">         
+    <table id="paginationId$paginationId" width="100%">
+      #foreach( $post in $searchResults )
+      
+        #set ($paginationRowId = "paginationRowId$velocityCount")
+        
+        <tr id="$paginationRowId">
+          <td width="1%" style="vertical-align:top">
+            <img src='$springMacroRequestContext.contextPath/images/asterisk.png'>
+          </td>
+          
+          <td>
+            #set ($formId = "formId_$post.uuid")
+            
+            <form id='$formId' method='POST' action='$selectPostUrl'>
+              <input type='hidden' name='path' value='$post.Path' />
+              <input type='hidden' name='content' value='$escapeTool.html($post.Content)' />
+              
+              <span>$post.Content<span>
+              <p>
+                <span class="title">
+                #if ( $post.ScheduledDate )
+                  #springMessage('label.caption.scheduledby') $post.author @ $post.scheduledDate 
+                #else
+                  #set( $args = ["$!{post.Author}", "$!{post.LastModifiedDate}"] )
+                  #springArgMessage("label.caption.postedby" $args)
+                #end
+                </span>
+              </p>
+              
+              #if ( $post.ScheduledDate )
+                <input class='uportal-button' type='button' 
+                  onClick="removeScheduledPost_$portletNamespace('$post.Path', '$paginationRowId');"
+                  value="#springMessage('button.caption.remove')" )
+              #end
+        
+              <input class='uportal-button' type='button' 
+                onClick='showScheduledPostPreviewDialog_$portletNamespace(this);' 
+                tag='$escapeTool.html($post.Content)' 
+                value="#springMessage('button.caption.preview')" />
+                
+              <input class='uportal-button' type='submit' value="#springMessage('button.caption.select')" />
+            </form>
+            <p align="center"><hr/></p>
+          </td>
+        </tr>
+
+      #end
+    </table>
+  </div>
 #else
 	<div class="portlet-msg-alert portlet-msg alert">#springMessage("repository.search.results.empty")</div>
 #end
 
 <br/>
 <input class="button" type='button' value='#springMessage("button.caption.cancel")'	onclick="window.location.href='${cancelUrl}';"/> 
-

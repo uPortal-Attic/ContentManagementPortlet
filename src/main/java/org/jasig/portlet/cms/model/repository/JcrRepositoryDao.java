@@ -41,7 +41,6 @@ public final class JcrRepositoryDao extends JcrDaoSupport implements RepositoryD
 	private final Log			logger						= LogFactory.getLog(getClass());
 	private JcrPostDao			postDao						= null;
 
-
     @Override
 	public Post getPost(final String nodeName) {
 		final Object post = getTemplate().execute(new JcrCallback() {
@@ -51,7 +50,7 @@ public final class JcrRepositoryDao extends JcrDaoSupport implements RepositoryD
 
 				final JcrPostDao dao = getPostDao();
 
-				if (dao.exists(nodeName)) {
+				if (exists(nodeName)) {
 					post = dao.get(nodeName);
 					if (post.getAuthor() == null)
 						post = null;
@@ -110,7 +109,6 @@ public final class JcrRepositoryDao extends JcrDaoSupport implements RepositoryD
 			public Object doInJcr(final Session session) throws IOException, RepositoryException {
 				try {
 					final JcrPostDao dao = getPostDao();
-
 					final String schedulePath = JcrRepositoryDao.SCHEDULED_POSTS_NODE_NAME;
 					post.setPath(schedulePath);
 
@@ -165,7 +163,7 @@ public final class JcrRepositoryDao extends JcrDaoSupport implements RepositoryD
 				try {
 					final JcrPostDao dao = getPostDao();
 
-					if (dao.exists(post.getPath())) {
+					if (exists(post.getPath())) {
 						if (logger.isErrorEnabled())
 							logger.debug("Updating post at path: " + post.getPath());
 
@@ -202,4 +200,10 @@ public final class JcrRepositoryDao extends JcrDaoSupport implements RepositoryD
 	private JcrPostDao getPostDao() {
 		return postDao;
 	}
+
+    @Override
+    public boolean exists(String nodeName) {
+      final JcrPostDao dao = getPostDao();
+      return dao.exists(nodeName);
+    }
 }

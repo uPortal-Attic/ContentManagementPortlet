@@ -66,6 +66,11 @@ $removeRepositoryRootUrl.setParameter("path", "{path}")
 #set ( $publishScheduledPostUrl = $renderResponse.createActionURL() )
 $publishScheduledPostUrl.setParameter("action", "publishScheduledPost")
 
+#set ($blankPost = true)
+#if( $post.Content )
+  #set ($blankPost = false)
+#end
+      
 <table cellpadding='0' cellspacing='0' width="100%">
 	<tr>
 		<td align='center'>	
@@ -146,12 +151,19 @@ $publishScheduledPostUrl.setParameter("action", "publishScheduledPost")
 						<div id="browseFileId$browseFileId"></div>
 						
 					</div>
-										
+															
 					<h3><a href="#">#springMessage("post.schedule.caption")</a></h3>
 					<div>
+						
 						<input type="checkbox" name="postIsScheduled" id="postIsScheduled$postIsScheduledId"/> #springMessage("post.schedule.post.caption")
 						<p>#springMessage("post.schedule.publish.date.caption"): 
-						<input name="scheduledPostPublishDate" id="scheduledPostPublishDate$scheduledPostPublishDateId" type="text" readonly="readonly"></p>
+							<input name="scheduledPostPublishDate" id="scheduledPostPublishDate$scheduledPostPublishDateId" type="text" readonly="readonly">
+              <br/>
+              #if( !$blankPost )
+                <input type="checkbox" name="removeExistingPost"/> #springMessage("post.scheduled.remove.existing.caption")	
+              #end
+						</p>
+						
 					</div>
 				
 					<!-- End of Post Options -->
@@ -173,10 +185,10 @@ $publishScheduledPostUrl.setParameter("action", "publishScheduledPost")
 			
 	<tr>
 		<td width="100%" align="right">
-			#if( $post.Content )
-				#set ($submitButtonCaption="#springMessage('button.caption.update')")
+			#if( $blankPost )
+				#set ($submitButtonCaption="#springMessage('button.caption.submit')") 
 			#else
-				#set ($submitButtonCaption="#springMessage('button.caption.submit')")
+				#set ($submitButtonCaption="#springMessage('button.caption.update')")
 			#end
 			
 			<input class="button" type="submit" name="post" value='$submitButtonCaption'  />

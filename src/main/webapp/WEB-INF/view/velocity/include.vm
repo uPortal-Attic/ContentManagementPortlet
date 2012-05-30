@@ -24,10 +24,8 @@
 <link rel="stylesheet" href="$springMacroRequestContext.contextPath/javascript/jquery/css/jquery.fancybox.css" type="text/css" media="screen" />
 
 <script src="$springMacroRequestContext.contextPath/javascript/ckeditor/ckeditor.js" type="text/javascript"></script>
-<script src="$springMacroRequestContext.contextPath/javascript/jquery/jquery-1.7.2.min.js" type="text/javascript"></script>
-<script src="$springMacroRequestContext.contextPath/javascript/jquery/jquery-ui-1.8.7.custom.min.js" type="text/javascript"></script>
-<script src="$springMacroRequestContext.contextPath/javascript/jquery/MyInfusion.js" type="text/javascript"></script>
-
+<script src="$springMacroRequestContext.contextPath/javascript/jquery/jquery-1.7.1.min.js" type="text/javascript"></script>
+<script src="$springMacroRequestContext.contextPath/javascript/jquery/jquery-ui-1.8.18.custom.min.js" type="text/javascript"></script>
 
 <script src="$springMacroRequestContext.contextPath/javascript/jquery/jquery.form.js" type="text/javascript"></script>
 <script src="$springMacroRequestContext.contextPath/javascript/jquery/jquery.rating.js" type="text/javascript"></script>
@@ -44,4 +42,3 @@
 #set ( $renderResponse = $request.getAttribute("javax.portlet.response") )
 #set ( $portletNamespace = $renderResponse.getNamespace() )
 #set ( $portletConstructors = $renderRequest.getPortletMode().getClass().getConstructors() )
-
