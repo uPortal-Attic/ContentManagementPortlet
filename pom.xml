@@ -41,8 +41,10 @@
 		<velocity.version>1.7</velocity.version>
 		<velocity.tools.version>2.0</velocity.tools.version>
 
+		<uportal.search.api.version>4.0.5</uportal.search.api.version>
+		
 		<quartz.version>1.8.5</quartz.version>
-
+		
 		<java.version>1.6</java.version>
 
 		<jackrabbit.version>2.4.1</jackrabbit.version>
@@ -103,10 +105,10 @@
 	</developers>
 
 	<scm>
-        <connection>scm:git:git://github.com/Jasig/ContentManagementPortlet.git</connection>
-        <developerConnection>scm:git:git@github.com:Jasig/ContentManagementPortlet.git</developerConnection>
-        <url>https://github.com/Jasig/uPortal</url>
-    </scm>
+		<connection>scm:git:git://github.com/Jasig/ContentManagementPortlet.git</connection>
+		<developerConnection>scm:git:git@github.com:Jasig/ContentManagementPortlet.git</developerConnection>
+		<url>https://github.com/Jasig/uPortal</url>
+	</scm>
 
 	<build>
 		<defaultGoal>integration-test</defaultGoal>
@@ -221,7 +223,7 @@
 				<version>${maven.war.plugin.version}</version>
 				<configuration>
 					<webXml>${project.build.directory}/pluto-resources/web.xml</webXml>
-					
+
 					<filters>
 						<filter>build.properties</filter>
 					</filters>
@@ -279,8 +281,9 @@
 								<delete dir="${catalina.home}/webapps/${project.name}" failonerror="true" />
 								<delete file="${catalina.home}/webapps/${project.name}.war" failonerror="true" />
 								<delete file="${catalina.home}/logs/${project.name}.log" failonerror="false" />
-								<delete file="${catalina.home}/conf/Catalina/localhost/${project.name}.xml" failonerror="false" />
-								
+								<delete file="${catalina.home}/conf/Catalina/localhost/${project.name}.xml"
+									failonerror="false" />
+
 								<echo message="Copying ${project.name}.war to directory ${catalina.home}/webapps" />
 								<copy file="target/${project.name}.war" todir="${catalina.home}/webapps" overwrite="true"
 									failonerror="true" />
@@ -365,6 +368,12 @@
 	</repositories>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>org.jasig.portal</groupId>
+			<artifactId>uportal-search-api</artifactId>
+			<version>${uportal.search.api.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>

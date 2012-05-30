@@ -17,6 +17,7 @@ multiple languages and further allows decoration of content with graphics, links
 * Ability to schedule posts to be published at a later date/time.
 * Ability to localize portlet content for multiple languages.
 * Allow a post to be rated by viewers.
+* Supports uPortal's search functionality through the Search API.
 
 ## Build
 
