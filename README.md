@@ -1,3 +1,13 @@
+## Unmaintained
+
+[![No maintenance intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
+This project has been transferred to the uPortal Project Attic because it has fallen out of active maintenance.
+You are welcome to be interested in reviving this project -- you might start conversations along those lines [among uPortal developers](https://groups.google.com/a/apereo.org/forum/#!forum/uportal-dev).
+
+------------------
+
+
 ## Description
 
 Content Management Portlet is developed for uPortal to allow authorized users to administer content remotely. Using this portlet, content authors 
